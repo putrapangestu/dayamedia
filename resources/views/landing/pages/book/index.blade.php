@@ -110,7 +110,7 @@
                                                             $minPrice = min($collectPrice);
                                                             $maxPrice = max($collectPrice);
                                                         @endphp
-                                                        <h4 class="mb-0 fw-bolder fs-3" style="color: #EE128C;">
+                                                        <h4 class="mb-0 fw-bolder fs-3" style="color: #255c83;">
                                                             Rp.{{ number_format($minPrice, 0, ',', '.') }}
                                                             -
                                                             Rp.{{ number_format($maxPrice, 0, ',', '.') }}</h4>

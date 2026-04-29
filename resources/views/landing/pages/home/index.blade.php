@@ -165,7 +165,7 @@
                                     $minPrice = min($collectPrice);
                                     $maxPrice = max($collectPrice);
                                 @endphp
-                                <h4 class="mb-0 fw-bolder fs-3" style="color: #EE128C;">
+                                <h4 class="mb-0 fw-bolder fs-3" style="color: #255c83;">
                                     Rp.{{ number_format($minPrice, 0, ',', '.') }}
                                     -
                                     Rp.{{ number_format($maxPrice, 0, ',', '.') }}</h4>
@@ -207,9 +207,9 @@
                                 <h5 class="fw-bolder mb-0" style="color: #2a3547;">{{ $package->name }}</h5>
                                 <span class="badge bg-primary-subtle text-primary rounded-pill px-3">{{ $package->max_authors_default }} Penulis</span>
                             </div>
-                            
-                            <h3 class="fw-black mb-4" style="color: #EE128C;">Rp {{ number_format($package->price, 0, ',', '.') }}</h3>
-                            
+
+                            <h3 class="fw-black mb-4" style="color: #255c83;">Rp {{ number_format($package->price, 0, ',', '.') }}</h3>
+
                             <ul class="list-unstyled mb-4 flex-grow-1">
                                 @foreach($package->benefits->take(4) as $benefit)
                                     <li class="d-flex align-items-start mb-2 fs-2">
@@ -218,7 +218,7 @@
                                     </li>
                                 @endforeach
                             </ul>
-                            
+
                             <a href="{{ route('individual-books.purchase', $package) }}" class="btn btn-primary w-100 py-2 rounded-3 fw-bold">Pilih Paket</a>
                         </div>
                     </div>
@@ -228,7 +228,7 @@
                     <p class="text-muted">Belum ada paket tersedia saat ini.</p>
                 </div>
             @endforelse
-            
+
             @if($individualPackages->count() > 0)
                 <div class="col-12 text-center mt-3">
                     <a href="{{ route('individual-books.packages') }}" class="btn btn-outline-primary px-4 py-2 rounded-3">Lihat Semua Paket <i class="ti ti-arrow-right ms-1"></i></a>
@@ -279,7 +279,7 @@
                                     $minPrice = min($collectPrice);
                                     $maxPrice = max($collectPrice);
                                 @endphp
-                                <h4 class="mb-0 fw-bolder fs-3" style="color: #EE128C;">
+                                <h4 class="mb-0 fw-bolder fs-3" style="color: #255c83;">
                                     Rp.{{ number_format($minPrice, 0, ',', '.') }}
                                     -
                                     Rp.{{ number_format($maxPrice, 0, ',', '.') }}</h4>
@@ -343,7 +343,7 @@
                                     $minPrice = min($collectPrice);
                                     $maxPrice = max($collectPrice);
                                 @endphp
-                                <h4 class="mb-0 fw-bolder fs-3" style="color: #EE128C;">
+                                <h4 class="mb-0 fw-bolder fs-3" style="color: #255c83;">
                                     Rp.{{ number_format($minPrice, 0, ',', '.') }}
                                     -
                                     Rp.{{ number_format($maxPrice, 0, ',', '.') }}</h4>
@@ -401,7 +401,7 @@
                                                             $minPrice = min($collectPrice);
                                                             $maxPrice = max($collectPrice);
                                                         @endphp
-														<h4 class="mb-0 fw-bolder fs-3" style="color: #EE128C;">
+														<h4 class="mb-0 fw-bolder fs-3" style="color: #255c83;">
 																Rp.{{ number_format($minPrice, 0, ',', '.') }}
 																-
 																Rp.{{ number_format($maxPrice, 0, ',', '.') }}</h4>
