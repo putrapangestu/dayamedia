@@ -29,6 +29,10 @@ use App\Http\Controllers\Transaction\WithdrawController;
 use App\Http\Controllers\WhatsAppTemplateController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/test', function() {
+    return view('landing.layouts.app');
+});
+
 Route::get('/', [LandingController::class, 'index'])->name('home');
 Route::get('/books', [LandingController::class, 'catalog'])->name('catalog');
 Route::get('/books/{slug}/read', [LandingController::class, 'readBook'])->name('book.read');
