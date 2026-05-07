@@ -111,8 +111,7 @@
 
                                     {{-- Penulis --}}
                                     <p class="text-xs text-muted-foreground px-2.5 mt-0.5 truncate">
-                                        @php $authors = ['Budi Santoso', 'Rina Marlina', 'Ahmad Fauzi']; @endphp
-                                        {{ $authors[0] }}{{ count($authors) > 1 ? ', dkk' : '' }}
+                                        Penulis 0/13
                                     </p>
                                 </div>
 
@@ -133,11 +132,6 @@
                                             <i class="ki-filled ki-eye"></i>
                                             Detail
                                         </a>
-                                        <button
-                                            class="kt-btn kt-btn-primary kt-btn-sm"
-                                            data-kt-drawer-toggle="#drawers_shop_cart">
-                                            <i class="ki-filled ki-handcart"></i>
-                                        </button>
                                     </div>
                                 </div>
 

@@ -316,9 +316,10 @@
         {{-- ===== BUKU SERUPA ===== --}}
         <div class="flex flex-col gap-4">
             <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <i class="ki-filled ki-book text-primary text-sm"></i>
-                    <h2 class="text-base font-bold text-mono">Buku Serupa</h2>
+                <div class="flex flex-wrap items-center gap-5 justify-between">
+                    <h3 class="text-lg text-mono font-semibold">
+                        Buku Serupa
+                    </h3>
                 </div>
                 <a href="#" class="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
                     Lihat semua <i class="ki-filled ki-arrow-right text-xs"></i>

@@ -1,1235 +1,464 @@
 @extends('landing.layouts.app')
 
-{{-- @push('toolbar')
-    <div class="">
-        <!-- Container -->
-        <div class="kt-container-fixed">
-            <div class="border-t border-border dark:border-coal-100">
-            </div>
-            <div class="flex items-center justify-between flex-wrap gap-2 la:gap-5 my-5">
-                <div class="flex flex-col gap-1">
-                    <h1 class="font-medium text-lg text-mono">
-                        Dashboard
-                    </h1>
-                    <div class="flex items-center gap-1 text-sm">
-                        <a class="text-secondary-foreground hover:text-primary" href="index.html">
-                            Home
-                        </a>
-                        <span class="text-muted-foreground text-sm">
-                            /
-                        </span>
-                        <span class="text-secondary-foreground">
-                            Account
-                        </span>
-                        <span class="text-muted-foreground text-sm">
-                            /
-                        </span>
-                        <span class="text-mono">
-                            Dashboard
-                        </span>
-                    </div>
-                </div>
-                <div class="flex items-center flex-wrap gap-1.5 lg:gap-3.5">
-                    <a class="kt-btn kt-btn-outline" href="account/home/get-started.html">
-                        <i class="ki-filled ki-exit-down text-base!">
-                        </i>
-                        Export
-                    </a>
-                    <div class="kt-menu kt-menu-default" data-kt-menu="true">
-                        <div class="kt-menu-item" data-kt-menu-item-offset="0, 0" data-kt-menu-item-placement="bottom-end"
-                            data-kt-menu-item-toggle="dropdown" data-kt-menu-item-trigger="hover">
-                            <button class="kt-menu-toggle kt-btn kt-btn-outline flex-nowrap">
-                                <span class="flex items-center me-1">
-                                    <i class="ki-filled ki-calendar text-base!">
-                                    </i>
-                                </span>
-                                <span class="hidden md:inline text-nowrap">
-                                    September, 2024
-                                </span>
-                                <span class="inline md:hidden text-nowrap">
-                                    Sep, 2024
-                                </span>
-                                <span class="flex items-center lg:ms-4">
-                                    <i class="ki-filled ki-down text-xs!">
-                                    </i>
-                                </span>
-                            </button>
-                            <div class="kt-menu-dropdown w-48 py-2 kt-scrollable-y max-h-[250px]">
-                                <div class="kt-menu-item">
-                                    <a class="kt-menu-link" href="#">
-                                        <span class="kt-menu-title">
-                                            January, 2024
-                                        </span>
-                                    </a>
-                                </div>
-                                <div class="kt-menu-item">
-                                    <a class="kt-menu-link" href="#">
-                                        <span class="kt-menu-title">
-                                            February, 2024
-                                        </span>
-                                    </a>
-                                </div>
-                                <div class="kt-menu-item active">
-                                    <a class="kt-menu-link" href="#">
-                                        <span class="kt-menu-title">
-                                            March, 2024
-                                        </span>
-                                    </a>
-                                </div>
-                                <div class="kt-menu-item">
-                                    <a class="kt-menu-link" href="#">
-                                        <span class="kt-menu-title">
-                                            April, 2024
-                                        </span>
-                                    </a>
-                                </div>
-                                <div class="kt-menu-item">
-                                    <a class="kt-menu-link" href="#">
-                                        <span class="kt-menu-title">
-                                            May, 2024
-                                        </span>
-                                    </a>
-                                </div>
-                                <div class="kt-menu-item">
-                                    <a class="kt-menu-link" href="#">
-                                        <span class="kt-menu-title">
-                                            June, 2024
-                                        </span>
-                                    </a>
-                                </div>
-                                <div class="kt-menu-item">
-                                    <a class="kt-menu-link" href="#">
-                                        <span class="kt-menu-title">
-                                            July, 2024
-                                        </span>
-                                    </a>
-                                </div>
-                                <div class="kt-menu-item">
-                                    <a class="kt-menu-link" href="#">
-                                        <span class="kt-menu-title">
-                                            August, 2024
-                                        </span>
-                                    </a>
-                                </div>
-                                <div class="kt-menu-item">
-                                    <a class="kt-menu-link" href="#">
-                                        <span class="kt-menu-title">
-                                            September, 2024
-                                        </span>
-                                    </a>
-                                </div>
-                                <div class="kt-menu-item">
-                                    <a class="kt-menu-link" href="#">
-                                        <span class="kt-menu-title">
-                                            October, 2024
-                                        </span>
-                                    </a>
-                                </div>
-                                <div class="kt-menu-item">
-                                    <a class="kt-menu-link" href="#">
-                                        <span class="kt-menu-title">
-                                            November, 2024
-                                        </span>
-                                    </a>
-                                </div>
-                                <div class="kt-menu-item">
-                                    <a class="kt-menu-link" href="#">
-                                        <span class="kt-menu-title">
-                                            December, 2024
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="border-b border-border mb-5 lg:mb-7.5">
-            </div>
-        </div>
-        <!-- End of Container -->
-    </div>
-@endpush --}}
-
 @section('content')
-    <div class="kt-container-fixed">
-        <div class="flex items-center mb-8 h-[500px] gap-10">
-            <div class="flex-1">
-                <h2 class="text-4xl font-semibold text-mono">
-                    Bersama Daya Media Nusantara, Jelajahi Buku
+    <!-- =========================================
+         MOCK DATA (Hanya untuk tampilan sementara)
+    ========================================== -->
+    @php
+        $books = [
+            ['title' => 'Algoritma & Struktur Data', 'author' => 'Budi Santoso', 'price_min' => 'Rp40.000', 'price_max' => 'Rp110.000', 'cover' => 'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg'],
+            ['title' => 'Pemrograman Python', 'author' => 'Rina Marlina, dkk', 'price_min' => 'Rp35.000', 'price_max' => 'Rp95.000', 'cover' => 'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg'],
+            ['title' => 'Jaringan Komputer', 'author' => 'Ahmad Fauzi', 'price_min' => 'Rp50.000', 'price_max' => 'Rp130.000', 'cover' => 'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg'],
+            ['title' => 'Kecerdasan Buatan', 'author' => 'Dr. Hendra', 'price_min' => 'Rp55.000', 'price_max' => 'Rp145.000', 'cover' => 'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg'],
+            ['title' => 'UI/UX Design Masterclass', 'author' => 'Siska UI', 'price_min' => 'Rp75.000', 'price_max' => 'Rp200.000', 'cover' => 'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg'],
+            ['title' => 'Laravel untuk Pemula', 'author' => 'Dev Indo', 'price_min' => 'Rp60.000', 'price_max' => 'Rp150.000', 'cover' => 'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg'],
+        ];
+    @endphp
+
+    <div class="kt-container-fixed pb-16">
+
+        <!-- =========================================
+             1. HERO SECTION
+        ========================================== -->
+        <div class="flex flex-col-reverse md:flex-row items-center min-h-[400px] md:h-[500px] gap-8 md:gap-10 mb-12 mt-6 md:mt-0">
+            <div class="flex-1 flex flex-col gap-5 text-center md:text-left">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium w-fit mx-auto md:mx-0">
+                    <i class="ki-filled ki-rocket text-base"></i> Platform Literasi Terbaik
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold text-mono leading-tight">
+                    Bersama Daya Media Nusantara, <br/>
+                    <span class="text-primary">Jelajahi Dunia Buku</span>
                 </h2>
-                <p class="mt-5 text-muted">Kami mendukung penulis untuk menjadi penulis yang berharga, menjadi penulis yang berharga, dan menjadi penulis yang berharga.</p>
+                <p class="text-muted-foreground text-lg max-w-lg mx-auto md:mx-0">
+                    Kami mendukung penulis untuk menjadi talenta yang berharga, dan membantu pembaca menemukan karya-karya terbaik dari penjuru negeri.
+                </p>
+                <div class="flex items-center justify-center md:justify-start gap-4 mt-2">
+                    <button class="kt-btn kt-btn-primary kt-btn-lg">
+                        Mulai Membaca <i class="ki-filled ki-arrow-right ms-2"></i>
+                    </button>
+                    <button class="kt-btn kt-btn-outline kt-btn-lg">
+                        Daftar Penulis
+                    </button>
+                </div>
             </div>
-            <img class="me-3 flex-1" src="{{ asset('assets/images/hero.avif') }}" width="400" alt="">
+            <div class="flex-1 flex justify-center md:justify-end">
+                <img class="w-full max-w-[350px] md:max-w-[450px] object-contain drop-shadow-xl hover:scale-105 transition-transform duration-500" src="{{ asset('assets/images/hero.avif') }}" alt="Hero Illustration">
+            </div>
         </div>
-        <div class="grid gap-5 lg:gap-7.5">
-            <!-- begin: grid -->
-            <div class="grid lg:grid-cols-3 gap-y-5 lg:gap-7.5 items-stretch">
-                <div class="lg:col-span-2">
-                    <div class="grid md:grid-cols-2 gap-5 lg:gap-7.5 h-full items-stretch">
-                        <style>
-                            .channel-stats-bg {
-                                background-image: url('{{ asset('') }}assets/landing/media/images/2600x1600/bg-3.png');
-                            }
 
-                            .dark .channel-stats-bg {
-                                background-image: url('{{ asset('') }}assets/landing/media/images/2600x1600/bg-3-dark.png');
-                            }
-                        </style>
-                        <div
-                            class="kt-card px-5 lg:px-7.5 h-full bg-[length:85%] [background-position:9rem_-4rem] rtl:[background-position:-4rem_-4rem] bg-no-repeat channel-stats-bg">
-                            <div class="flex flex-col gap-4 pt-6">
-                                <i class="ki-filled ki-badge text-2xl text-muted-foreground">
-                                </i>
-                                <div class="flex flex-col gap-2.5 mb-2">
-                                    <h3 class="text-base font-medium leading-none text-mono">
-                                        Personal info
-                                    </h3>
-                                    <span class="text-sm text-secondary-foreground leading-5">
-                                        Central hub for users: view data, change settings, see activity logs,
-                                        manage tasks, read notes, get alerts, and more
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="mb-4">
-                                <a class="kt-link" href="account/members/team-info.html">
-                                    View page
-                                    <i class="ki-filled ki-right text-xs">
-                                    </i>
-                                </a>
-                            </div>
+        <!-- =========================================
+             2. KEUNTUNGAN BERGABUNG (BENEFITS)
+        ========================================== -->
+        <div class="mb-16">
+            <div class="text-center mb-8">
+                <h3 class="text-2xl text-mono font-bold">Keuntungan Bergabung Bersama Kami</h3>
+                <p class="text-muted-foreground mt-2">Alasan mengapa ribuan pembaca dan penulis memilih kami.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="kt-card hover:border-primary transition-colors duration-300">
+                    <div class="kt-card-content p-6 flex flex-col items-center text-center gap-4">
+                        <div class="size-14 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                            <i class="ki-filled ki-book-open text-3xl"></i>
                         </div>
-                        <div
-                            class="kt-card px-5 lg:px-7.5 h-full bg-[length:85%] [background-position:9rem_-4rem] rtl:[background-position:-4rem_-4rem] bg-no-repeat channel-stats-bg">
-                            <div class="flex flex-col gap-4 pt-6">
-                                <i class="ki-filled ki-security-user text-2xl text-muted-foreground">
-                                </i>
-                                <div class="flex flex-col gap-2.5 mb-2">
-                                    <h3 class="text-base font-medium leading-none text-mono">
-                                        Login &amp; Security
-                                    </h3>
-                                    <span class="text-sm text-secondary-foreground leading-5">
-                                        Set passwords, enable 2FA, view login logs, update security questions,
-                                        track account activity for better safety
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="mb-4">
-                                <a class="kt-link" href="account/security/security-log.html">
-                                    View page
-                                    <i class="ki-filled ki-right text-xs">
-                                    </i>
-                                </a>
-                            </div>
-                        </div>
-                        <div
-                            class="kt-card px-5 lg:px-7.5 h-full bg-[length:85%] [background-position:9rem_-4rem] rtl:[background-position:-4rem_-4rem] bg-no-repeat channel-stats-bg">
-                            <div class="flex flex-col gap-4 pt-6">
-                                <i class="ki-filled ki-cheque text-2xl text-muted-foreground">
-                                </i>
-                                <div class="flex flex-col gap-2.5 mb-2">
-                                    <h3 class="text-base font-medium leading-none text-mono">
-                                        Billing &amp; Payments
-                                    </h3>
-                                    <span class="text-sm text-secondary-foreground leading-5">
-                                        Manage billing info, update payment methods, view transaction history,
-                                        set up autopay, and track expenses easily
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="mb-4">
-                                <a class="kt-link" href="account/billing/basic.html">
-                                    View page
-                                    <i class="ki-filled ki-right text-xs">
-                                    </i>
-                                </a>
-                            </div>
-                        </div>
-                        <div
-                            class="kt-card px-5 lg:px-7.5 h-full bg-[length:85%] [background-position:9rem_-4rem] rtl:[background-position:-4rem_-4rem] bg-no-repeat channel-stats-bg">
-                            <div class="flex flex-col gap-4 pt-6">
-                                <i class="ki-filled ki-users text-2xl text-muted-foreground">
-                                </i>
-                                <div class="flex flex-col gap-2.5 mb-2">
-                                    <h3 class="text-base font-medium leading-none text-mono">
-                                        Members, Teams &amp; Roles
-                                    </h3>
-                                    <span class="text-sm text-secondary-foreground leading-5">
-                                        Manage members, assign roles, create teams, update permissions, view
-                                        activity logs, and streamline team collaboration
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="mb-4">
-                                <a class="kt-link" href="account/members/roles.html">
-                                    View page
-                                    <i class="ki-filled ki-right text-xs">
-                                    </i>
-                                </a>
-                            </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-mono mb-1">Koleksi Lengkap</h4>
+                            <p class="text-sm text-muted-foreground">Ribuan buku dari berbagai genre tersedia untuk Anda.</p>
                         </div>
                     </div>
                 </div>
-                <div class="lg:col-span-1">
-                    <div class="kt-card h-full">
-                        <div class="kt-card-header">
-                            <h3 class="kt-card-title">
-                                My Balance
-                            </h3>
-                            <div class="kt-menu" data-kt-menu="true">
-                                <div class="kt-menu-item" data-kt-menu-item-offset="0, 10px"
-                                    data-kt-menu-item-placement="bottom-end"
-                                    data-kt-menu-item-placement-rtl="bottom-start" data-kt-menu-item-toggle="dropdown"
-                                    data-kt-menu-item-trigger="click">
-                                    <button class="kt-menu-toggle kt-btn kt-btn-sm kt-btn-icon kt-btn-ghost">
-                                        <i class="ki-filled ki-dots-vertical text-lg">
-                                        </i>
-                                    </button>
-                                    <div class="kt-menu-dropdown kt-menu-default w-full max-w-[200px]"
-                                        data-kt-menu-dismiss="true">
-                                        <div class="kt-menu-item">
-                                            <a class="kt-menu-link" href="account/home/settings-enterprise.html">
-                                                <span class="kt-menu-icon">
-                                                    <i class="ki-filled ki-setting-3">
-                                                    </i>
-                                                </span>
-                                                <span class="kt-menu-title">
-                                                    Settings
-                                                </span>
-                                            </a>
-                                        </div>
-                                        <div class="kt-menu-item">
-                                            <a class="kt-menu-link" href="account/members/import-members.html">
-                                                <span class="kt-menu-icon">
-                                                    <i class="ki-filled ki-some-files">
-                                                    </i>
-                                                </span>
-                                                <span class="kt-menu-title">
-                                                    Import
-                                                </span>
-                                            </a>
-                                        </div>
-                                        <div class="kt-menu-item">
-                                            <a class="kt-menu-link" href="account/activity.html">
-                                                <span class="kt-menu-icon">
-                                                    <i class="ki-filled ki-cloud-change">
-                                                    </i>
-                                                </span>
-                                                <span class="kt-menu-title">
-                                                    Activity
-                                                </span>
-                                            </a>
-                                        </div>
-                                        <div class="kt-menu-item">
-                                            <a class="kt-menu-link" data-kt-modal-toggle="#report_user_modal"
-                                                href="#">
-                                                <span class="kt-menu-icon">
-                                                    <i class="ki-filled ki-dislike">
-                                                    </i>
-                                                </span>
-                                                <span class="kt-menu-title">
-                                                    Report
-                                                </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                <!-- Card 2 -->
+                <div class="kt-card hover:border-primary transition-colors duration-300">
+                    <div class="kt-card-content p-6 flex flex-col items-center text-center gap-4">
+                        <div class="size-14 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                            <i class="ki-filled ki-discount text-3xl"></i>
                         </div>
-                        <div class="kt-card-content flex flex-col gap-2 px-5 lg:px-7.5 pt-5">
-                            <span class="text-sm font-normal text-foreground">
-                                Available balance
-                            </span>
-                            <span class="text-3xl font-semibold text-mono mb-3">
-                                $9,395.72
-                            </span>
-                            <div class="kt-toggle-group flex">
-                                <label class="kt-btn" data-kt-chart="my_balance_chart1">
-                                    Today
-                                    <input name="date-range" type="radio" value="today" />
-                                </label>
-                                <label class="kt-btn" data-kt-chart="my_balance_chart2">
-                                    Week
-                                    <input name="date-range" type="radio" value="week" />
-                                </label>
-                                <label class="kt-btn" data-kt-chart="my_balance_chart3">
-                                    Month
-                                    <input checked="" name="date-range" type="radio" value="month" />
-                                </label>
-                                <label class="kt-btn" data-kt-chart="my_balance_chart4">
-                                    Year
-                                    <input name="date-range" type="radio" value="year" />
-                                </label>
-                            </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-mono mb-1">Harga Terjangkau</h4>
+                            <p class="text-sm text-muted-foreground">Dapatkan penawaran terbaik dan diskon setiap minggunya.</p>
                         </div>
-                        <div class="px-3" id="my_balance_chart">
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="kt-card hover:border-primary transition-colors duration-300">
+                    <div class="kt-card-content p-6 flex flex-col items-center text-center gap-4">
+                        <div class="size-14 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                            <i class="ki-filled ki-delivery-time text-3xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-mono mb-1">Pengiriman Cepat</h4>
+                            <p class="text-sm text-muted-foreground">Bekerja sama dengan ekspedisi terpercaya di seluruh Indonesia.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 4 -->
+                <div class="kt-card hover:border-primary transition-colors duration-300">
+                    <div class="kt-card-content p-6 flex flex-col items-center text-center gap-4">
+                        <div class="size-14 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                            <i class="ki-filled ki-verify text-3xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-mono mb-1">100% Original</h4>
+                            <p class="text-sm text-muted-foreground">Kami menjamin keaslian setiap buku yang Anda beli.</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- end: grid -->
-            <!-- begin: grid -->
-            <div class="grid lg:grid-cols-3 gap-5 lg:gap-7.5 items-stretch">
-                <div class="lg:col-span-2">
-                    <style>
-                        .entry-callout-bg {
-                            background-image: url('{{ asset('') }}assets/landing/media/images/2600x1600/2.png');
-                        }
+        </div>
 
-                        .dark .entry-callout-bg {
-                            background-image: url('{{ asset('') }}assets/landing/media/images/2600x1600/2-dark.png');
-                        }
-                    </style>
-                    <div class="kt-card h-full h-full">
-                        <div
-                            class="kt-card-content p-10 bg-[length:80%] rtl:[background-position:-70%_25%] [background-position:175%_25%] bg-no-repeat entry-callout-bg">
-                            <div class="flex flex-col justify-center gap-4">
-                                <div class="flex -space-x-2">
-                                    <div class="flex">
-                                        <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-background size-10"
-                                            src="{{ asset('') }}assets/landing/media/avatars/300-4.png" />
-                                    </div>
-                                    <div class="flex">
-                                        <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-background size-10"
-                                            src="{{ asset('') }}assets/landing/media/avatars/300-1.png" />
-                                    </div>
-                                    <div class="flex">
-                                        <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-background size-10"
-                                            src="{{ asset('') }}assets/landing/media/avatars/300-2.png" />
-                                    </div>
-                                    <div class="flex">
-                                        <span
-                                            class="hover:z-5 relative inline-flex items-center justify-center shrink-0 rounded-full ring-1 font-semibold leading-none text-2xs size-10 text-white text-xs ring-background bg-green-500">
-                                            S
-                                        </span>
+        <!-- =========================================
+             3. REKOMENDASI BUKU
+        ========================================== -->
+        <div class="flex flex-col gap-4 mb-12">
+            <div class="flex items-center justify-between">
+                <div class="flex flex-wrap items-center gap-5 justify-between">
+                    <h3 class="text-2xl text-mono font-semibold">
+                        Rekomendasi Buku
+                    </h3>
+                </div>
+                <a href="#" class="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+                    Lihat semua <i class="ki-filled ki-arrow-right text-xs"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
+                @php
+                    $similar = [
+                        [
+                            'title' => 'Algoritma & Struktur Data',
+                            'author' => 'Budi Santoso',
+                            'price_min' => 'Rp40.000',
+                            'price_max' => 'Rp110.000',
+                        ],
+                        [
+                            'title' => 'Pemrograman Python untuk Pemula',
+                            'author' => 'Rina Marlina, dkk',
+                            'price_min' => 'Rp35.000',
+                            'price_max' => 'Rp95.000',
+                        ],
+                        [
+                            'title' => 'Jaringan Komputer Terapan',
+                            'author' => 'Ahmad Fauzi',
+                            'price_min' => 'Rp50.000',
+                            'price_max' => 'Rp130.000',
+                        ],
+                        [
+                            'title' => 'Kecerdasan Buatan Modern',
+                            'author' => 'Dr. Hendra Wijaya',
+                            'price_min' => 'Rp55.000',
+                            'price_max' => 'Rp145.000',
+                        ],
+                        [
+                            'title' => 'Kecerdasan Buatan Modern',
+                            'author' => 'Dr. Hendra Wijaya',
+                            'price_min' => 'Rp55.000',
+                            'price_max' => 'Rp145.000',
+                        ],
+                    ];
+                @endphp
+
+                @foreach ($similar as $book)
+                    <div class="kt-card">
+                        <div class="kt-card-content flex flex-col justify-between p-2.5 gap-3">
+                            <div>
+                                {{-- Gambar --}}
+                                <div class="kt-card relative bg-accent/50 w-full mb-3 shadow-none overflow-hidden"
+                                    data-kt-context-menu="true" data-kt-context-menu-trigger="true">
+                                    <img alt="" class="w-full cursor-pointer object-cover block"
+                                        style="aspect-ratio: 1 / 1.41;"
+                                        data-kt-drawer-toggle="#drawers_shop_product_details"
+                                        src="https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg" />
+                                    <div class="kt-context-menu w-56 hidden" data-kt-context-menu-menu="true">
+                                        <ul class="kt-context-menu-sub">
+                                            <li><button class="kt-context-menu-link"
+                                                    data-kt-context-menu-dismiss="true"
+                                                    data-kt-drawer-toggle="#drawers_shop_product_details"
+                                                    type="button">Quick View</button></li>
+                                            <li><button class="kt-context-menu-link"
+                                                    data-kt-context-menu-dismiss="true"
+                                                    data-kt-drawer-toggle="#drawers_shop_cart" type="button">Add to
+                                                    Cart</button></li>
+                                            <li class="kt-context-menu-separator"></li>
+                                            <li><button class="kt-context-menu-link"
+                                                    data-kt-context-menu-dismiss="true" type="button">Add to
+                                                    Wishlist</button></li>
+                                        </ul>
                                     </div>
                                 </div>
-                                <h2 class="text-xl font-semibold text-mono">
-                                    Connect Today &amp; Join
-                                    <br />
-                                    the
-                                    <a class="kt-link" href="#">
-                                        KeenThemes Network
-                                    </a>
-                                </h2>
-                                <p class="text-sm font-normal text-secondary-foreground leading-5.5">
-                                    Enhance your projects with premium themes and
-                                    <br />
-                                    templates. Join the KeenThemes community today
-                                    <br />
-                                    for top-quality designs and resources.
+
+                                {{-- Judul 1 baris + elipsis --}}
+                                <a class="hover:text-primary text-sm font-medium text-mono px-2.5 block truncate"
+                                    data-kt-drawer-toggle="#drawers_shop_product_details"
+                                    title="Cloud Shift Lightweight Runner Pro Edition" href="#">
+                                    Cloud Shift Lightweight Runner Pro Edition
+                                </a>
+
+                                {{-- Penulis --}}
+                                <p class="text-xs text-muted-foreground px-2.5 mt-0.5 truncate">
+                                    Penulis 0/13
                                 </p>
                             </div>
-                        </div>
-                        <div class="kt-card-footer justify-center">
-                            <a class="kt-link kt-link-underlined kt-link-dashed" href="account/home/get-started.html">
-                                Get Started
-                            </a>
+
+                            {{-- Harga + Tombol --}}
+                            <div class="flex flex-col gap-2 px-2.5 pb-1">
+                                {{-- Harga --}}
+                                <p class="text-sm font-semibold text-mono">
+                                    Rp10.000
+                                    <span class="text-muted-foreground font-normal">-</span>
+                                    Rp15.000
+                                </p>
+
+                                {{-- Tombol --}}
+                                <div class="flex items-center gap-1.5">
+                                    <a href="#" class="kt-btn kt-btn-outline kt-btn-sm flex-1"
+                                        data-kt-drawer-toggle="#drawers_shop_product_details">
+                                        <i class="ki-filled ki-eye"></i>
+                                        Detail
+                                    </a>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
-                </div>
-                <div class="lg:col-span-1">
-                    <div class="kt-card h-full">
-                        <div class="kt-card-header">
-                            <h3 class="kt-card-title">
-                                Report Sharing Settings
-                            </h3>
-                        </div>
-                        <label class="kt-card-group flex items-center justify-between py-4 gap-2.5">
-                            <div class="flex flex-col justify-center gap-1.5">
-                                <span class="leading-none font-medium text-sm text-mono">
-                                    Ony invited People
-                                </span>
-                                <span class="text-sm text-secondary-foreground">
-                                    Invite selected people via email.
-                                </span>
-                            </div>
-                            <input checked="" class="kt-radio" name="sharing-setting" type="radio"
-                                value="1" />
-                        </label>
-                        <label class="kt-card-group flex items-center justify-between py-4 gap-2.5">
-                            <div class="flex flex-col justify-center gap-1.5">
-                                <span class="leading-none font-medium text-sm text-mono">
-                                    People with the link
-                                </span>
-                                <span class="text-sm text-secondary-foreground">
-                                    Create a pubic link for your report.
-                                </span>
-                            </div>
-                            <input class="kt-radio" name="sharing-setting" type="radio" value="2" />
-                        </label>
-                        <label class="kt-card-group flex items-center justify-between py-4 gap-2.5">
-                            <div class="flex flex-col justify-center gap-1.5">
-                                <span class="leading-none font-medium text-sm text-mono">
-                                    Everyone
-                                </span>
-                                <span class="text-sm text-secondary-foreground">
-                                    Reports will be visible only for everyone.
-                                </span>
-                            </div>
-                            <input class="kt-radio" name="sharing-setting" type="radio" value="3" />
-                        </label>
-                        <label class="kt-card-group flex items-center justify-between py-4 gap-2.5">
-                            <div class="flex flex-col justify-center gap-1.5">
-                                <span class="leading-none font-medium text-sm text-mono">
-                                    No one
-                                </span>
-                                <span class="text-sm text-secondary-foreground">
-                                    Reports will be visible only for you.
-                                </span>
-                            </div>
-                            <input class="kt-radio" name="sharing-setting" type="radio" value="4" />
-                        </label>
-                    </div>
-                </div>
+                @endforeach
             </div>
-            <!-- end: grid -->
-            <!-- begin: grid -->
-            <div class="grid lg:grid-cols-3 gap-5 lg:gap-7.5 items-stretch">
-                <div class="lg:col-span-2">
-                    <div class="kt-card">
-                        <div class="kt-card-header" id="external_services_integrations">
-                            <h3 class="kt-card-title">
-                                Integrations
-                            </h3>
-                        </div>
-                        <div class="kt-card-content grid gap-5 lg:gap-7.5 lg:py-7.5 py-5">
-                            <div class="grid gap-5">
-                                <div
-                                    class="flex items-center justify-between flex-wrap border border-border dark:bg-secondary-transparent rounded-xl gap-2 p-3.5">
-                                    <div class="flex items-center flex-wrap gap-3.5">
-                                        <img alt="" class="size-8 shrink-0"
-                                            src="https://keenthemes.com/metronic/tailwind/dist/assets/media/brand-logos/google-webdev.svg" />
-                                        <div class="flex flex-col">
-                                            <div class="flex items-center gap-1.5">
-                                                <a class="text-sm font-medium text-mono hover:text-primary"
-                                                    href="#">
-                                                    Google web.dev
-                                                </a>
-                                                <a class="text-sm text-muted-foreground hover:text-primary"
-                                                    href="#">
-                                                    webdev@webdevmail.com
-                                                </a>
-                                            </div>
-                                            <span class="text-sm font-medium text-secondary-foreground">
-                                                Integrate for enhanced collaboration in web development.
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-2 lg:gap-5">
-                                        <input checked="" class="kt-switch kt-switch-sm" type="checkbox"
-                                            value="1" />
-                                        <div class="kt-btn kt-btn-icon kt-btn-ghost">
-                                            <i class="ki-filled ki-setting-2">
-                                            </i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="flex items-center justify-between flex-wrap border border-border dark:bg-secondary-transparent rounded-xl gap-2 p-3.5">
-                                    <div class="flex items-center flex-wrap gap-3.5">
-                                        <img alt="" class="size-8 shrink-0"
-                                            src="https://keenthemes.com/metronic/tailwind/dist/assets/media/brand-logos/equacoin.svg" />
-                                        <div class="flex flex-col">
-                                            <div class="flex items-center gap-1.5">
-                                                <a class="text-sm font-medium text-mono hover:text-primary"
-                                                    href="#">
-                                                    Equacoin
-                                                </a>
-                                                <a class="text-sm text-muted-foreground hover:text-primary"
-                                                    href="#">
-                                                    equacoin@cryptoemail.com
-                                                </a>
-                                            </div>
-                                            <span class="text-sm font-medium text-secondary-foreground">
-                                                Streamline cryptocurrency transactions securely and efficiently.
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-2 lg:gap-5">
-                                        <input class="kt-switch kt-switch-sm" type="checkbox" value="2" />
-                                        <div class="kt-btn kt-btn-icon kt-btn-ghost">
-                                            <i class="ki-filled ki-setting-2">
-                                            </i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="flex items-center justify-between flex-wrap border border-border dark:bg-secondary-transparent rounded-xl gap-2 p-3.5">
-                                    <div class="flex items-center flex-wrap gap-3.5">
-                                        <img alt="" class="size-8 shrink-0"
-                                            src="https://keenthemes.com/metronic/tailwind/dist/assets/media/brand-logos/evernote.svg" />
-                                        <div class="flex flex-col">
-                                            <div class="flex items-center gap-1.5">
-                                                <a class="text-sm font-medium text-mono hover:text-primary"
-                                                    href="#">
-                                                    Evernote
-                                                </a>
-                                                <a class="text-sm text-muted-foreground hover:text-primary"
-                                                    href="#">
-                                                    evernote@noteexample.com
-                                                </a>
-                                            </div>
-                                            <span class="text-sm font-medium text-secondary-foreground">
-                                                Streamline cryptocurrency transactions securely and efficiently.
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-2 lg:gap-5">
-                                        <input checked="" class="kt-switch kt-switch-sm" type="checkbox"
-                                            value="1" />
-                                        <div class="kt-btn kt-btn-icon kt-btn-ghost">
-                                            <i class="ki-filled ki-setting-2">
-                                            </i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="flex items-center justify-between flex-wrap border border-border dark:bg-secondary-transparent rounded-xl gap-2 p-3.5">
-                                    <div class="flex items-center flex-wrap gap-3.5">
-                                        <img alt="" class="size-8 shrink-0"
-                                            src="https://keenthemes.com/metronic/tailwind/dist/assets/media/brand-logos/inferno.svg" />
-                                        <div class="flex flex-col">
-                                            <div class="flex items-center gap-1.5">
-                                                <a class="text-sm font-medium text-mono hover:text-primary"
-                                                    href="#">
-                                                    Inferno
-                                                </a>
-                                                <a class="text-sm text-muted-foreground hover:text-primary"
-                                                    href="#">
-                                                    inferno@dataexample.com
-                                                </a>
-                                            </div>
-                                            <span class="text-sm font-medium text-secondary-foreground">
-                                                Robust email integration for data management.
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-2 lg:gap-5">
-                                        <input checked="" class="kt-switch kt-switch-sm" type="checkbox"
-                                            value="1" />
-                                        <div class="kt-btn kt-btn-icon kt-btn-ghost">
-                                            <i class="ki-filled ki-setting-2">
-                                            </i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="lg:col-span-1">
-                    <div class="kt-card h-full">
-                        <div class="kt-card-header">
-                            <h3 class="kt-card-title">
-                                Block List
-                            </h3>
-                        </div>
-                        <div class="kt-card-content flex flex-col gap-5">
-                            <div class="text-sm text-foreground">
-                                Users on the block list are unable to send chat requests or messages to you
-                                anymore, ever, or again
-                            </div>
-                            <div class="kt-input-group">
-                                <input class="kt-input" placeholder="Block new user" type="text" value="">
-                                <span class="kt-btn kt-btn-primary">
-                                    Add
-                                </span>
-                                </input>
-                            </div>
-                            <div class="flex flex-col gap-5">
-                                <div class="flex items-center justify-between gap-2.5">
-                                    <div class="flex items-center gap-2.5">
-                                        <div class="">
-                                            <img class="h-9 rounded-full"
-                                                src="{{ asset('') }}assets/landing/media/avatars/gray/1.png" />
-                                        </div>
-                                        <div class="flex flex-col gap-0.5">
-                                            <a class="flex items-center gap-1.5 leading-none font-medium text-sm text-mono hover:text-primary"
-                                                href="public-profile/teams.html">
-                                                Esther Howard
-                                            </a>
-                                            <span class="text-sm text-secondary-foreground">
-                                                6 commits
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-2.5">
-                                        <a class="kt-btn kt-btn-icon kt-btn-ghost" href="#">
-                                            <i class="ki-filled ki-trash">
-                                            </i>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between gap-2.5">
-                                    <div class="flex items-center gap-2.5">
-                                        <div class="">
-                                            <img class="h-9 rounded-full"
-                                                src="{{ asset('') }}assets/landing/media/avatars/gray/2.png" />
-                                        </div>
-                                        <div class="flex flex-col gap-0.5">
-                                            <a class="flex items-center gap-1.5 leading-none font-medium text-sm text-mono hover:text-primary"
-                                                href="public-profile/teams.html">
-                                                Tyler Hero
-                                            </a>
-                                            <span class="text-sm text-secondary-foreground">
-                                                29 commits
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-2.5">
-                                        <a class="kt-btn kt-btn-icon kt-btn-ghost" href="#">
-                                            <i class="ki-filled ki-trash">
-                                            </i>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between gap-2.5">
-                                    <div class="flex items-center gap-2.5">
-                                        <div class="">
-                                            <img class="h-9 rounded-full"
-                                                src="{{ asset('') }}assets/landing/media/avatars/gray/3.png" />
-                                        </div>
-                                        <div class="flex flex-col gap-0.5">
-                                            <a class="flex items-center gap-1.5 leading-none font-medium text-sm text-mono hover:text-primary"
-                                                href="public-profile/teams.html">
-                                                Arlene McCoy
-                                            </a>
-                                            <span class="text-sm text-secondary-foreground">
-                                                34 commits
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-2.5">
-                                        <a class="kt-btn kt-btn-icon kt-btn-ghost" href="#">
-                                            <i class="ki-filled ki-trash">
-                                            </i>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between gap-2.5">
-                                    <div class="flex items-center gap-2.5">
-                                        <div class="">
-                                            <img class="h-9 rounded-full"
-                                                src="{{ asset('') }}assets/landing/media/avatars/gray/4.png" />
-                                        </div>
-                                        <div class="flex flex-col gap-0.5">
-                                            <a class="flex items-center gap-1.5 leading-none font-medium text-sm text-mono hover:text-primary"
-                                                href="public-profile/teams.html">
-                                                Cody Fisher
-                                            </a>
-                                            <span class="text-sm text-secondary-foreground">
-                                                1 commit
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-2.5">
-                                        <a class="kt-btn kt-btn-icon kt-btn-ghost" href="#">
-                                            <i class="ki-filled ki-trash">
-                                            </i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end: grid -->
-            <!-- begin: grid -->
-            <div class="grid lg:grid-cols-3 gap-5 lg:gap-7.5 items-stretch">
-                <div class="lg:col-span-2">
-                    <div class="grid">
-                        <div class="kt-card kt-card-grid h-full min-w-full">
-                            <div class="kt-card-header">
-                                <h3 class="kt-card-title">
-                                    Teams
-                                </h3>
-                                <div class="kt-input max-w-48">
-                                    <i class="ki-filled ki-magnifier">
-                                    </i>
-                                    <input data-kt-datatable-search="#kt_datatable_1" placeholder="Search Teams"
-                                        type="text">
-                                    </input>
-                                </div>
-                            </div>
-                            <div class="kt-card-table">
-                                <div class="grid" data-kt-datatable="true" data-kt-datatable-page-size="5"
-                                    id="teams_datatable">
-                                    <div class="kt-scrollable-x-auto">
-                                        <table class="kt-table kt-table-border table-fixed" data-kt-datatable-table="true"
-                                            id="kt_datatable_1">
-                                            <thead>
-                                                <tr>
-                                                    <th class="w-[50px]">
-                                                        <input class="kt-checkbox kt-checkbox-sm"
-                                                            data-kt-datatable-check="true" type="checkbox">
-                                                        </input>
-                                                    </th>
-                                                    <th class="w-[280px]">
-                                                        <span class="kt-table-col">
-                                                            <span class="kt-table-col-label">
-                                                                Team
-                                                            </span>
-                                                            <span class="kt-table-col-sort">
-                                                            </span>
-                                                        </span>
-                                                    </th>
-                                                    <th class="w-[125px]">
-                                                        <span class="kt-table-col">
-                                                            <span class="kt-table-col-label">
-                                                                Rating
-                                                            </span>
-                                                            <span class="kt-table-col-sort">
-                                                            </span>
-                                                        </span>
-                                                    </th>
-                                                    <th class="w-[135px]">
-                                                        <span class="kt-table-col">
-                                                            <span class="kt-table-col-label">
-                                                                Last Modified
-                                                            </span>
-                                                            <span class="kt-table-col-sort">
-                                                            </span>
-                                                        </span>
-                                                    </th>
-                                                    <th class="w-[125px]">
-                                                        <span class="kt-table-col">
-                                                            <span class="kt-table-col-label">
-                                                                Members
-                                                            </span>
-                                                            <span class="kt-table-col-sort">
-                                                            </span>
-                                                        </span>
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <input class="kt-checkbox kt-checkbox-sm"
-                                                            data-kt-datatable-row-check="true" type="checkbox"
-                                                            value="1">
-                                                        </input>
-                                                    </td>
-                                                    <td>
-                                                        <div class="flex flex-col gap-2">
-                                                            <a class="leading-none font-medium text-sm text-mono hover:text-primary"
-                                                                href="#">
-                                                                Product Management
-                                                            </a>
-                                                            <span
-                                                                class="text-2sm text-secondary-foreground font-normal leading-3">
-                                                                Product development &amp; lifecycle
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="kt-rating">
-                                                            <div class="kt-rating-label checked">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                            <div class="kt-rating-label checked">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                            <div class="kt-rating-label checked">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                            <div class="kt-rating-label checked">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                            <div class="kt-rating-label checked">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        21 Oct, 2024
-                                                    </td>
-                                                    <td>
-                                                        <div class="flex -space-x-2">
-                                                            <div class="flex">
-                                                                <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-background size-[30px]"
-                                                                    src="{{ asset('') }}assets/landing/media/avatars/300-4.png" />
-                                                            </div>
-                                                            <div class="flex">
-                                                                <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-background size-[30px]"
-                                                                    src="{{ asset('') }}assets/landing/media/avatars/300-1.png" />
-                                                            </div>
-                                                            <div class="flex">
-                                                                <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-background size-[30px]"
-                                                                    src="{{ asset('') }}assets/landing/media/avatars/300-2.png" />
-                                                            </div>
-                                                            <div class="flex">
-                                                                <span
-                                                                    class="relative inline-flex items-center justify-center shrink-0 rounded-full ring-1 font-semibold leading-none text-2xs size-[30px] text-white ring-background bg-green-500">
-                                                                    +10
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <input class="kt-checkbox kt-checkbox-sm"
-                                                            data-kt-datatable-row-check="true" type="checkbox"
-                                                            value="2">
-                                                        </input>
-                                                    </td>
-                                                    <td>
-                                                        <div class="flex flex-col gap-2">
-                                                            <a class="leading-none font-medium text-sm text-mono hover:text-primary"
-                                                                href="#">
-                                                                Marketing Team
-                                                            </a>
-                                                            <span
-                                                                class="text-2sm text-secondary-foreground font-normal leading-3">
-                                                                Campaigns &amp; market analysis
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="kt-rating">
-                                                            <div class="kt-rating-label checked">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                            <div class="kt-rating-label checked">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                            <div class="kt-rating-label checked">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                            <div class="kt-rating-label indeterminate">
-                                                                <i class="kt-rating-on ki-solid ki-star text-base leading-none"
-                                                                    style="width: 50.0%">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                            <div class="kt-rating-label">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        15 Oct, 2024
-                                                    </td>
-                                                    <td>
-                                                        <div class="flex -space-x-2">
-                                                            <div class="flex">
-                                                                <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-background size-[30px]"
-                                                                    src="{{ asset('') }}assets/landing/media/avatars/300-4.png" />
-                                                            </div>
-                                                            <div class="flex">
-                                                                <span
-                                                                    class="hover:z-5 relative inline-flex items-center justify-center shrink-0 rounded-full ring-1 font-semibold leading-none text-2xs size-[30px] uppercase text-white ring-background bg-yellow-500">
-                                                                    g
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <input class="kt-checkbox kt-checkbox-sm"
-                                                            data-kt-datatable-row-check="true" type="checkbox"
-                                                            value="3">
-                                                        </input>
-                                                    </td>
-                                                    <td>
-                                                        <div class="flex flex-col gap-2">
-                                                            <a class="leading-none font-medium text-sm text-mono hover:text-primary"
-                                                                href="#">
-                                                                HR Department
-                                                            </a>
-                                                            <span
-                                                                class="text-2sm text-secondary-foreground font-normal leading-3">
-                                                                Talent acquisition, employee welfare
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="kt-rating">
-                                                            <div class="kt-rating-label checked">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                            <div class="kt-rating-label checked">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                            <div class="kt-rating-label checked">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                            <div class="kt-rating-label checked">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                            <div class="kt-rating-label checked">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        10 Oct, 2024
-                                                    </td>
-                                                    <td>
-                                                        <div class="flex -space-x-2">
-                                                            <div class="flex">
-                                                                <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-background size-[30px]"
-                                                                    src="{{ asset('') }}assets/landing/media/avatars/300-4.png" />
-                                                            </div>
-                                                            <div class="flex">
-                                                                <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-background size-[30px]"
-                                                                    src="{{ asset('') }}assets/landing/media/avatars/300-1.png" />
-                                                            </div>
-                                                            <div class="flex">
-                                                                <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-background size-[30px]"
-                                                                    src="{{ asset('') }}assets/landing/media/avatars/300-2.png" />
-                                                            </div>
-                                                            <div class="flex">
-                                                                <span
-                                                                    class="relative inline-flex items-center justify-center shrink-0 rounded-full ring-1 font-semibold leading-none text-2xs size-[30px] text-white ring-background bg-violet-500">
-                                                                    +A
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <input class="kt-checkbox kt-checkbox-sm"
-                                                            data-kt-datatable-row-check="true" type="checkbox"
-                                                            value="4">
-                                                        </input>
-                                                    </td>
-                                                    <td>
-                                                        <div class="flex flex-col gap-2">
-                                                            <a class="leading-none font-medium text-sm text-mono hover:text-primary"
-                                                                href="#">
-                                                                Sales Division
-                                                            </a>
-                                                            <span
-                                                                class="text-2sm text-secondary-foreground font-normal leading-3">
-                                                                Customer relations, sales strategy
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="kt-rating">
-                                                            <div class="kt-rating-label checked">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                            <div class="kt-rating-label checked">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                            <div class="kt-rating-label checked">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                            <div class="kt-rating-label checked">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                            <div class="kt-rating-label checked">
-                                                                <i
-                                                                    class="kt-rating-on ki-solid ki-star text-base leading-none">
-                                                                </i>
-                                                                <i
-                                                                    class="kt-rating-off ki-outline ki-star text-base leading-none">
-                                                                </i>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        05 Oct, 2024
-                                                    </td>
-                                                    <td>
-                                                        <div class="flex -space-x-2">
-                                                            <div class="flex">
-                                                                <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-background size-[30px]"
-                                                                    src="{{ asset('') }}assets/landing/media/avatars/300-24.png" />
-                                                            </div>
-                                                            <div class="flex">
-                                                                <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-background size-[30px]"
-                                                                    src="{{ asset('') }}assets/landing/media/avatars/300-7.png" />
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div
-                                        class="kt-card-footer justify-center md:justify-between flex-col md:flex-row gap-5 text-secondary-foreground text-sm font-medium">
-                                        <div class="flex items-center gap-2 order-2 md:order-1">
-                                            Show
-                                            <select class="kt-select w-16" data-kt-datatable-size="true"
-                                                data-kt-select="" name="perpage">
-                                            </select>
-                                            per page
-                                        </div>
-                                        <div class="flex items-center gap-4 order-1 md:order-2">
-                                            <span data-kt-datatable-info="true">
-                                            </span>
-                                            <div class="kt-datatable-pagination" data-kt-datatable-pagination="true">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="lg:col-span-1">
-                    <div class="kt-card h-full">
-                        <div class="kt-card-header">
-                            <h3 class="kt-card-title">
-                                Manage your Data
-                            </h3>
-                        </div>
-                        <div class="kt-card-group flex items-center justify-between py-4 gap-2.5">
-                            <div class="flex flex-col justify-center gap-1.5">
-                                <span class="leading-none font-medium text-sm text-mono">
-                                    Download your data
-                                </span>
-                                <span class="text-sm text-secondary-foreground">
-                                    Add an extra layer of security.
-                                </span>
-                            </div>
-                            <a class="kt-btn kt-btn-sm kt-btn-outline" href="#">
-                                Start
-                            </a>
-                        </div>
-                        <div class="kt-card-group flex items-center justify-between py-4 gap-2.5">
-                            <div class="flex flex-col justify-center gap-1.5">
-                                <span class="leading-none font-medium text-sm text-mono">
-                                    Delete all of your data
-                                </span>
-                                <span class="text-sm text-secondary-foreground">
-                                    Instantly sign out all services.
-                                </span>
-                            </div>
-                            <a class="kt-btn kt-btn-sm kt-btn-outline" href="#">
-                                Delete
-                            </a>
-                        </div>
-                        <div class="kt-card-group flex items-center justify-between py-4 gap-2.5">
-                            <div class="flex flex-col justify-center gap-1.5">
-                                <span class="leading-none font-medium text-sm text-mono">
-                                    Auto Data Purge
-                                </span>
-                                <span class="text-sm text-secondary-foreground">
-                                    Toggle automatic deletion of old data.
-                                </span>
-                            </div>
-                            <input class="kt-switch kt-switch-sm" name="param" type="checkbox" value="1">
-                            </input>
-                        </div>
-                        <div class="kt-card-group flex items-center justify-between py-4 gap-2.5">
-                            <div class="flex flex-col justify-center gap-1.5">
-                                <span class="leading-none font-medium text-sm text-mono">
-                                    Export your data
-                                </span>
-                                <span class="text-sm text-secondary-foreground">
-                                    Download a copy of your data
-                                </span>
-                            </div>
-                            <button class="kt-btn kt-btn-icon kt-btn-ghost">
-                                <i class="ki-filled ki-exit-down">
-                                </i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end: grid -->
         </div>
+
+        <!-- =========================================
+             4. BUKU TERBARU
+        ========================================== -->
+        <div class="flex flex-col gap-4 mb-12">
+            <div class="flex items-center justify-between">
+                <div class="flex flex-wrap items-center gap-5 justify-between">
+                    <h3 class="text-2xl text-mono font-semibold">
+                        Buku Terbaru
+                    </h3>
+                </div>
+                <a href="#" class="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+                    Lihat semua <i class="ki-filled ki-arrow-right text-xs"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
+                @php
+                    $similar = [
+                        [
+                            'title' => 'Algoritma & Struktur Data',
+                            'author' => 'Budi Santoso',
+                            'price_min' => 'Rp40.000',
+                            'price_max' => 'Rp110.000',
+                        ],
+                        [
+                            'title' => 'Pemrograman Python untuk Pemula',
+                            'author' => 'Rina Marlina, dkk',
+                            'price_min' => 'Rp35.000',
+                            'price_max' => 'Rp95.000',
+                        ],
+                        [
+                            'title' => 'Jaringan Komputer Terapan',
+                            'author' => 'Ahmad Fauzi',
+                            'price_min' => 'Rp50.000',
+                            'price_max' => 'Rp130.000',
+                        ],
+                        [
+                            'title' => 'Kecerdasan Buatan Modern',
+                            'author' => 'Dr. Hendra Wijaya',
+                            'price_min' => 'Rp55.000',
+                            'price_max' => 'Rp145.000',
+                        ],
+                        [
+                            'title' => 'Kecerdasan Buatan Modern',
+                            'author' => 'Dr. Hendra Wijaya',
+                            'price_min' => 'Rp55.000',
+                            'price_max' => 'Rp145.000',
+                        ],
+                    ];
+                @endphp
+
+                @foreach ($similar as $book)
+                    <div class="kt-card">
+                        <div class="kt-card-content flex flex-col justify-between p-2.5 gap-3">
+                            <div>
+                                {{-- Gambar --}}
+                                <div class="kt-card relative bg-accent/50 w-full mb-3 shadow-none overflow-hidden"
+                                    data-kt-context-menu="true" data-kt-context-menu-trigger="true">
+                                    <img alt="" class="w-full cursor-pointer object-cover block"
+                                        style="aspect-ratio: 1 / 1.41;"
+                                        data-kt-drawer-toggle="#drawers_shop_product_details"
+                                        src="https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg" />
+                                    <div class="kt-context-menu w-56 hidden" data-kt-context-menu-menu="true">
+                                        <ul class="kt-context-menu-sub">
+                                            <li><button class="kt-context-menu-link"
+                                                    data-kt-context-menu-dismiss="true"
+                                                    data-kt-drawer-toggle="#drawers_shop_product_details"
+                                                    type="button">Quick View</button></li>
+                                            <li><button class="kt-context-menu-link"
+                                                    data-kt-context-menu-dismiss="true"
+                                                    data-kt-drawer-toggle="#drawers_shop_cart" type="button">Add to
+                                                    Cart</button></li>
+                                            <li class="kt-context-menu-separator"></li>
+                                            <li><button class="kt-context-menu-link"
+                                                    data-kt-context-menu-dismiss="true" type="button">Add to
+                                                    Wishlist</button></li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                {{-- Judul 1 baris + elipsis --}}
+                                <a class="hover:text-primary text-sm font-medium text-mono px-2.5 block truncate"
+                                    data-kt-drawer-toggle="#drawers_shop_product_details"
+                                    title="Cloud Shift Lightweight Runner Pro Edition" href="#">
+                                    Cloud Shift Lightweight Runner Pro Edition
+                                </a>
+
+                                {{-- Penulis --}}
+                                <p class="text-xs text-muted-foreground px-2.5 mt-0.5 truncate">
+                                    Penulis 0/13
+                                </p>
+                            </div>
+
+                            {{-- Harga + Tombol --}}
+                            <div class="flex flex-col gap-2 px-2.5 pb-1">
+                                {{-- Harga --}}
+                                <p class="text-sm font-semibold text-mono">
+                                    Rp10.000
+                                    <span class="text-muted-foreground font-normal">-</span>
+                                    Rp15.000
+                                </p>
+
+                                {{-- Tombol --}}
+                                <div class="flex items-center gap-1.5">
+                                    <a href="#" class="kt-btn kt-btn-outline kt-btn-sm flex-1"
+                                        data-kt-drawer-toggle="#drawers_shop_product_details">
+                                        <i class="ki-filled ki-eye"></i>
+                                        Detail
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- =========================================
+             5. BUKU TERLARIS
+        ========================================== -->
+        <div class="flex flex-col gap-4 mb-12">
+            <div class="flex items-center justify-between">
+                <div class="flex flex-wrap items-center gap-5 justify-between">
+                    <h3 class="text-2xl text-mono font-semibold">
+                        Buku Terlaris
+                    </h3>
+                </div>
+                <a href="#" class="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+                    Lihat semua <i class="ki-filled ki-arrow-right text-xs"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
+                @php
+                    $similar = [
+                        [
+                            'title' => 'Algoritma & Struktur Data',
+                            'author' => 'Budi Santoso',
+                            'price_min' => 'Rp40.000',
+                            'price_max' => 'Rp110.000',
+                        ],
+                        [
+                            'title' => 'Pemrograman Python untuk Pemula',
+                            'author' => 'Rina Marlina, dkk',
+                            'price_min' => 'Rp35.000',
+                            'price_max' => 'Rp95.000',
+                        ],
+                        [
+                            'title' => 'Jaringan Komputer Terapan',
+                            'author' => 'Ahmad Fauzi',
+                            'price_min' => 'Rp50.000',
+                            'price_max' => 'Rp130.000',
+                        ],
+                        [
+                            'title' => 'Kecerdasan Buatan Modern',
+                            'author' => 'Dr. Hendra Wijaya',
+                            'price_min' => 'Rp55.000',
+                            'price_max' => 'Rp145.000',
+                        ],
+                        [
+                            'title' => 'Kecerdasan Buatan Modern',
+                            'author' => 'Dr. Hendra Wijaya',
+                            'price_min' => 'Rp55.000',
+                            'price_max' => 'Rp145.000',
+                        ],
+                    ];
+                @endphp
+
+                @foreach ($similar as $book)
+                    <div class="kt-card">
+                        <div class="kt-card-content flex flex-col justify-between p-2.5 gap-3">
+                            <div>
+                                {{-- Gambar --}}
+                                <div class="kt-card relative bg-accent/50 w-full mb-3 shadow-none overflow-hidden"
+                                    data-kt-context-menu="true" data-kt-context-menu-trigger="true">
+                                    <img alt="" class="w-full cursor-pointer object-cover block"
+                                        style="aspect-ratio: 1 / 1.41;"
+                                        data-kt-drawer-toggle="#drawers_shop_product_details"
+                                        src="https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg" />
+                                    <div class="kt-context-menu w-56 hidden" data-kt-context-menu-menu="true">
+                                        <ul class="kt-context-menu-sub">
+                                            <li><button class="kt-context-menu-link"
+                                                    data-kt-context-menu-dismiss="true"
+                                                    data-kt-drawer-toggle="#drawers_shop_product_details"
+                                                    type="button">Quick View</button></li>
+                                            <li><button class="kt-context-menu-link"
+                                                    data-kt-context-menu-dismiss="true"
+                                                    data-kt-drawer-toggle="#drawers_shop_cart" type="button">Add to
+                                                    Cart</button></li>
+                                            <li class="kt-context-menu-separator"></li>
+                                            <li><button class="kt-context-menu-link"
+                                                    data-kt-context-menu-dismiss="true" type="button">Add to
+                                                    Wishlist</button></li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                {{-- Judul 1 baris + elipsis --}}
+                                <a class="hover:text-primary text-sm font-medium text-mono px-2.5 block truncate"
+                                    data-kt-drawer-toggle="#drawers_shop_product_details"
+                                    title="Cloud Shift Lightweight Runner Pro Edition" href="#">
+                                    Cloud Shift Lightweight Runner Pro Edition
+                                </a>
+
+                                {{-- Penulis --}}
+                                <p class="text-xs text-muted-foreground px-2.5 mt-0.5 truncate">
+                                    Penulis 0/13
+                                </p>
+                            </div>
+
+                            {{-- Harga + Tombol --}}
+                            <div class="flex flex-col gap-2 px-2.5 pb-1">
+                                {{-- Harga --}}
+                                <p class="text-sm font-semibold text-mono">
+                                    Rp10.000
+                                    <span class="text-muted-foreground font-normal">-</span>
+                                    Rp15.000
+                                </p>
+
+                                {{-- Tombol --}}
+                                <div class="flex items-center gap-1.5">
+                                    <a href="#" class="kt-btn kt-btn-outline kt-btn-sm flex-1"
+                                        data-kt-drawer-toggle="#drawers_shop_product_details">
+                                        <i class="ki-filled ki-eye"></i>
+                                        Detail
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
     </div>
 @endsection

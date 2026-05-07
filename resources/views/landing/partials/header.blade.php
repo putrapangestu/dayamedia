@@ -79,7 +79,7 @@
                                     </div>
                                     <div class="kt-menu-item">
                                         <a class="kt-menu-link"
-                                            href={{ route('collaboration') }}"
+                                            href="{{ route('collaboration') }}"
                                             tabindex="0">
                                             <span class="kt-menu-title grow-0">
                                                 Buku Kolaborasi
