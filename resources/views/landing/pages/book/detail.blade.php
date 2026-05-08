@@ -1,870 +1,458 @@
-
 @extends('landing.layouts.app')
 
-@if((config('app.env') ?? config('app.env')) === 'production')
-@push('meta')
-    <meta name="citation_title" content="{{ $book->title }}">
-    @if(isset($authors) && $authors->count() > 0)
-        @foreach($authors as $author)
-            @if(!empty($author['name']))
-                <meta name="citation_author" content="{{ $author['name'] }}">
-            @endif
-        @endforeach
-    @endif
-    @php
-        $editorName = $book->editor && $book->editor !== '-' ? $book->editor : ($book->bookEditors?->user?->full_name ?? null);
-    @endphp
-    @if($editorName)
-        <meta name="citation_editor" content="{{ $editorName }}">
-    @endif
-    <meta name="robots" content="index, follow">
-    @if($book->publisher)
-        <meta name="citation_publisher" content="{{ $book->publisher }}">
-    @else
-        <meta name="citation_publisher" content="{{ config('app.name') }}">
-    @endif
-    @if($book->year_published)
-        <meta name="citation_publication_date" content="{{ $book->year_published }}">
-    @endif
-    @if($book->code_isbn)
-        <meta name="citation_isbn" content="{{ $book->code_isbn }}">
-    @endif
-    @if($book->language)
-        <meta name="citation_language" content="{{ $book->language }}">
-    @endif
-    @php
-        $abstract = \Illuminate\Support\Str::limit(trim(strip_tags($book->description)), 500);
-    @endphp
-    @if(!empty($abstract))
-        <meta name="citation_abstract" content="{{ $abstract }}">
-    @endif
-    <meta name="citation_abstract_html_url" content="{{ url()->current() }}">
-    @if($book->half_content)
-        <meta name="citation_pdf_url" content="{{ asset('storage/' . $book->half_content) }}">
-    @endif
-    <link rel="canonical" href="{{ url()->current() }}">
-
-    <meta name="DC.title" content="{{ $book->title }}">
-    @if(isset($authors) && $authors->count() > 0)
-        @foreach($authors as $author)
-            @if(!empty($author['name']))
-                <meta name="DC.creator" content="{{ $author['name'] }}">
-            @endif
-        @endforeach
-    @endif
-    @if($editorName)
-        <meta name="DC.contributor" content="{{ $editorName }}">
-    @endif
-    <meta name="DC.publisher" content="{{ $book->publisher ?? config('app.name') }}">
-    @if($book->year_published)
-        <meta name="DC.date" content="{{ $book->year_published }}">
-    @endif
-    @if($book->code_isbn)
-        <meta name="DC.identifier" content="ISBN:{{ $book->code_isbn }}">
-    @endif
-    @if($book->language)
-        <meta name="DC.language" content="{{ $book->language }}">
-    @endif
-    @php
-        $authorList = [];
-        if(isset($authors)) {
-            foreach ($authors as $a) {
-                if (!empty($a['name'])) {
-                    $authorList[] = ['@type' => 'Person', 'name' => $a['name']];
-                }
-            }
-        }
-        $bookSchema = [
-            '@context' => 'https://schema.org',
-            '@type' => 'Book',
-            'name' => $book->title,
-            'author' => $authorList,
-            'editor' => $editorName ? ['@type' => 'Person', 'name' => $editorName] : null,
-            'isbn' => $book->code_isbn ?: null,
-            'datePublished' => $book->year_published ?: null,
-            'publisher' => $book->publisher ?: config('app.name'),
-            'inLanguage' => $book->language ?: null,
-            'image' => $book->cover ? asset('storage/' . $book->cover) : null,
-            'url' => url()->current(),
-            'description' => $abstract ?: null,
-        ];
-        $bookSchema = array_filter($bookSchema, function ($v) { return $v !== null; });
-    @endphp
-    <script type="application/ld+json">{!! json_encode($bookSchema, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) !!}</script>
-@endpush
-@endif
-
-@push('meta')
-    @php
-        $ogTitle = $book->title;
-        $ogDescription = \Illuminate\Support\Str::limit(strip_tags($book->description), 180);
-        $ogImage = $book->cover ? asset('storage/' . $book->cover) : asset('assets/azzia-logo.png');
-        $ogUrl = url()->current();
-    @endphp
-    <meta name="description" content="{{ $ogDescription }}">
-    <meta property="og:title" content="{{ $ogTitle }}">
-    <meta property="og:description" content="{{ $ogDescription }}">
-    <meta property="og:image" content="{{ $ogImage }}">
-    <meta property="og:url" content="{{ $ogUrl }}">
-    <meta property="og:type" content="book">
-    <meta property="og:site_name" content="{{ config('app.name') }}">
-    @if(isset($authors) && $authors->count() > 0)
-        @foreach($authors as $author)
-            @if(!empty($author['name']))
-                <meta property="book:author" content="{{ $author['name'] }}">
-            @endif
-        @endforeach
-    @endif
-    @if($book->code_isbn)
-        <meta property="book:isbn" content="{{ $book->code_isbn }}">
-    @endif
-    @if($book->year_published)
-        <meta property="book:release_date" content="{{ $book->year_published }}-01-01">
-    @endif
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ $ogTitle }}">
-    <meta name="twitter:description" content="{{ $ogDescription }}">
-    <meta name="twitter:image" content="{{ $ogImage }}">
-@endpush
-
-@push('css')
-    <style>
-        #pdf-container {
-            background: #525659;
-        }
-
-        .pdf-page-canvas {
-            background: white;
-        }
-
-        .book-info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .info-item {
-            background: #f8f9fa;
-            padding: 0.75rem;
-            border-radius: 0.75rem;
-            border: 1px solid #e9ecef;
-            transition: all 0.2s ease;
-        }
-
-        .info-item:hover {
-            background: #fff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            border-color: var(--bs-primary);
-        }
-
-        .info-label {
-            font-size: 0.75rem;
-            color: #6c757d;
-            margin-bottom: 0.25rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .info-value {
-            font-weight: 700;
-            color: #2a3547;
-            font-size: 0.875rem;
-            margin-bottom: 0;
-        }
-
-        .price-card {
-            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
-            border: 2px solid #e9ecef;
-            border-radius: 1rem;
-            padding: 1.25rem;
-            height: 100%;
-            transition: all 0.3s ease;
-        }
-
-        .price-card.active {
-            border-color: var(--bs-primary);
-            background: rgba(var(--bs-primary-rgb), 0.03);
-        }
-
-        .author-card {
-            border: 1px solid #e9ecef;
-            border-radius: 0.75rem;
-            padding: 0.75rem;
-            transition: all 0.2s ease;
-            background: #fff;
-        }
-
-        .author-card:hover {
-            border-color: var(--bs-primary);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        .category-badge {
-            background: rgba(var(--bs-primary-rgb), 0.1);
-            color: var(--bs-primary);
-            padding: 0.4rem 0.8rem;
-            border-radius: 2rem;
-            font-weight: 600;
-            font-size: 0.8rem;
-            display: inline-block;
-        }
-    </style>
-@endpush
-
 @section('content')
-<div class="main-wrapper overflow-hidden">
-<div class="container">
-          <div class="shop-detail">
-            <div class="card shadow-none border">
-              <div class="card-body p-4">
-                <div class="row">
-                        <div class="col-lg-4 d-flex align-items-stretch">
-                            <img class="img-fluid rounded-xl" src="{{ $book->cover ? asset('storage/' . $book->cover) : 'https://images.unsplash.com/photo-1557752281-0dcc70763e98?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }}" alt="furniture_img1" style="max-height: 500px; object-fit: cover;">
-                        </div>
-                        <div class="col-lg-8 d-flex flex-column align-items-stretch">
-                            <div class="mb-2">
-                                <span class="category-badge mb-3">
-                                    <i class="ti ti-category-2 me-1"></i>{{ $book->category?->name }}
-                                </span>
-                                <h2 class="fw-bolder text-dark mb-1">{{ $book->title }}</h2>
-                                <p class="text-muted fs-3 mb-0">ISBN: <span class="fw-semibold">{{ $book->code_isbn ?? "-" }}</span></p>
-                            </div>
+<div class="kt-container-fixed py-6">
+    <div class="flex flex-col gap-6">
 
-                            <div class="table-responsive mt-4">
-                                <table class="table table-bordered align-middle mb-0">
-                                    <tbody>
-                                        <tr>
-                                            <td class="bg-light fw-bolder text-dark" style="width: 30%;"><i class="ti ti-edit me-2 text-primary"></i>Penulis</td>
-                                            <td class="text-dark">
-                                                {{ $authors->take(3)->map(function($author) { return $author['name']; })->implode(', ') }}
-                                                @if($authors->count() > 3)
-                                                    <a href="#" class="ms-2 text-primary fs-2 fw-bold" data-bs-toggle="modal" data-bs-target="#bs-modal-author">Lihat Semua</a>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="bg-light fw-bolder text-dark"><i class="ti ti-user-check me-2 text-primary"></i>Editor</td>
-                                            <td class="text-dark">{{ $book->editor && $book->editor !== '-' ? $book->editor : ($book->bookEditors?->user?->full_name ?? '-') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="bg-light fw-bolder text-dark"><i class="ti ti-barcode me-2 text-primary"></i>ISBN</td>
-                                            <td class="text-dark">{{ $book->code_isbn ?? "-" }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="bg-light fw-bolder text-dark"><i class="ti ti-world me-2 text-primary"></i>Bahasa</td>
-                                            <td class="text-dark">{{ $book->language ?? "-" }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="bg-light fw-bolder text-dark"><i class="ti ti-calendar me-2 text-primary"></i>Tahun</td>
-                                            <td class="text-dark">{{ $book->year_published ?? "-" }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="bg-light fw-bolder text-dark"><i class="ti ti-building-community me-2 text-primary"></i>Penerbit</td>
-                                            <td class="text-dark">{{ $book->publisher ?? "-" }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="bg-light fw-bolder text-dark"><i class="ti ti-link me-2 text-primary"></i>Website</td>
-                                            <td class="text-dark">
-                                                @if($book->website)
-                                                    <a href="{{ $book->website }}" target="_blank" class="text-primary text-decoration-underline text-truncate d-inline-block" style="max-width: 100%;">{{ $book->website }}</a>
-                                                @else
-                                                    -
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="bg-light fw-bolder text-dark"><i class="ti ti-weight me-2 text-primary"></i>Berat Buku</td>
-                                            <td class="text-dark">{{ number_format($book->weight ?? 0, 0, ',', '.') }} Gram</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="bg-light fw-bolder text-dark"><i class="ti ti-file-description me-2 text-primary"></i>Halaman</td>
-                                            <td class="text-dark">{{ number_format($book->pages ?? 0, 0, ',', '.') }} Halaman</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="bg-light fw-bolder text-dark"><i class="ti ti-key me-2 text-primary"></i>Kata Kunci</td>
-                                            <td class="text-dark">{{ $book->category?->name ?? "-" }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <hr class="my-4 opacity-50">
-
-                            <div class="row g-4 mb-4">
-                                <div class="col-12 col-md-4">
-                                    <div class="price-card {{ $book->price_physical > 0 ? 'active' : '' }}">
-                                        <div class="d-flex align-items-center gap-2 mb-2">
-                                            <i class="ti ti-package fs-5 text-primary"></i>
-                                            <span class="fs-2 fw-semibold text-uppercase text-muted">Buku Cetak</span>
-                                        </div>
-                                        <h3 class="text-primary fw-bolder mb-0">Rp.{{ number_format($book->price_physical, 0, ',', '.') }}</h3>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <div class="price-card {{ $book->price_digital > 0 ? 'active' : '' }}">
-                                        <div class="d-flex align-items-center gap-2 mb-2">
-                                            <i class="ti ti-device-tablet fs-5 text-primary"></i>
-                                            <span class="fs-2 fw-semibold text-uppercase text-muted">E-Book</span>
-                                        </div>
-                                        <h3 class="text-primary fw-bolder mb-0">Rp.{{ number_format($book->price_digital, 0, ',', '.') }}</h3>
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-                            <div class="row">
-                              <div class="col-12">
-                                <h5 class="fw-bolder mb-3">
-                                    <i class="ti ti-shopping-cart me-1 text-primary"></i> Transaksi
-                                </h5>
-                                <div class="d-flex flex-column flex-md-row gap-3 align-items-start align-items-md-center mb-4">
-                                  <!-- Radio Button Group -->
-                                  <div class="btn-group" role="group" aria-label="Product type selection">
-                                    <input type="radio" class="btn-check" name="productType" id="ebook" checked autocomplete="off">
-                                    <label class="btn btn-outline-primary px-4 py-2" for="ebook">
-                                      <i class="ti ti-device-tablet me-1"></i> E-Book
-                                    </label>
-
-                                    <input type="radio" class="btn-check" name="productType" id="preorder" autocomplete="off">
-                                    <label class="btn btn-outline-primary px-4 py-2" for="preorder">
-                                      <i class="ti ti-package me-1"></i> Pre-Order
-                                    </label>
-                                  </div>
-
-                                  <!-- Quantity Counter -->
-                                  <div class="d-flex align-items-center bg-light rounded-pill p-1 border">
-                                    <button type="button" class="btn btn-white rounded-circle shadow-none p-2 border-0" id="decreaseQty" style="width: 36px; height: 36px;">
-                                      <i class="ti ti-minus fs-3"></i>
-                                    </button>
-                                    <input type="number" value="1" min="1" id="quantity" class="form-control text-center fw-bolder bg-transparent border-0 px-2" style="max-width: 60px;" readonly />
-                                    <button type="button" class="btn btn-white rounded-circle shadow-none p-2 border-0" id="increaseQty" style="width: 36px; height: 36px;">
-                                      <i class="ti ti-plus fs-3"></i>
-                                    </button>
-                                  </div>
-                                </div>
-
-                                <!-- Action Buttons -->
-                                <div class="d-flex flex-wrap gap-3 mt-2">
-                                  @php
-                                    $hasPurchased = auth()->check() ? \App\Models\Transaction::where('user_id', auth()->id())
-                                        ->where('status', 'paid')
-                                        ->whereHas('details', function ($query) use ($book) {
-                                            $query->where('book_id', $book->id);
-                                        })
-                                        ->exists() : false;
-                                  @endphp
-
-                                  @if($hasPurchased)
-                                    <a href="{{ route('book.read', $book->slug) }}" class="btn btn-success btn-lg px-5 rounded-pill shadow-sm">
-                                      <i class="ti ti-book-open me-2 fs-5"></i> Baca E-Book Sekarang
-                                    </a>
-                                  @else
-                                    <button type="button" class="btn btn-outline-primary btn-lg px-4 rounded-pill flex-grow-1 flex-md-grow-0" id="add-to-cart-btn" data-book-id="{{ $book->id }}">
-                                      <i class="ti ti-shopping-cart me-2 fs-5"></i> Keranjang
-                                    </button>
-                                    <button type="button" class="btn btn-primary btn-lg px-5 rounded-pill flex-grow-1 flex-md-grow-0 shadow-sm" id="buy-now-btn" data-book-id="{{ $book->id }}">
-                                      <i class="ti ti-credit-card me-2 fs-5"></i> Beli Sekarang
-                                    </button>
-                                  @endif
-                                </div>
-                              </div>
-                            </div>
-                        </div>
-                    </div>
-              </div>
-            </div>
-            <div class="card shadow-none border mt-3">
-              <div class="card-body p-4">
-                <ul class="nav nav-pills user-profile-tab border-bottom" id="pills-tab" role="tablist">
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link position-relative rounded-0 active d-flex align-items-center justify-content-center bg-transparent fs-3 py-6" id="pills-description-tab" data-bs-toggle="pill" data-bs-target="#pills-description" type="button" role="tab" aria-controls="pills-description" aria-selected="true">
-                      📝 Abstrak / Deskripsi
-                    </button>
-                  </li>
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link position-relative rounded-0 d-flex align-items-center justify-content-center bg-transparent fs-3 py-6" id="pills-reviews-tab" data-bs-toggle="pill" data-bs-target="#pills-reviews" type="button" role="tab" aria-controls="pills-reviews" aria-selected="false" tabindex="-1">
-                      Preview Buku
-                    </button>
-                  </li>
-                </ul>
-                <div class="tab-content pt-4" id="pills-tabContent">
-                  <div class="tab-pane fade show active" id="pills-description" role="tabpanel" aria-labelledby="pills-description-tab" tabindex="0">
-                    {{-- <h5 class="fs-5 mb-7">
-                      Sed at diam elit. Vivamus tortor odio, pellentesque eu tincidunt a, aliquet sit amet lorem
-                      pellentesque eu tincidunt a, aliquet sit amet lorem.
-                    </h5>
-                    <p class="mb-7">
-                      Cras eget elit semper, congue sapien id, pellentesque diam. Nulla faucibus diam nec fermentum
-                      ullamcorper. Praesent sed ipsum ut augue vestibulum malesuada. Duis
-                      vitae volutpat odio. Integer sit amet elit ac justo sagittis dignissim.
-                    </p>
-                    <p class="mb-0">
-                      Vivamus quis metus in nunc semper efficitur eget vitae diam. Proin justo diam, venenatis sit amet
-                      eros in, iaculis auctor magna. Pellentesque sit amet accumsan urna, sit
-                      amet pretium ipsum. Fusce condimentum venenatis mauris et luctus. Vestibulum ante ipsum primis in
-                      faucibus orci luctus et ultrices posuere cubilia curae;
-                    </p> --}}
-                    <p class="mb-7">
-                      {!! $book->description !!}
-                    </p>
-                  </div>
-                  <div class="tab-pane fade" id="pills-reviews" role="tabpanel" aria-labelledby="pills-reviews-tab" tabindex="0">
-                        <div class="d-flex justify-content-center gap-2 mb-3 sticky-top bg-white py-2 shadow-sm rounded">
-                            <button id="zoom-out" class="btn btn-sm btn-outline-primary">
-                                <i class="ti ti-minus"></i> Zoom Out
-                            </button>
-                            <span id="zoom-percent" class="align-self-center fw-bold">150%</span>
-                            <button id="zoom-in" class="btn btn-sm btn-outline-primary">
-                                <i class="ti ti-plus"></i> Zoom In
-                            </button>
-                            <button id="reset-zoom" class="btn btn-sm btn-light">Reset</button>
-                        </div>
-
-                        <div id="pdf-container" style="overflow-y: auto; max-height: 600px; border: 1px solid #ddd;">
-                            <div id="pdf-pages-container"></div>
-                        </div>
-                    </div>
-                </div>
-                </div>
-              </div>
-            </div>
-            <div class="related-products pt-7">
-              <h4 class="mb-3 fw-semibold">Produk Serupa</h4>
-              <div class="row">
-                @forelse($books as $item)
-                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-6">
-                        <div class="card hover-img overflow-hidden rounded-4 border-0 shadow-sm h-100 mb-0">
-                            <div class="position-relative">
-                                <a href="{{ route('bookDetail', $item->slug) }}">
-                                    <img src="{{ $item->cover ? asset('storage/' . $item->cover) : 'https://images.unsplash.com/photo-1557752281-0dcc70763e98?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }}"
-                                        class="card-img-top" alt="Book Cover"
-                                        style="aspect-ratio: 1 / 1.41; object-fit: cover;">
-                                </a>
-                            </div>
-                            <div class="card-body p-2 d-flex flex-column">
-                                <h6 class="fw-bolder mb-1" style="color: #2a3547; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">{{ $item->title }}</h6>
-                                <p class="text-muted mb-3 fs-2"
-                                   style="font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                    @if ($item->authors->count() > 0)
-                                        @php
-                                            $firstAuthor = $item->authors->first();
-                                            $firstName = $firstAuthor->author ?? ($firstAuthor->user->full_name ?? null);
-                                        @endphp
-                                        {{ $firstName }}{{ $item->authors->count() > 1 ? ', dkk.' : '' }}
-                                    @else
-                                        -
-                                    @endif
-                                </p>
-                                <div class="mt-auto">
-                                    <div class="d-flex flex-column justify-content-between align-items-start mb-2">
-                                        <div class="flex-fill">
-                                            @php
-                                                $collectPrice = [$item->price_physical, $item->price_digital];
-                                                $minPrice = min($collectPrice);
-                                                $maxPrice = max($collectPrice);
-                                            @endphp
-                                            <h4 class="mb-0 fw-bolder fs-3" style="color: #EE128C;">
-                                                Rp.{{ number_format($minPrice, 0, ',', '.') }}
-                                                -
-                                                Rp.{{ number_format($maxPrice, 0, ',', '.') }}</h4>
-                                            <p class="text-muted mb-0" style="font-size: 13px;">Harga Buku</p>
-                                        </div>
-                                    </div>
-                                    <button class="btn btn-outline-primary w-100 add-to-cart-btn"
-                                            data-book-id="{{ $item->id }}">
-                                        <i class="ti ti-plus"></i> Keranjang
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @empty
-                    <div class="col-12">
-                    <p class="text-center">No related products found.</p>
-                    </div>
-                @endforelse
-              </div>
-            </div>
-          </div>
+        {{-- ===== BREADCRUMB ===== --}}
+        <div class="flex items-center gap-1.5 text-sm">
+            <a href="#" class="text-secondary-foreground hover:text-primary transition-colors">Beranda</a>
+            <span class="text-muted-foreground">/</span>
+            <a href="#" class="text-secondary-foreground hover:text-primary transition-colors">Katalog</a>
+            <span class="text-muted-foreground">/</span>
+            <span class="text-mono font-medium truncate max-w-[200px]">Pengantar Ilmu Komputer Modern</span>
         </div>
-</div>
 
-<div id="bs-modal-author" class="modal fade" tabindex="-1" aria-labelledby="bs-modal-author" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-md">
-        <div class="modal-content">
-            <div class="modal-header d-flex align-items-center">
-                <h4 class="modal-title" id="myModalLabel">
-                    Penulis
-                </h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="ps-4 py-3 border-0 text-uppercase fs-2 fw-bolder text-muted">No</th>
-                                <th class="py-3 border-0 text-uppercase fs-2 fw-bolder text-muted">Nama Lengkap</th>
-                                <th class="pe-4 py-3 border-0 text-uppercase fs-2 fw-bolder text-muted">Peran</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($authors as $item)
-                                <tr>
-                                    <td class="ps-4 fw-bold text-muted">{{ $loop->iteration }}</td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <div class="bg-primary-subtle rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
-                                                <i class="ti ti-user text-primary fs-4"></i>
-                                            </div>
-                                            <span class="fw-semibold text-dark">{{ $item['name'] }}</span>
-                                        </div>
-                                    </td>
-                                    <td class="pe-4">
-                                        <span class="badge bg-primary-subtle text-primary fw-semibold rounded-pill px-3">Penulis</span>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="3" class="text-center py-4 text-muted fst-italic">Tidak ada data penulis</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+        {{-- ===== DETAIL UTAMA ===== --}}
+        <div class="flex flex-col lg:flex-row gap-6 items-start">
+
+            {{-- ===== KOLOM KIRI: Gambar ===== --}}
+            <div class="w-full lg:w-[200px] shrink-0 mx-auto lg:mx-0 max-w-[200px]">
+                <div class="kt-card overflow-hidden border border-border shadow-none">
+                    <img
+                        src="https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg"
+                        alt="Cover Buku"
+                        class="w-full object-cover block"
+                        style="aspect-ratio: 3 / 4;"
+                    />
+                </div>
+                <div class="flex flex-wrap gap-1.5 mt-3">
+                    <span class="kt-badge kt-badge-success kt-badge-outline rounded-full text-xs">Tersedia</span>
+                    <span class="kt-badge kt-badge-info kt-badge-outline rounded-full text-xs">E-Book</span>
+                    <span class="kt-badge kt-badge-warning kt-badge-outline rounded-full text-xs">Cetak</span>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn bg-primary-subtle text-primary  waves-effect" data-bs-dismiss="modal">
-                    Tutup
+
+            {{-- ===== KOLOM TENGAH: Info Buku ===== --}}
+            <div class="flex flex-col gap-4 flex-1 min-w-0">
+
+                {{-- Judul --}}
+                <div>
+                    <h1 class="text-lg lg:text-2xl font-semibold text-mono leading-snug">
+                        Pengantar Ilmu Komputer Modern: Teori, Praktik, dan Penerapannya
+                    </h1>
+                    <p class="text-xs text-muted-foreground mt-1">
+                        ISBN: <span class="font-medium text-secondary-foreground">978-602-1234-56-7</span>
+                    </p>
+                </div>
+
+                {{-- Informasi Buku --}}
+                <div class="kt-card border border-border overflow-hidden">
+                    <div class="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-accent/30">
+                        <i class="ki-filled ki-information-2 text-primary text-sm"></i>
+                        <span class="text-xs font-semibold text-mono uppercase tracking-wider">Informasi Buku</span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2">
+                        @php
+                        $info = [
+                            ['icon' => 'ki-filled ki-user-edit',    'label' => 'Penulis',       'value' => 'Budi Santoso, Rina Marlina, Ahmad Fauzi', 'type' => 'text'],
+                            ['icon' => 'ki-filled ki-pencil',       'label' => 'Editor',        'value' => 'Dr. Hendra Wijaya, M.Kom',                'type' => 'text'],
+                            ['icon' => 'ki-filled ki-barcode',      'label' => 'ISBN',          'value' => '978-602-1234-56-7',                       'type' => 'text'],
+                            ['icon' => 'ki-filled ki-category',     'label' => 'Bahasa',        'value' => 'Indonesia',                               'type' => 'text'],
+                            ['icon' => 'ki-filled ki-calendar',     'label' => 'Tahun Terbit',  'value' => '2024',                                    'type' => 'text'],
+                            ['icon' => 'ki-filled ki-home-3',       'label' => 'Penerbit',      'value' => 'Penerbit Azzia',                          'type' => 'text'],
+                            ['icon' => 'ki-filled ki-globe',        'label' => 'Website',       'value' => 'azzia.id/buku',                           'type' => 'link', 'href' => 'https://azzia.id'],
+                            ['icon' => 'ki-filled ki-package',      'label' => 'Berat',         'value' => '450 gram',                                'type' => 'text'],
+                            ['icon' => 'ki-filled ki-book-open',    'label' => 'Halaman',       'value' => '384 halaman',                             'type' => 'text'],
+                            ['icon' => 'ki-filled ki-tag',          'label' => 'Kata Kunci',    'value' => 'komputer, pemrograman, algoritma',        'type' => 'text'],
+                            ['icon' => 'ki-filled ki-search-list',  'label' => 'Google Scholar','value' => 'Lihat di Google Scholar',                 'type' => 'link', 'href' => 'https://scholar.google.com'],
+                        ];
+                        $total = count($info);
+                        @endphp
+
+                        @foreach($info as $i => $item)
+                        <div class="flex items-start gap-3 px-4 py-2.5 border-b border-border/40
+                            {{ ($i === $total - 1 && $total % 2 !== 0) ? 'sm:col-span-2' : '' }}
+                            {{ ($i >= $total - ($total % 2 === 0 ? 2 : 1)) ? 'border-b-0' : '' }}
+                            hover:bg-accent/20 transition-colors">
+                            <div class="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                                <i class="{{ $item['icon'] }} text-primary" style="font-size:11px;"></i>
+                            </div>
+                            <div class="flex flex-col gap-0.5 flex-1 min-w-0">
+                                <span class="text-[10px] uppercase tracking-wider text-muted-foreground font-medium leading-none">
+                                    {{ $item['label'] }}
+                                </span>
+                                @if($item['type'] === 'link')
+                                <a href="{{ $item['href'] }}" target="_blank"
+                                    class="text-xs font-medium text-primary hover:underline flex items-center gap-1 mt-0.5">
+                                    {{ $item['value'] }}
+                                    <i class="ki-filled ki-exit-right-corner text-[10px]"></i>
+                                </a>
+                                @else
+                                <span class="text-xs font-medium text-secondary-foreground mt-0.5 leading-snug">
+                                    {{ $item['value'] }}
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+
+            </div>
+
+            {{-- ===== KOLOM KANAN: Harga & Transaksi ===== --}}
+            <div class="w-full lg:w-[260px] shrink-0 flex flex-col gap-4">
+
+                {{-- Pilih Edisi --}}
+                <div class="kt-card border border-border p-4 flex flex-col gap-3">
+                    <div class="flex items-center gap-2">
+                        <i class="ki-filled ki-shop text-primary text-sm"></i>
+                        <span class="text-xs font-semibold text-mono uppercase tracking-wider text-muted-foreground">Pilih Edisi</span>
+                    </div>
+                    <div class="flex flex-col gap-2" id="edisi-group">
+                        <label class="cursor-pointer edisi-label" data-value="ebook">
+                            <input class="hidden" name="tipe-beli" type="radio" value="ebook" checked />
+                            <div class="edisi-box flex items-center justify-between p-3 rounded-lg border border-border
+                                transition-all hover:border-primary/50 border-primary bg-primary/5">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-7 h-7 rounded-lg bg-info/10 flex items-center justify-center shrink-0">
+                                        <i class="ki-filled ki-devices text-info text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-semibold text-mono leading-none">E-Book</p>
+                                        <p class="text-[10px] text-muted-foreground mt-0.5">Akses digital instan</p>
+                                    </div>
+                                </div>
+                                <span class="text-sm font-bold text-mono">Rp45.000</span>
+                            </div>
+                        </label>
+
+                        <label class="cursor-pointer edisi-label" data-value="cetak">
+                            <input class="hidden" name="tipe-beli" type="radio" value="cetak" />
+                            <div class="edisi-box flex items-center justify-between p-3 rounded-lg border border-border
+                                transition-all hover:border-primary/50">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-7 h-7 rounded-lg bg-warning/10 flex items-center justify-center shrink-0">
+                                        <i class="ki-filled ki-book text-warning text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-semibold text-mono leading-none">Buku Cetak</p>
+                                        <p class="text-[10px] text-muted-foreground mt-0.5">Pre-order, dikirim</p>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col items-end">
+                                    <span class="text-sm font-bold text-mono">Rp120.000</span>
+                                    <span class="text-[10px] text-muted-foreground line-through">Rp150.000</span>
+                                </div>
+                            </div>
+                        </label>
+
+                    </div>
+                </div>
+
+                {{-- Jumlah --}}
+                <div class="kt-card border border-border p-4 flex flex-col gap-3">
+                    <div class="flex items-center gap-2">
+                        <i class="ki-filled ki-basket text-primary text-sm"></i>
+                        <span class="text-xs font-semibold text-mono uppercase tracking-wider text-muted-foreground">Jumlah</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="kt-btn kt-btn-outline kt-btn-icon kt-btn-sm" id="btn-minus">
+                            <i class="ki-filled ki-minus"></i>
+                        </button>
+                        <input type="number" value="1" min="1"
+                            class="kt-input w-14 text-center text-sm font-semibold"
+                            id="qty-input" />
+                        <button class="kt-btn kt-btn-outline kt-btn-icon kt-btn-sm" id="btn-plus">
+                            <i class="ki-filled ki-plus"></i>
+                        </button>
+                    </div>
+
+                    {{-- Aksi --}}
+                    <button class="kt-btn kt-btn-primary w-full">
+                        <i class="ki-filled ki-credit-card"></i>
+                        Beli Sekarang
+                    </button>
+                    <div class="flex gap-2">
+                        <button class="kt-btn kt-btn-outline flex-1">
+                            <i class="ki-filled ki-handcart"></i>
+                            Keranjang
+                        </button>
+                        <button class="kt-btn kt-btn-outline kt-btn-icon">
+                            <i class="ki-filled ki-heart"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        {{-- ===== TAB ABSTRAK & PREVIEW ===== --}}
+        <div class="kt-card border border-border overflow-hidden">
+
+            {{-- Tab Header --}}
+            <div class="flex border-b border-border">
+                <button onclick="openTab(event, 'tab-abstrak')"
+                    class="tab-link active flex items-center gap-2 px-5 py-3.5 text-sm font-semibold
+                    text-primary border-b-2 border-primary bg-primary/5 transition-all">
+                    <i class="ki-filled ki-file-text text-sm"></i>
+                    Abstrak / Deskripsi
+                </button>
+                <button onclick="openTab(event, 'tab-preview')"
+                    class="tab-link flex items-center gap-2 px-5 py-3.5 text-sm font-medium
+                    text-muted-foreground border-b-2 border-transparent hover:text-secondary-foreground hover:bg-accent/30 transition-all">
+                    <i class="ki-filled ki-eye text-sm"></i>
+                    Preview Buku
                 </button>
             </div>
+
+            {{-- Tab Abstrak --}}
+            <div id="tab-abstrak" class="tab-content block">
+                <div class="p-5 flex flex-col gap-5">
+
+                    {{-- Deskripsi --}}
+                    <div class="flex flex-col gap-3">
+                        <p class="text-sm text-secondary-foreground leading-relaxed">
+                            Buku ini merupakan panduan komprehensif bagi para pelajar, mahasiswa, dan praktisi yang ingin memahami dasar-dasar ilmu komputer secara modern. Disusun oleh para pakar di bidangnya, buku ini menyajikan teori yang solid disertai contoh-contoh praktis yang relevan dengan kebutuhan industri saat ini.
+                        </p>
+                        <p class="text-sm text-secondary-foreground leading-relaxed">
+                            Pembahasan dimulai dari konsep fundamental seperti algoritma dan struktur data, dilanjutkan dengan topik-topik terkini seperti kecerdasan buatan, komputasi awan, dan keamanan siber.
+                        </p>
+                        <p class="text-sm text-secondary-foreground leading-relaxed">
+                            Dengan bahasa yang lugas dan sistematis, buku ini cocok digunakan sebagai referensi utama maupun pelengkap dalam perkuliahan. Dilengkapi dengan indeks dan glosarium untuk memudahkan pencarian istilah teknis.
+                        </p>
+                    </div>
+
+                    <div class="border-t border-border"></div>
+
+                    {{-- Stat Cards --}}
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        @php
+                        $stats = [
+                            ['icon' => 'ki-filled ki-book-open',  'value' => '384',       'label' => 'Halaman'],
+                            ['icon' => 'ki-filled ki-user',       'value' => '3',         'label' => 'Penulis'],
+                            ['icon' => 'ki-filled ki-calendar',   'value' => '2024',      'label' => 'Tahun Terbit'],
+                            ['icon' => 'ki-filled ki-category',   'value' => 'Indonesia', 'label' => 'Bahasa'],
+                        ];
+                        @endphp
+                        @foreach($stats as $s)
+                        <div class="flex items-center gap-3 p-3 rounded-lg bg-accent/30 border border-border/50">
+                            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                                <i class="{{ $s['icon'] }} text-primary text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-mono leading-none">{{ $s['value'] }}</p>
+                                <p class="text-[10px] text-muted-foreground mt-0.5">{{ $s['label'] }}</p>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+
+                    <div class="border-t border-border"></div>
+
+                    {{-- Kata Kunci --}}
+                    <div class="flex flex-col gap-2">
+                        <div class="flex items-center gap-1.5">
+                            <i class="ki-filled ki-tag text-muted-foreground text-sm"></i>
+                            <span class="text-xs font-semibold text-mono uppercase tracking-wider text-muted-foreground">Kata Kunci</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach(['Ilmu Komputer','Algoritma','Pemrograman','Kecerdasan Buatan','Komputasi Awan','Keamanan Siber'] as $kw)
+                            <span class="kt-badge kt-badge-outline rounded-full px-3 py-1 text-xs cursor-pointer
+                                hover:bg-primary/5 hover:border-primary hover:text-primary transition-colors">
+                                {{ $kw }}
+                            </span>
+                            @endforeach
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            {{-- Tab Preview --}}
+            <div id="tab-preview" class="tab-content hidden">
+                <div class="p-5 flex flex-col gap-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-1.5">
+                            <i class="ki-filled ki-eye text-muted-foreground text-sm"></i>
+                            <span class="text-xs font-semibold text-mono uppercase tracking-wider text-muted-foreground">Preview Halaman</span>
+                        </div>
+                        <span class="text-xs text-muted-foreground">8 dari 384 halaman</span>
+                    </div>
+
+                    <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
+                        @for($i = 1; $i <= 8; $i++)
+                        <div class="flex flex-col gap-1.5 group cursor-pointer">
+                            <div class="kt-card overflow-hidden border border-border
+                                group-hover:border-primary group-hover:shadow-md transition-all shadow-none">
+                                <img
+                                    src="https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg"
+                                    alt="Hal {{ $i * 10 }}"
+                                    class="w-full object-cover block group-hover:scale-105 transition-transform duration-300"
+                                    style="aspect-ratio: 3 / 4;"
+                                />
+                            </div>
+                            <span class="text-[10px] text-center text-muted-foreground">Hal. {{ $i * 10 }}</span>
+                        </div>
+                        @endfor
+                    </div>
+
+                    <div class="flex items-center justify-center gap-3 p-3 rounded-lg bg-accent/30 border border-border/50">
+                        <i class="ki-filled ki-lock text-muted-foreground text-sm"></i>
+                        <p class="text-xs text-muted-foreground">
+                            Beli untuk akses penuh ke seluruh <span class="font-semibold text-mono">384 halaman</span>
+                        </p>
+                        <button class="kt-btn kt-btn-primary kt-btn-sm">
+                            <i class="ki-filled ki-credit-card"></i>
+                            Beli Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- /.modal-content -->
+
+        {{-- ===== BUKU SERUPA ===== --}}
+        <div class="flex flex-col gap-4">
+            <div class="flex items-center justify-between">
+                <div class="flex flex-wrap items-center gap-5 justify-between">
+                    <h3 class="text-lg text-mono font-semibold">
+                        Buku Serupa
+                    </h3>
+                </div>
+                <a href="#" class="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+                    Lihat semua <i class="ki-filled ki-arrow-right text-xs"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
+                @php
+                $similar = [
+                    ['title' => 'Algoritma & Struktur Data',       'author' => 'Budi Santoso',      'price_min' => 'Rp40.000', 'price_max' => 'Rp110.000'],
+                    ['title' => 'Pemrograman Python untuk Pemula', 'author' => 'Rina Marlina, dkk', 'price_min' => 'Rp35.000', 'price_max' => 'Rp95.000'],
+                    ['title' => 'Jaringan Komputer Terapan',       'author' => 'Ahmad Fauzi',       'price_min' => 'Rp50.000', 'price_max' => 'Rp130.000'],
+                    ['title' => 'Kecerdasan Buatan Modern',        'author' => 'Dr. Hendra Wijaya', 'price_min' => 'Rp55.000', 'price_max' => 'Rp145.000'],
+                    ['title' => 'Kecerdasan Buatan Modern',        'author' => 'Dr. Hendra Wijaya', 'price_min' => 'Rp55.000', 'price_max' => 'Rp145.000'],
+                ];
+                @endphp
+
+                @foreach($similar as $book)
+                <div class="kt-card">
+                            <div class="kt-card-content flex flex-col justify-between p-2.5 gap-3">
+                                <div>
+                                    {{-- Gambar --}}
+                                    <div class="kt-card relative bg-accent/50 w-full mb-3 shadow-none overflow-hidden"
+                                        data-kt-context-menu="true" data-kt-context-menu-trigger="true">
+                                        <img
+                                            alt=""
+                                            class="w-full cursor-pointer object-cover block"
+                                            style="aspect-ratio: 1 / 1.41;"
+                                            data-kt-drawer-toggle="#drawers_shop_product_details"
+                                            src="https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg"
+                                        />
+                                        <div class="kt-context-menu w-56 hidden" data-kt-context-menu-menu="true">
+                                            <ul class="kt-context-menu-sub">
+                                                <li><button class="kt-context-menu-link" data-kt-context-menu-dismiss="true" data-kt-drawer-toggle="#drawers_shop_product_details" type="button">Quick View</button></li>
+                                                <li><button class="kt-context-menu-link" data-kt-context-menu-dismiss="true" data-kt-drawer-toggle="#drawers_shop_cart" type="button">Add to Cart</button></li>
+                                                <li class="kt-context-menu-separator"></li>
+                                                <li><button class="kt-context-menu-link" data-kt-context-menu-dismiss="true" type="button">Add to Wishlist</button></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    {{-- Judul 1 baris + elipsis --}}
+                                    <a class="hover:text-primary text-sm font-medium text-mono px-2.5 block truncate"
+                                        data-kt-drawer-toggle="#drawers_shop_product_details"
+                                        title="Cloud Shift Lightweight Runner Pro Edition"
+                                        href="#">
+                                        Cloud Shift Lightweight Runner Pro Edition
+                                    </a>
+
+                                    {{-- Penulis --}}
+                                    <p class="text-xs text-muted-foreground px-2.5 mt-0.5 truncate">
+                                        @php $authors = ['Budi Santoso', 'Rina Marlina', 'Ahmad Fauzi']; @endphp
+                                        {{ $authors[0] }}{{ count($authors) > 1 ? ', dkk' : '' }}
+                                    </p>
+                                </div>
+
+                                {{-- Harga + Tombol --}}
+                                <div class="flex flex-col gap-2 px-2.5 pb-1">
+                                    {{-- Harga --}}
+                                    <p class="text-sm font-semibold text-mono">
+                                        Rp10.000
+                                        <span class="text-muted-foreground font-normal">-</span>
+                                        Rp15.000
+                                    </p>
+
+                                    {{-- Tombol --}}
+                                    <div class="flex items-center gap-1.5">
+                                        <a href="#"
+                                            class="kt-btn kt-btn-outline kt-btn-sm flex-1"
+                                            data-kt-drawer-toggle="#drawers_shop_product_details">
+                                            <i class="ki-filled ki-eye"></i>
+                                            Detail
+                                        </a>
+                                        <button
+                                            class="kt-btn kt-btn-primary kt-btn-sm"
+                                            data-kt-drawer-toggle="#drawers_shop_cart">
+                                            <i class="ki-filled ki-handcart"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                @endforeach
+            </div>
+        </div>
+
     </div>
-    <!-- /.modal-dialog -->
 </div>
+<script>
+    document.querySelectorAll('.edisi-label').forEach(label => {
+        label.addEventListener('click', () => {
+            // Reset semua
+            document.querySelectorAll('.edisi-label .edisi-box').forEach(box => {
+                box.classList.remove('border-primary', 'bg-primary/5');
+                box.classList.add('border-border');
+            });
+            // Aktifkan yang dipilih
+            label.querySelector('.edisi-box').classList.add('border-primary', 'bg-primary/5');
+            label.querySelector('.edisi-box').classList.remove('border-border');
+            // Centang radio
+            label.querySelector('input[type="radio"]').checked = true;
+        });
+    });
+</script>
+<script>
+    const input = document.getElementById('qty-input');
+    document.getElementById('btn-plus').addEventListener('click', () => {
+        input.value = parseInt(input.value || 1) + 1;
+    });
+    document.getElementById('btn-minus').addEventListener('click', () => {
+        if (parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;
+    });
+
+    function openTab(evt, tabName) {
+        document.querySelectorAll('.tab-content').forEach(el => {
+            el.classList.add('hidden');
+            el.classList.remove('block');
+        });
+        document.querySelectorAll('.tab-link').forEach(btn => {
+            btn.classList.remove('text-primary', 'border-primary', 'font-semibold', 'bg-primary/5');
+            btn.classList.add('text-muted-foreground', 'border-transparent', 'font-medium');
+        });
+        document.getElementById(tabName).classList.remove('hidden');
+        document.getElementById(tabName).classList.add('block');
+        evt.currentTarget.classList.add('text-primary', 'border-primary', 'font-semibold', 'bg-primary/5');
+        evt.currentTarget.classList.remove('text-muted-foreground', 'border-transparent', 'font-medium');
+    }
+</script>
+
+<style>
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+</style>
+
 @endsection
-
-@push('js')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    if (typeof pdfjsLib === 'undefined') return;
-
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-    const url = '{{ $book->half_content ? asset("storage/" . $book->half_content) : "" }}';
-    if (!url) return;
-
-    let pdfDoc = null;
-    let currentScale = 1.5; // Skala awal
-    const container = document.getElementById('pdf-pages-container');
-    const zoomPercentDisplay = document.getElementById('zoom-percent');
-
-    function renderAllPages() {
-        // Tampilkan persentase zoom
-        zoomPercentDisplay.textContent = Math.round(currentScale * 100) + '%';
-
-        // Simpan posisi scroll sebelum render ulang (opsional)
-        const currentScroll = document.getElementById('pdf-container').scrollTop;
-
-        // Kosongkan container
-        container.innerHTML = '';
-
-        // Render setiap halaman
-        for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
-            const canvas = document.createElement('canvas');
-            canvas.className = 'pdf-page-canvas';
-            canvas.style.display = 'block';
-            canvas.style.margin = '10px auto';
-            canvas.style.border = '1px solid #ccc';
-            canvas.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
-            canvas.style.maxWidth = '100%'; // Agar responsif di layar kecil
-            canvas.style.height = 'auto';
-
-            container.appendChild(canvas);
-            renderPage(pageNum, canvas);
-        }
-    }
-
-    function renderPage(num, canvas) {
-        pdfDoc.getPage(num).then(page => {
-            const viewport = page.getViewport({ scale: currentScale });
-            const ctx = canvas.getContext('2d');
-
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-
-            const renderContext = {
-                canvasContext: ctx,
-                viewport: viewport
-            };
-
-            page.render(renderContext);
-        });
-    }
-
-    // --- Kontrol Zoom ---
-    document.getElementById('zoom-in').addEventListener('click', () => {
-        if (currentScale >= 3.0) return; // Batas maksimal zoom
-        currentScale += 0.25;
-        renderAllPages();
-    });
-
-    document.getElementById('zoom-out').addEventListener('click', () => {
-        if (currentScale <= 0.5) return; // Batas minimal zoom
-        currentScale -= 0.25;
-        renderAllPages();
-    });
-
-    document.getElementById('reset-zoom').addEventListener('click', () => {
-        currentScale = 1.5;
-        renderAllPages();
-    });
-
-    // Load PDF
-    const loadingTask = pdfjsLib.getDocument(url);
-    loadingTask.promise.then(pdfDoc_ => {
-        pdfDoc = pdfDoc_;
-
-        const previewTab = document.querySelector('#pills-reviews-tab');
-        previewTab.addEventListener('shown.bs.tab', function () {
-            if (container.innerHTML === '') {
-                renderAllPages();
-            }
-        });
-
-        if (previewTab.classList.contains('active')) {
-            renderAllPages();
-        }
-    }).catch(err => {
-        console.error('Error loading PDF:', err);
-        container.innerHTML = '<p class="text-center text-danger">Gagal memuat PDF</p>';
-    });
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const quantityInput = document.getElementById('quantity');
-  const decreaseBtn = document.getElementById('decreaseQty');
-  const increaseBtn = document.getElementById('increaseQty');
-  const addToCartBtn = document.getElementById('add-to-cart-btn');
-  const buyNowBtn = document.getElementById('buy-now-btn');
-
-  decreaseBtn.addEventListener('click', function() {
-    let currentValue = parseInt(quantityInput.value);
-    if (currentValue > 1) {
-      quantityInput.value = currentValue - 1;
-    }
-  });
-
-  increaseBtn.addEventListener('click', function() {
-    let currentValue = parseInt(quantityInput.value);
-    quantityInput.value = currentValue + 1;
-  });
-
-  // Add to Cart Function
-  function addToCart(type = 'digital') {
-    @guest
-        Swal.fire({
-            title: 'Akses Terbatas',
-            text: 'Anda harus login terlebih dahulu untuk menambahkan buku ke keranjang.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#5d87ff',
-            cancelButtonColor: '#fa896b',
-            confirmButtonText: 'Login Sekarang',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = '{{ route("login") }}';
-            }
-        });
-        return;
-    @endguest
-
-    const bookId = addToCartBtn.getAttribute('data-book-id');
-    const quantity = parseInt(quantityInput.value);
-
-    const originalContent = addToCartBtn.innerHTML;
-    addToCartBtn.disabled = true;
-    addToCartBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Memproses...';
-
-    $.ajax({
-      url: '{{ route("cart.add") }}',
-      method: 'POST',
-      data: {
-        book_id: bookId,
-        quantity: quantity,
-        type: type,
-        _token: '{{ csrf_token() }}'
-      },
-      success: function(response) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Berhasil!',
-          text: response.message,
-          showConfirmButton: false,
-          timer: 1500
-        });
-        // Update cart count
-        updateCartCount();
-      },
-      error: function(xhr) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Gagal!',
-          text: xhr.responseJSON?.message || 'Terjadi kesalahan saat menambahkan ke keranjang.'
-        });
-      },
-      complete: function() {
-        addToCartBtn.disabled = false;
-        addToCartBtn.innerHTML = originalContent;
-      }
-    });
-  }
-
-  // Buy Now Function
-  function buyNow(type = 'digital') {
-    @guest
-        Swal.fire({
-            title: 'Akses Terbatas',
-            text: 'Anda harus login terlebih dahulu untuk melakukan pembelian buku.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#5d87ff',
-            cancelButtonColor: '#fa896b',
-            confirmButtonText: 'Login Sekarang',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = '{{ route("login") }}';
-            }
-        });
-        return;
-    @endguest
-
-    const bookId = buyNowBtn.getAttribute('data-book-id');
-    const quantity = parseInt(quantityInput.value);
-
-    const originalContent = buyNowBtn.innerHTML;
-    buyNowBtn.disabled = true;
-    buyNowBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Memproses...';
-
-    // Get price based on type
-    let price = 0;
-    if (type === 'digital') {
-      price = {{ $book->price_digital }};
-    } else {
-      price = {{ $book->price_physical }};
-    }
-
-    // Process checkout directly
-    $.ajax({
-      url: '{{ route("checkout.process") }}',
-      method: 'POST',
-      data: {
-        items: [{
-          book_id: bookId,
-          quantity: quantity,
-          type: type,
-          price: price
-        }],
-        total_price: price * quantity,
-        _token: '{{ csrf_token() }}'
-      },
-      success: function(response) {
-        if (response.success) {
-          window.location.href = response.redirect_url;
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Gagal!',
-            text: response.message || 'Terjadi kesalahan saat memproses checkout.'
-          });
-          buyNowBtn.disabled = false;
-          buyNowBtn.innerHTML = originalContent;
-        }
-      },
-      error: function(xhr) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Gagal!',
-          text: xhr.responseJSON?.message || 'Terjadi kesalahan saat memproses checkout.'
-        });
-        buyNowBtn.disabled = false;
-        buyNowBtn.innerHTML = originalContent;
-      }
-    });
-  }
-
-  addToCartBtn.addEventListener('click', function() {
-    const isEbook = document.getElementById('ebook').checked;
-    const type = isEbook ? 'digital' : 'physical';
-    addToCart(type);
-  });
-
-  buyNowBtn.addEventListener('click', function() {
-    const isEbook = document.getElementById('ebook').checked;
-    const type = isEbook ? 'digital' : 'physical';
-    buyNow(type);
-  });
-
-  // Handle related products add to cart
-  $(document).on('click', '.add-to-cart-btn:not(#add-to-cart-btn)', function(e) {
-    e.preventDefault();
-
-    @guest
-        Swal.fire({
-            title: 'Akses Terbatas',
-            text: 'Anda harus login terlebih dahulu untuk menambahkan buku ke keranjang.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#5d87ff',
-            cancelButtonColor: '#fa896b',
-            confirmButtonText: 'Login Sekarang',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = '{{ route("login") }}';
-            }
-        });
-        return;
-    @endguest
-
-    let button = $(this);
-    let bookId = button.data('book-id');
-    let originalText = button.html();
-
-    button.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
-
-    $.ajax({
-        url: '{{ route('cart.add') }}',
-        method: 'POST',
-        data: {
-            _token: '{{ csrf_token() }}',
-            book_id: bookId,
-            type: 'digital' // Default to digital for quick add
-        },
-        success: function(response) {
-            button.html('<i class="ti ti-check"></i>').removeClass('btn-outline-primary').addClass('btn-success');
-            updateCartCount();
-            setTimeout(function() {
-                button.prop('disabled', false).html(originalText).removeClass('btn-success').addClass('btn-outline-primary');
-            }, 2000);
-        },
-        error: function(xhr) {
-            button.html('<i class="ti ti-x"></i>').removeClass('btn-outline-primary').addClass('btn-danger');
-            setTimeout(function() {
-                button.prop('disabled', false).html(originalText).removeClass('btn-danger').addClass('btn-outline-primary');
-            }, 2000);
-        }
-    });
-  });
-});
-</script>
-@endpush

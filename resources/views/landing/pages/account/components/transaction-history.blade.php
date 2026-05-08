@@ -1,267 +1,193 @@
-<div class="card shadow-none border">
-    <div class="card-body">
-        <h4 class="mb-3">Riwayat Transaksi</h4>
-        <div class="table-responsive">
-            <table class="table table-bordered display text-nowrap">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Penjualan</th>
-                        <th>Item</th>
-                        <th>Harga</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($transactions as $transaction)
-                        <tr>
-                            <td>{{ \App\Helpers\PaginateHelper::generateItemNumber($loop, $transactions->perPage(), $transactions->currentPage()) }}</td>
-                            <td>
-                                <div class="d-flex">
-                                    <div>
-                                        <h6 class="mb-1 fw-bolder">{{ $transaction->transaction_code }}
-                                        </h6>
-                                        <p class="mb-1 text-muted fs-2">{{ $transaction->user->full_name }}
-                                        </p>
-                                        <span
-                                            class="mb-1 badge fs-2 bg-info-subtle text-info">{{ $transaction->created_at->format('d F Y') }}</span>
+<div class="grid gap-5 lg:gap-7.5">
+    <div class="kt-card kt-card-grid min-w-full">
+        <div class="kt-card-header py-5 flex-wrap">
+            <h3 class="kt-card-title">
+                Riwayat Transaksi
+            </h3>
+        </div>
+        <div class="kt-card-content">
+            <div class="grid datatable-initialized" data-kt-datatable="true"
+                data-kt-datatable-page-size="10" data-kt-datatable-initialized="true">
+                <div class="kt-scrollable-x-auto">
+                    <table class="kt-table table-auto kt-table-border" data-kt-datatable-table="true" id="buku_table">
+                        <thead>
+                            <tr>
+                                <th class="w-[55px]" aria-sort="none">
+                                    No
+                                </th>
+                                <th class="" aria-sort="none">
+                                    <span class="kt-table-col">
+                                        <span class="kt-table-col-label">Penjualan</span>
+                                    </span>
+                                </th>
+                                <th class="min-w-[250px]" aria-sort="none">
+                                    <span class="kt-table-col">
+                                        <span class="kt-table-col-label">Item</span>
+                                    </span>
+                                </th>
+                                <th class="" aria-sort="none">
+                                    <span class="kt-table-col">
+                                        <span class="kt-table-col-label">Harga</span>
+                                    </span>
+                                </th>
+                                <th class="" aria-sort="none">
+                                    <span class="kt-table-col">
+                                        <span class="kt-table-col-label">Status</span>
+                                    </span>
+                                </th>
+                                <th class="w-[120px]" aria-sort="none">
+                                    Aksi
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td class="text-sm text-foreground font-normal">1</td>
+                                <td>
+                                    <div class="flex flex-col gap-0.5">
+                                        <span class="leading-none font-medium text-mono">IND-20260430-43FD25</span>
+                                        <span class="text-xs text-muted">26 Februari 2026</span>
                                     </div>
-                                </div>
-                            </td>
-                            <td>
-                                @if($transaction->details->isNotEmpty())
-                                    @foreach ($transaction->details as $detail)
-                                        <div class="d-flex align-items-center mb-2">
-                                            @php
-                                                $cover = null;
-                                                if ($detail->book && $detail->book->cover) {
-                                                    $cover = asset('storage/' . $detail->book->cover);
-                                                } elseif ($detail->module && $detail->module->book && $detail->module->book->cover) {
-                                                    $cover = asset('storage/' . $detail->module->book->cover);
-                                                } else {
-                                                    $cover = asset('assets/dashboard/images/products/product-1.jpg');
-                                                }
-                                            @endphp
-                                            <img src="{{ $cover }}" width="50" height="50" class="rounded-1 me-2 flex-shrink-0" alt="item-img" style="object-fit: cover;" />
-                                            <div>
-                                                <h6 class="mb-0 fs-2 fw-bolder">
-                                                    @if($detail->book)
-                                                        {{ $detail->book->title }}
-                                                    @elseif($detail->module)
-                                                        {{ $detail->module->book->title }}
-                                                    @else
-                                                        Item Tidak Diketahui
-                                                    @endif
-                                                </h6>
-                                                <p class="mb-0 text-muted fs-2">
-                                                    @if($detail->module)
-                                                        BAB {{ $detail->module->chapter }} | {{ $detail->module->title }}
-                                                    @endif
-                                                    x {{ $detail->quantity }}
-                                                </p>
-                                            </div>
+                                </td>
+                                <td>
+                                    <div class="flex items-center gap-3">
+                                        <div class="size-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                                            <i class="ki-filled ki-book text-primary text-base"></i>
                                         </div>
-                                    @endforeach
-                                @elseif($transaction->individualBookPackage)
-                                    <div class="d-flex align-items-center mb-2">
-                                        <img src="{{ asset('assets/dashboard/images/products/product-1.jpg') }}" width="50" height="50" class="rounded-1 me-2 flex-shrink-0" alt="item-img" style="object-fit: cover;" />
-                                        <div>
-                                            <h6 class="mb-0 fs-2 fw-bolder">{{ $transaction->individualBookPackage->name }}</h6>
-                                            <p class="mb-0 text-muted fs-2">Paket Buku Individu</p>
+                                        <div class="flex flex-col gap-0.5">
+                                            <span class="leading-none font-medium text-sm text-mono">
+                                                Laskar Pelangi
+                                            </span>
+                                            <span class="text-xs text-muted-foreground font-normal">
+                                                Novel
+                                            </span>
                                         </div>
                                     </div>
-                                @else
-                                    <span class="text-muted">-</span>
-                                @endif
-                            </td>
-                            <td class="text-center">
-                                <h6 class="fw-bolder">Rp.
-                                    {{ number_format($transaction->total_price, 0, ',', '.') }}</h6>
-                            </td>
-                            <td>
-                                {{-- <span class="mb-1 badge bg-success-subtle text-success">{{ ucfirst($transaction->status) }}</span> --}}
-                                @if($transaction->status == 'pending' && !$transaction->payment_proof)
-                                    <br><span class="badge bg-warning-subtle text-warning mt-1">Menunggu Pembayaran</span>
-                                @elseif($transaction->status == 'pending')
-                                    <br><span class="badge bg-warning-subtle text-warning mt-1">Menunggu Approval</span>
-                                @elseif($transaction->status == 'paid')
-                                    <br><span class="badge bg-success-subtle text-success mt-1">Pembayaran Diterima</span>
-                                @elseif($transaction->status == 'completed')
-                                    <br><span class="badge bg-success-subtle text-success mt-1">Pembelian Selesai</span>
-                                @elseif($transaction->status == 'canceled')
-                                    <br><span class="badge bg-danger-subtle text-danger mt-1">Pembelian Dibatalkan</span>
-                                @elseif($transaction->status == 'expired')
-                                    <br><span class="badge bg-warning-subtle text-warning mt-1">Pembayaran Kadaluarsa</span>
-                                @elseif($transaction->status == 'rejected')
-                                    <br><span class="badge bg-danger-subtle text-danger mt-1">Pembayaran Ditolak</span>
-                                @else
-                                    <br><span class="badge bg-secondary-subtle text-secondary mt-1">Status Tidak Diketahui</span>
-                                @endif
-                            </td>
-                            <td>
-                                <div class="d-flex flex-column gap-1">
-                                    <a href="{{ route('checkout.success', $transaction->transaction_code) }}" type="button" class="btn btn-sm btn-primary">
-                                        Detail
+                                </td>
+                                <td>
+                                    <span class="fw-semibold">Rp.200.000</span>
+                                </td>
+                                <td>
+                                    <span class="text-sm text-green-600 font-medium bg-green-50 p-2 rounded-xl">Selesai</span>
+                                </td>
+                                <td>
+                                    <a class="kt-btn kt-btn-sm kt-btn-primary" href="#">
+                                        <i class="ki-filled ki-file-up"></i>
+                                        Upload Naskah
                                     </a>
-                                    @if($transaction->status == 'paid' || $transaction->status == 'completed')
-                                        @foreach($transaction->details as $detail)
-                                            @if($detail->book && $detail->type === 'digital')
-                                                <a href="{{ route('book.read', $detail->book->slug) }}" class="btn btn-sm btn-success">
-                                                    <i class="ti ti-book me-1"></i>Baca Buku
-                                                </a>
-                                            @endif
-                                        @endforeach
-                                    @endif
-                                    {{-- @if($transaction->status == 'pending')
-                                        <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#uploadPaymentModal{{ $transaction->id }}">
-                                            Upload Bukti Bayar
-                                        </button>
-                                    @endif --}}
-                                    @if($transaction->payment_proof)
-                                        <a href="{{ asset('storage/' . $transaction->payment_proof) }}" target="_blank" class="btn btn-sm btn-info">
-                                            Lihat Bukti Bayar
-                                        </a>
-                                    @endif
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div
+                    class="kt-card-footer justify-center md:justify-between flex-col md:flex-row gap-5 text-secondary-foreground text-sm font-medium">
+                    <div class="flex items-center gap-2 order-2 md:order-1">
+                        Show
+                        <select class="hidden" data-kt-datatable-size="true" data-kt-select=""
+                            name="perpage" data-kt-select-initialized="true">
+                            <option value="5" data-kt-select-option-initialized="true">5</option>
+                            <option value="10" data-kt-select-option-initialized="true">10</option>
+                            <option value="20" data-kt-select-option-initialized="true">20</option>
+                            <option value="30" data-kt-select-option-initialized="true">30</option>
+                            <option value="50" data-kt-select-option-initialized="true">50</option>
+                        </select>
+                        <div data-kt-select-wrapper="" class="kt-select-wrapper w-16">
+                            <div data-kt-select-display="" class="kt-select-display kt-select"
+                                tabindex="0" role="button" data-selected="0" aria-haspopup="listbox"
+                                aria-expanded="false" aria-label="Select an option">
+                                <div class="kt-select-option-text" data-kt-text-container="true">10</div>
+                            </div>
+                            <div data-kt-select-dropdown="" class="kt-select-dropdown hidden "
+                                style="z-index: 105;">
+                                <ul role="listbox" aria-label="Select an option"
+                                    class="kt-select-options " data-kt-select-options="true">
+                                    <li data-kt-select-option="" data-value="5" data-text="5"
+                                        class="kt-select-option" role="option" aria-selected="false">
+                                        <div class="kt-select-option-text" data-kt-text-container="true">5
+                                        </div><svg viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="size-3.5 ms-auto hidden text-primary kt-select-option-selected:block">
+                                            <path d="M20 6 9 17l-5-5"></path>
+                                        </svg>
+                                    </li>
+                                    <li data-kt-select-option="" data-value="10" data-text="10"
+                                        class="kt-select-option selected" role="option"
+                                        aria-selected="true">
+                                        <div class="kt-select-option-text" data-kt-text-container="true">
+                                            10</div><svg viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="size-3.5 ms-auto hidden text-primary kt-select-option-selected:block">
+                                            <path d="M20 6 9 17l-5-5"></path>
+                                        </svg>
+                                    </li>
+                                    <li data-kt-select-option="" data-value="20" data-text="20"
+                                        class="kt-select-option" role="option" aria-selected="false">
+                                        <div class="kt-select-option-text" data-kt-text-container="true">
+                                            20</div><svg viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="size-3.5 ms-auto hidden text-primary kt-select-option-selected:block">
+                                            <path d="M20 6 9 17l-5-5"></path>
+                                        </svg>
+                                    </li>
+                                    <li data-kt-select-option="" data-value="30" data-text="30"
+                                        class="kt-select-option" role="option" aria-selected="false">
+                                        <div class="kt-select-option-text" data-kt-text-container="true">
+                                            30</div><svg viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="size-3.5 ms-auto hidden text-primary kt-select-option-selected:block">
+                                            <path d="M20 6 9 17l-5-5"></path>
+                                        </svg>
+                                    </li>
+                                    <li data-kt-select-option="" data-value="50" data-text="50"
+                                        class="kt-select-option" role="option" aria-selected="false">
+                                        <div class="kt-select-option-text" data-kt-text-container="true">
+                                            50</div><svg viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="size-3.5 ms-auto hidden text-primary kt-select-option-selected:block">
+                                            <path d="M20 6 9 17l-5-5"></path>
+                                        </svg>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        per page
+                    </div>
+                    <div class="flex items-center gap-4 order-1 md:order-2">
+                        <span data-kt-datatable-info="true">1-10 of 31</span>
+                        <div class="kt-datatable-pagination" data-kt-datatable-pagination="true"><button
+                                class="kt-datatable-pagination-button kt-datatable-pagination-prev disabled"
+                                disabled="">
+                                <svg class="rtl:transform rtl:rotate-180 size-3.5 shrink-0" width="24"
+                                    height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M8.86501 16.7882V12.8481H21.1459C21.3724 12.8481 21.5897 12.7581 21.7498 12.5979C21.91 12.4378 22 12.2205 22 11.994C22 11.7675 21.91 11.5503 21.7498 11.3901C21.5897 11.2299 21.3724 11.1399 21.1459 11.1399H8.86501V7.2112C8.86628 7.10375 8.83517 6.9984 8.77573 6.90887C8.7163 6.81934 8.63129 6.74978 8.53177 6.70923C8.43225 6.66869 8.32283 6.65904 8.21775 6.68155C8.11267 6.70405 8.0168 6.75766 7.94262 6.83541L2.15981 11.6182C2.1092 11.668 2.06901 11.7274 2.04157 11.7929C2.01413 11.8584 2 11.9287 2 11.9997C2 12.0707 2.01413 12.141 2.04157 12.2065C2.06901 12.272 2.1092 12.3314 2.15981 12.3812L7.94262 17.164C8.0168 17.2417 8.11267 17.2953 8.21775 17.3178C8.32283 17.3403 8.43225 17.3307 8.53177 17.2902C8.63129 17.2496 8.7163 17.18 8.77573 17.0905C8.83517 17.001 8.86628 16.8956 8.86501 16.7882Z"
+                                        fill="currentColor"></path>
+                                </svg>
+                            </button><button class="kt-datatable-pagination-button active disabled"
+                                disabled="">1</button><button
+                                class="kt-datatable-pagination-button">2</button><button
+                                class="kt-datatable-pagination-button">3</button><button
+                                class="kt-datatable-pagination-button kt-datatable-pagination-more">...</button><button
+                                class="kt-datatable-pagination-button kt-datatable-pagination-next">
+                                <svg class="rtl:transform rtl:rotate-180 size-3.5 shrink-0" width="24"
+                                    height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M15.135 7.21144V11.1516H2.85407C2.62756 11.1516 2.41032 11.2415 2.25015 11.4017C2.08998 11.5619 2 11.7791 2 12.0056C2 12.2321 2.08998 12.4494 2.25015 12.6096C2.41032 12.7697 2.62756 12.8597 2.85407 12.8597H15.135V16.7884C15.1337 16.8959 15.1648 17.0012 15.2243 17.0908C15.2837 17.1803 15.3687 17.2499 15.4682 17.2904C15.5677 17.3309 15.6772 17.3406 15.7822 17.3181C15.8873 17.2956 15.9832 17.242 16.0574 17.1642L21.8402 12.3814C21.8908 12.3316 21.931 12.2722 21.9584 12.2067C21.9859 12.1412 22 12.0709 22 11.9999C22 11.9289 21.9859 11.8586 21.9584 11.7931C21.931 11.7276 21.8908 11.6683 21.8402 11.6185L16.0574 6.83565C15.9832 6.75791 15.8873 6.70429 15.7822 6.68179C15.6772 6.65929 15.5677 6.66893 15.4682 6.70948C15.3687 6.75002 15.2837 6.81959 15.2243 6.90911C15.1648 6.99864 15.1337 7.10399 15.135 7.21144Z"
+                                        fill="currentColor"></path>
+                                </svg>
+                            </button></div>
+                                    </div>
                                 </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center">Tidak ada riwayat transaksi.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-            <div class="mt-3">{{ $transactions->links() }}</div>
-        </div>
-    </div>
-</div>
-
-<!-- Modals for Transaction Details -->
-@foreach($transactions as $transaction)
-    <div class="modal fade" id="transactionDetailModal{{ $transaction->id }}" tabindex="-1" aria-labelledby="transactionDetailModalLabel{{ $transaction->id }}" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="transactionDetailModalLabel{{ $transaction->id }}">Detail Transaksi</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <h6>Informasi Transaksi</h6>
-                            <table class="table table-sm">
-                                <tr><td>Kode Transaksi</td><td>:</td><td><strong>{{ $transaction->transaction_code }}</strong></td></tr>
-                                <tr><td>Tanggal</td><td>:</td><td>{{ $transaction->created_at->format('d F Y H:i') }}</td></tr>
-                                <tr><td>Status</td><td>:</td><td><span class="badge bg-{{ $transaction->status == 'paid' ? 'success' : ($transaction->status == 'pending' ? 'warning' : 'danger') }}">{{ ucfirst($transaction->status) }}</span></td></tr>
-                                <tr><td>Total</td><td>:</td><td><strong>Rp {{ number_format($transaction->total_price, 0, ',', '.') }}</strong></td></tr>
-                                @if($transaction->promo_code)
-                                    <tr><td>Kode Promo</td><td>:</td><td><span class="badge bg-info">{{ $transaction->promo_code }}</span></td></tr>
-                                    <tr><td>Diskon</td><td>:</td><td>Rp {{ number_format($transaction->discount_amount, 0, ',', '.') }}</td></tr>
-                                @endif
-                            </table>
-                        </div>
-                        <div class="col-md-6">
-                            <h6>Metode Pembayaran</h6>
-                            <table class="table table-sm">
-                                <tr><td>Metode</td><td>:</td><td>{{ ucfirst($transaction->payment_method ?? '-') }}</td></tr>
-                                @if($transaction->payment_proof)
-                                    <tr><td>Bukti Bayar</td><td>:</td><td><a href="{{ asset('storage/' . $transaction->payment_proof) }}" target="_blank" class="btn btn-sm btn-outline-primary">Lihat</a></td></tr>
-                                @endif
-                            </table>
-                        </div>
-                    </div>
-
-                    <h6>Detail Item</h6>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Item</th>
-                                    <th>Tipe</th>
-                                    <th>Jumlah</th>
-                                    <th>Harga</th>
-                                    <th>Subtotal</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($transaction->details as $detail)
-                                    <tr>
-                                        <td>
-                                            @if($detail->book)
-                                                {{ $detail->book->title }}
-                                            @elseif($detail->module)
-                                                {{ $detail->module->book->title }} - BAB {{ $detail->module->chapter }}: {{ $detail->module->title }}
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-secondary">{{ ucfirst($detail->type) }}</span>
-                                        </td>
-                                        <td>{{ $detail->quantity }}</td>
-                                        <td>Rp {{ number_format($detail->price_book, 0, ',', '.') }}</td>
-                                        <td>Rp {{ number_format($detail->price_book * $detail->quantity, 0, ',', '.') }}</td>
-                                        <td>
-                                            @if($detail->book && $detail->type === 'digital' && ($transaction->status == 'paid' || $transaction->status == 'completed'))
-                                                <a href="{{ route('book.read', $detail->book->slug) }}" class="btn btn-sm btn-success">
-                                                    <i class="ti ti-book"></i> Baca
-                                                </a>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
-@endforeach
-
-<!-- Modals for Upload Payment Proof -->
-@foreach($transactions as $transaction)
-    @if($transaction->status == 'pending')
-        <div class="modal fade" id="uploadPaymentModal{{ $transaction->id }}" tabindex="-1" aria-labelledby="uploadPaymentModalLabel{{ $transaction->id }}" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="uploadPaymentModalLabel{{ $transaction->id }}">Upload Bukti Pembayaran</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form action="{{ route('account.transaction.upload-payment', $transaction->id) }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="payment_proof{{ $transaction->id }}" class="form-label">Bukti Pembayaran</label>
-                                <input type="file" class="form-control" id="payment_proof{{ $transaction->id }}" name="payment_proof" accept="image/*,.pdf" required>
-                                <div class="form-text">Format: JPG, PNG, PDF. Maksimal 2MB</div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="payment_method{{ $transaction->id }}" class="form-label">Metode Pembayaran</label>
-                                <select class="form-select" id="payment_method{{ $transaction->id }}" name="payment_method" required>
-                                    <option value="">Pilih Metode Pembayaran</option>
-                                    <option value="bank_transfer">Transfer Bank</option>
-                                    {{-- <option value="e_wallet">E-Wallet</option>
-                                    <option value="qris">QRIS</option> --}}
-                                </select>
-                            </div>
-                            <div class="alert alert-info">
-                                <strong>Info:</strong> Upload bukti pembayaran untuk transaksi <strong>{{ $transaction->transaction_code }}</strong> sebesar <strong>Rp {{ number_format($transaction->total_price, 0, ',', '.') }}</strong>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-primary">Upload Bukti Bayar</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
-        </div>
-    @endif
-@endforeach

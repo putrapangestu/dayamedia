@@ -1,118 +1,115 @@
 @extends('landing.layouts.app')
 
 @section('content')
-    <div class="main-wrapper overflow-hidden py-3" style="min-height: 80vh;">
-        <div class="container">
-            <div class="col-md-12 col-lg-12 d-flex align-items-stretch">
-                <div class="card w-100">
-                    <div class="card-body">
-                        <div class="d-sm-flex d-block align-items-center justify-content-between mb-3">
-                            <div class="mb-3 mb-sm-0">
-                                <h4 class="card-title fw-semibold">Keranjang</h4>
-                                <p class="card-subtitle">Pilih buku yang ingin Anda beli.</p>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <a href="#" class="btn btn-primary disabled" id="checkout-btn">
-                                    <i class="ti ti-shopping-cart-plus"></i> Beli Sekarang (<span
-                                        id="selected-items-count">0</span>)
-                                </a>
-                            </div>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table align-middle text-nowrap mb-0">
-                                <thead>
-                                    <tr class="text-muted fw-semibold">
-                                        <th><input type="checkbox" class="form-check-input" id="select-all-checkbox"></th>
-                                        <th scope="col" class="ps-0">Buku</th>
-                                        <th scope="col">Jenis</th>
-                                        <th scope="col">Harga</th>
-                                        <th scope="col">Kuantitas</th>
-                                        <th scope="col">Subtotal</th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody class="border-top">
-                                    @forelse ($carts as $cart)
-                                        @if ($cart->book)
-                                            <tr class="cart-item-row" data-cart-id="{{ $cart->id }}"
-                                                data-price-digital="{{ $cart->book->price_digital }}"
-                                                data-price-physical="{{ $cart->book->price_physical }}"
-                                                data-book-id="{{ $cart->book_id }}">
-                                                <td><input type="checkbox" class="form-check-input item-checkbox"></td>
-                                                <td class="ps-0">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="me-2 pe-1">
-                                                            <img src="{{ $cart->book->cover ? asset('storage/' . $cart->book->cover) : 'https://via.placeholder.com/48' }}"
-                                                                class="rounded-2" width="48" height="48"
-                                                                alt="book-cover">
-                                                        </div>
-                                                        <div>
-                                                            <h6 class="fw-semibold mb-1">{{ $cart->book->title }}</h6>
-                                                            <p class="fs-2 mb-0 text-muted">Kategori:
-                                                                {{ $cart->book->category?->name }}</p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <select class="form-select form-select-sm book-type-select"
-                                                        style="width: 120px;">
-                                                        <option value="digital" {{ $cart->type == 'digital' ? 'selected' : '' }}>
-                                                            E-Book</option>
-                                                        <option value="physical"
-                                                            {{ $cart->type == 'physical' ? 'selected' : '' }}>Cetak</option>
-                                                    </select>
-                                                </td>
-                                                <td class="item-price">
-                                                    Rp.{{ number_format($cart->type == 'digital' ? $cart->book->price_digital : $cart->book->price_physical, 0, ',', '.') }}
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group justify-content-center align-items-center"
-                                                        role="group">
-                                                        <button type="button"
-                                                            class="btn btn-sm bg-primary-subtle text-primary quantity-btn"
-                                                            data-action="decrease">
-                                                            <i class="ti ti-minus"></i>
-                                                        </button>
-                                                        <input type="number" value="{{ $cart->quantity }}" min="1"
-                                                            class="form-control form-control-sm text-center fw-bolder mx-2 quantity-input"
-                                                            style="max-width: 60px;" readonly />
-                                                        <button type="button"
-                                                            class="btn btn-sm bg-primary-subtle text-primary quantity-btn"
-                                                            data-action="increase">
-                                                            <i class="ti ti-plus"></i>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                                <td class="item-subtotal fw-bolder">
-                                                    Rp.{{ number_format(($cart->type == 'digital' ? $cart->book->price_digital : $cart->book->price_physical) * $cart->quantity, 0, ',', '.') }}
-                                                </td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-danger remove-item-btn"><i
-                                                            class="ti ti-trash"></i></button>
-                                                </td>
-                                            </tr>
-                                        @endif
-                                    @empty
-                                        <tr>
-                                            <td colspan="7" class="text-center py-5">
-                                                <h5 class="fw-semibold">Keranjang Anda Kosong</h5>
-                                                <a href="{{ route('catalog') }}" class="btn btn-primary mt-2">Mulai
-                                                    Belanja</a>
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                                <tfoot>
-                                    @if ($carts->isNotEmpty())
-                                        <tr>
-                                            <td colspan="5" class="fw-bolder text-end fs-4 pt-4">Total Harga:</td>
-                                            <td colspan="2" class="fw-bolder fs-4 pt-4" id="grand-total">Rp.0</td>
-                                        </tr>
-                                    @endif
-                                </tfoot>
-                            </table>
-                        </div>
+    <div class="">
+        <!-- Container -->
+        <div class="kt-container-fixed">
+            <div class="border-t border-border dark:border-coal-100">
+            </div>
+            <div class="flex items-center justify-between flex-wrap gap-2 la:gap-5 my-5">
+                <div class="flex flex-col gap-1">
+                    <h1 class="font-medium text-lg text-mono">
+                        Keranjang
+                    </h1>
+                    <div class="flex items-center gap-1 text-sm">
+                        <a class="text-secondary-foreground hover:text-primary" href="../../index.html">
+                            Beranda
+                        </a>
+                        <span class="text-muted-foreground text-sm">
+                            /
+                        </span>
+                        <span class="text-secondary-foreground">
+                            Keranjang
+                        </span>
                     </div>
+                </div>
+            </div>
+        </div>
+        <!-- End of Container -->
+    </div>
+    <div class="kt-container-fixed">
+        <div class="kt-card">
+            <div class="kt-card-header">
+                <div class="kt-card-heading">
+                    <h3 class="kt-card-title">Keranjang</h3>
+                    <p class="kt-card-description">Pilih buku yang ingin Anda beli.</p>
+                </div>
+                <div class="kt-card-toolbar">
+                    <button class="kt-btn">
+                        <i class="ti ti-shopping-cart"></i>
+                        Beli Sekarang (0)
+                    </button>
+                </div>
+            </div>
+
+            <div class="kt-card-table">
+                <table class="kt-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;">
+                                <input type="checkbox" class="kt-checkbox" />
+                            </th>
+                            <th>Buku</th>
+                            <th>Jenis</th>
+                            <th>Harga</th>
+                            <th>Kuantitas</th>
+                            <th>Subtotal</th>
+                            <th style="width: 50px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="kt-checkbox" id="cb1" checked onchange="recalc()" />
+                            </td>
+                            <td>
+                                <div class="flex items-center gap-3">
+                                    <img src="https://placehold.co/48x60" alt="Ilmu Pendidikan"
+                                        class="rounded-sm shrink-0" style="width:48px;height:60px;object-fit:cover;" />
+                                    <div>
+                                        <p class="font-medium text-sm mb-0">Ilmu Pendidikan</p>
+                                        <p class="text-xs text-muted-foreground mt-0">Kategori: Pendidikan</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <select class="kt-select kt-select-sm" style="width: 120px;">
+                                    <option>E-Book</option>
+                                    <option>Fisik</option>
+                                </select>
+                            </td>
+                            <td>
+                                <span class="font-medium text-sm">Rp.80.000</span>
+                            </td>
+                            <td>
+                                <div class="kt-input flex items-center gap-0" style="width: fit-content;">
+                                    <button class="kt-btn kt-btn-sm kt-btn-ghost" onclick="changeQty(-1)" type="button">
+                                        <i class="ki-filled ki-minus"></i>
+                                    </button>
+                                    <input type="number" id="qty1" value="1" min="1"
+                                        class="text-center text-sm font-medium"
+                                        style="width:40px;border:none;outline:none;background:transparent;"
+                                        onchange="recalc()" />
+                                    <button class="kt-btn kt-btn-sm kt-btn-ghost" onclick="changeQty(1)" type="button">
+                                        <i class="ki-filled ki-plus"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="font-medium text-sm" id="subtotal1">Rp.80.000</span>
+                            </td>
+                            <td>
+                                <button class="kt-btn kt-btn-sm kt-btn-destructive" type="button">
+                                    <i class="ki-filled ki-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="flex items-center justify-end gap-6 px-5 py-4 border-t border-border">
+                    <span class="font-medium text-sm">Total Harga:</span>
+                    <span class="font-semibold text-sm" id="total">Rp.0</span>
                 </div>
             </div>
         </div>
@@ -157,7 +154,8 @@
 
                     if (isChecked) {
                         selectedItemsCount++;
-                        const subtotalText = row.find('.item-subtotal').text().replace('Rp.', '').replace(/\./g,
+                        const subtotalText = row.find('.item-subtotal').text().replace('Rp.', '').replace(
+                            /\./g,
                             '');
                         grandTotal += parseInt(subtotalText, 10);
                     }
@@ -177,7 +175,8 @@
                 $.ajax({
                     url: `/cart/${cartId}`,
                     method: 'PUT',
-                    data: { ...data,
+                    data: {
+                        ...data,
                         _token: TOKEN
                     },
                     success: function(response) {
@@ -294,7 +293,7 @@
                 const originalBtnText = checkoutBtn.html();
                 checkoutBtn.html(
                     '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Memproses...'
-                    ).addClass('disabled');
+                ).addClass('disabled');
 
                 $.ajax({
                     url: '{{ route('checkout.process') }}',

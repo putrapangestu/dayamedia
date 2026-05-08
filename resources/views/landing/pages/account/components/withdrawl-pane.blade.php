@@ -1,163 +1,195 @@
-<div class="card shadow-none border">
-    <div class="card-body row">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <h4 class="mb-3 p-0">Riwayat Withdrawl</h4>
-            <button class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#bs-modal-withdraw"><i class="ti ti-wallet"></i> Withdraw</button>
+<div class="grid gap-5 lg:gap-7.5">
+    <div class="kt-card kt-card-grid min-w-full">
+        <div class="kt-card-header py-5 flex-wrap">
+            <h3 class="kt-card-title">
+                Riwayat Withdraw
+            </h3>
+
+            <button class="kt-btn kt-btn-sm kt-btn-primary bg-primary/10 text-primary hover:bg-primary/20">
+                <i class="ki-outline ki-plus text-primary text-base"></i>
+                Tambah Withdraw
+            </button>
         </div>
-        <div class="table-responsive">
-            <table id="default_order" class="table table-bordered display text-nowrap">
-                <thead>
-                    <!-- start row -->
-                    <tr>
-                        <th>No</th>
-                        <th>Rekening</th>
-                        <th>Jumlah</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                    </tr>
-                    <!-- end row -->
-                </thead>
-                <tbody>
-                    @forelse ($withdrawals as $withdrawal)
-                        <tr>
-                            <td>{{ \App\Helpers\PaginateHelper::generateItemNumber($loop, $withdrawals->perPage(), $withdrawals->currentPage()) }}</td>
-                            <td>
-                                <div class="d-flex">
-                                    <div>
-                                        <h6 class="mb-1 fw-bolder">{{  $withdrawal->bank}}-{{ $withdrawal->account_number }}-</h6>
-                                        <p class="mb-1 text-muted fs-2">Atas nama: {{ $withdrawal->account_name }}</p>
+        <div class="kt-card-content">
+            <div class="grid datatable-initialized" data-kt-datatable="true"
+                data-kt-datatable-page-size="10" data-kt-datatable-initialized="true">
+                <div class="kt-scrollable-x-auto">
+                    <table class="kt-table table-auto kt-table-border" data-kt-datatable-table="true" id="buku_table">
+                        <thead>
+                            <tr>
+                                <th class="w-[55px]" aria-sort="none">
+                                    No
+                                </th>
+                                <th class="" aria-sort="none">
+                                    <span class="kt-table-col">
+                                        <span class="kt-table-col-label">Rekening</span>
+                                    </span>
+                                </th>
+                                <th class="min-w-[250px]" aria-sort="none">
+                                    <span class="kt-table-col">
+                                        <span class="kt-table-col-label">Jumlah</span>
+                                    </span>
+                                </th>
+                                <th class="" aria-sort="none">
+                                    <span class="kt-table-col">
+                                        <span class="kt-table-col-label">Status</span>
+                                    </span>
+                                </th>
+                                <th class="w-[120px]" aria-sort="none">
+                                    Aksi
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td class="text-sm text-foreground font-normal">1</td>
+                                <td>
+                                    <div class="flex flex-col gap-0.5">
+                                        <span class="leading-none font-medium text-mono">BCA-120391023912-</span>
+                                        <span class="text-xs text-muted">Atas nama: sdasdasd</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex flex-col gap-0.5">
+                                            <span class="leading-none font-medium text-sm text-mono">
+                                                Rp.200.000
+                                            </span>
+                                            <span class="text-xs text-muted-foreground font-normal">
+                                                Potongan Saldo: Rp.50.000
+                                            </span>
+                                            <span class="text-xs text-muted-foreground font-normal">
+                                                Biaya Admin: Rp.0
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex flex-col items-start gap-0.5">
+                                        <span class="text-sm text-green-600 font-medium bg-green-50 p-2 rounded-xl">Selesai</span>
+                                        <span class="text-xs text-muted-foreground font-normal">
+                                            02 April 2026 15:03:34
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a class="kt-btn kt-btn-sm kt-btn-primary text-white" href="#">
+                                        <i class="ki-filled ki-trash"></i>
+                                        Hapus
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div
+                    class="kt-card-footer justify-center md:justify-between flex-col md:flex-row gap-5 text-secondary-foreground text-sm font-medium">
+                    <div class="flex items-center gap-2 order-2 md:order-1">
+                        Show
+                        <select class="hidden" data-kt-datatable-size="true" data-kt-select=""
+                            name="perpage" data-kt-select-initialized="true">
+                            <option value="5" data-kt-select-option-initialized="true">5</option>
+                            <option value="10" data-kt-select-option-initialized="true">10</option>
+                            <option value="20" data-kt-select-option-initialized="true">20</option>
+                            <option value="30" data-kt-select-option-initialized="true">30</option>
+                            <option value="50" data-kt-select-option-initialized="true">50</option>
+                        </select>
+                        <div data-kt-select-wrapper="" class="kt-select-wrapper w-16">
+                            <div data-kt-select-display="" class="kt-select-display kt-select"
+                                tabindex="0" role="button" data-selected="0" aria-haspopup="listbox"
+                                aria-expanded="false" aria-label="Select an option">
+                                <div class="kt-select-option-text" data-kt-text-container="true">10</div>
+                            </div>
+                            <div data-kt-select-dropdown="" class="kt-select-dropdown hidden "
+                                style="z-index: 105;">
+                                <ul role="listbox" aria-label="Select an option"
+                                    class="kt-select-options " data-kt-select-options="true">
+                                    <li data-kt-select-option="" data-value="5" data-text="5"
+                                        class="kt-select-option" role="option" aria-selected="false">
+                                        <div class="kt-select-option-text" data-kt-text-container="true">5
+                                        </div><svg viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="size-3.5 ms-auto hidden text-primary kt-select-option-selected:block">
+                                            <path d="M20 6 9 17l-5-5"></path>
+                                        </svg>
+                                    </li>
+                                    <li data-kt-select-option="" data-value="10" data-text="10"
+                                        class="kt-select-option selected" role="option"
+                                        aria-selected="true">
+                                        <div class="kt-select-option-text" data-kt-text-container="true">
+                                            10</div><svg viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="size-3.5 ms-auto hidden text-primary kt-select-option-selected:block">
+                                            <path d="M20 6 9 17l-5-5"></path>
+                                        </svg>
+                                    </li>
+                                    <li data-kt-select-option="" data-value="20" data-text="20"
+                                        class="kt-select-option" role="option" aria-selected="false">
+                                        <div class="kt-select-option-text" data-kt-text-container="true">
+                                            20</div><svg viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="size-3.5 ms-auto hidden text-primary kt-select-option-selected:block">
+                                            <path d="M20 6 9 17l-5-5"></path>
+                                        </svg>
+                                    </li>
+                                    <li data-kt-select-option="" data-value="30" data-text="30"
+                                        class="kt-select-option" role="option" aria-selected="false">
+                                        <div class="kt-select-option-text" data-kt-text-container="true">
+                                            30</div><svg viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="size-3.5 ms-auto hidden text-primary kt-select-option-selected:block">
+                                            <path d="M20 6 9 17l-5-5"></path>
+                                        </svg>
+                                    </li>
+                                    <li data-kt-select-option="" data-value="50" data-text="50"
+                                        class="kt-select-option" role="option" aria-selected="false">
+                                        <div class="kt-select-option-text" data-kt-text-container="true">
+                                            50</div><svg viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="size-3.5 ms-auto hidden text-primary kt-select-option-selected:block">
+                                            <path d="M20 6 9 17l-5-5"></path>
+                                        </svg>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        per page
+                    </div>
+                    <div class="flex items-center gap-4 order-1 md:order-2">
+                        <span data-kt-datatable-info="true">1-10 of 31</span>
+                        <div class="kt-datatable-pagination" data-kt-datatable-pagination="true"><button
+                                class="kt-datatable-pagination-button kt-datatable-pagination-prev disabled"
+                                disabled="">
+                                <svg class="rtl:transform rtl:rotate-180 size-3.5 shrink-0" width="24"
+                                    height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M8.86501 16.7882V12.8481H21.1459C21.3724 12.8481 21.5897 12.7581 21.7498 12.5979C21.91 12.4378 22 12.2205 22 11.994C22 11.7675 21.91 11.5503 21.7498 11.3901C21.5897 11.2299 21.3724 11.1399 21.1459 11.1399H8.86501V7.2112C8.86628 7.10375 8.83517 6.9984 8.77573 6.90887C8.7163 6.81934 8.63129 6.74978 8.53177 6.70923C8.43225 6.66869 8.32283 6.65904 8.21775 6.68155C8.11267 6.70405 8.0168 6.75766 7.94262 6.83541L2.15981 11.6182C2.1092 11.668 2.06901 11.7274 2.04157 11.7929C2.01413 11.8584 2 11.9287 2 11.9997C2 12.0707 2.01413 12.141 2.04157 12.2065C2.06901 12.272 2.1092 12.3314 2.15981 12.3812L7.94262 17.164C8.0168 17.2417 8.11267 17.2953 8.21775 17.3178C8.32283 17.3403 8.43225 17.3307 8.53177 17.2902C8.63129 17.2496 8.7163 17.18 8.77573 17.0905C8.83517 17.001 8.86628 16.8956 8.86501 16.7882Z"
+                                        fill="currentColor"></path>
+                                </svg>
+                            </button><button class="kt-datatable-pagination-button active disabled"
+                                disabled="">1</button><button
+                                class="kt-datatable-pagination-button">2</button><button
+                                class="kt-datatable-pagination-button">3</button><button
+                                class="kt-datatable-pagination-button kt-datatable-pagination-more">...</button><button
+                                class="kt-datatable-pagination-button kt-datatable-pagination-next">
+                                <svg class="rtl:transform rtl:rotate-180 size-3.5 shrink-0" width="24"
+                                    height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M15.135 7.21144V11.1516H2.85407C2.62756 11.1516 2.41032 11.2415 2.25015 11.4017C2.08998 11.5619 2 11.7791 2 12.0056C2 12.2321 2.08998 12.4494 2.25015 12.6096C2.41032 12.7697 2.62756 12.8597 2.85407 12.8597H15.135V16.7884C15.1337 16.8959 15.1648 17.0012 15.2243 17.0908C15.2837 17.1803 15.3687 17.2499 15.4682 17.2904C15.5677 17.3309 15.6772 17.3406 15.7822 17.3181C15.8873 17.2956 15.9832 17.242 16.0574 17.1642L21.8402 12.3814C21.8908 12.3316 21.931 12.2722 21.9584 12.2067C21.9859 12.1412 22 12.0709 22 11.9999C22 11.9289 21.9859 11.8586 21.9584 11.7931C21.931 11.7276 21.8908 11.6683 21.8402 11.6185L16.0574 6.83565C15.9832 6.75791 15.8873 6.70429 15.7822 6.68179C15.6772 6.65929 15.5677 6.66893 15.4682 6.70948C15.3687 6.75002 15.2837 6.81959 15.2243 6.90911C15.1648 6.99864 15.1337 7.10399 15.135 7.21144Z"
+                                        fill="currentColor"></path>
+                                </svg>
+                            </button></div>
                                     </div>
                                 </div>
-                            </td>
-
-                            <td class="">
-                                <h6 class="fw-bolder">Rp. {{ number_format($withdrawal->net_amount ?? $withdrawal->amount, 0, ',', '.') }}</h6>
-                                <p class="mb-1 text-muted fs-2">Potongan Saldo: Rp.{{ number_format($withdrawal->amount, 0, ',', '.') }}</p>
-                                <p class="mb-1 text-muted fs-2">Biaya Admin: Rp.{{ number_format($withdrawal->admin_fee ?? 0, 0, ',', '.') }}</p>
-                            </td>
-                            <td>
-                                <span class="mb-1 badge
-                                    @if ($withdrawal->status == 'accepted')
-                                        bg-success-subtle
-                                        text-success
-                                    @elseif ($withdrawal->status == 'rejected')
-                                        bg-danger-subtle
-                                        text-danger
-                                    @else
-                                        bg-warning-subtle
-                                        text-warning
-                                    @endif
-                                ">{{
-                                    $withdrawal->status
-                                }}</span>
-                                <p class="mb-1 text-muted fs-2">{{ $withdrawal->created_at->format('d F Y H:i:s') }}</p>
-                            </td>
-                            <td>
-                                <div class="dropdown">
-                                    <a class="text-decoration-none" href="javascript:void(0)" id="balance-dd" data-bs-toggle="dropdown"  data-bs-boundary="viewport"
-                                        data-bs-reference="viewport"aria-expanded="false">
-                                        <i class="ti ti-dots-vertical fs-4"></i>
-                                    </a>
-                                    <ul class="dropdown-menu" aria-labelledby="balance-dd" style="z-index: 1055;">
-                                        <li>
-                                            <a class="dropdown-item" href="#">
-                                                <i class="ti ti-trash me-1 fs-4"></i>Hapus
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center">Tidak ada riwayat withdrawl</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-                <tfoot>
-                <!-- start row -->
-                <tr>
-                    <th>No</th>
-                    <th>Rekening</th>
-                    <th>Jumlah</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-                <!-- end row -->
-                </tfoot>
-            </table>
-        </div>
-        <div class="mt-3">{{ $withdrawals->links() }}</div>
-    </div>
-</div>
-
-<div id="bs-modal-withdraw" class="modal fade" tabindex="-1" aria-labelledby="bs-modal-import" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-md">
-        <div class="modal-content">
-            <div class="modal-header d-flex align-items-center">
-                <h4 class="modal-title" id="myModalLabel">
-                    Tarik Saldo
-                </h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="{{ route('withdraw.store') }}" method="post">
-                @csrf
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="account_number">No Rekening / No HP (E-Wallet) <span class="text-danger">*</span></label>
-                        <input id="account_number" name="account_number" type="text" class="form-control" aria-describedby="emailHelp" placeholder="XXXXXXXXXXXX" value="{{ old('account_number') }}">
-                        <small class="form-text text-muted">Masukkan no rekening / no HP</small>
-                        @error('account_number')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label for="account_name">Nama Pemiliki Rekening / Pemilik E-Wallet <span class="text-danger">*</span></label>
-                        <input id="account_name" name="account_name" type="text" class="form-control" aria-describedby="emailHelp" placeholder="XXXXXXXXXXXX" value="{{ old('account_name') }}">
-                        <small class="form-text text-muted">Masukkan nama pemilik rekening / e-wallet</small>
-                        @error('account_name')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label for="bank">Bank <span class="text-danger">*</span></label>
-                        <input id="bank" name="bank" type="text" class="form-control" aria-describedby="emailHelp" placeholder="BRI/BCA/DANA/OVO" value="{{ old('bank') }}">
-                        @error('bank')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label for="amount">Jumlah Tarik <span class="text-danger">*</span></label>
-                        <input id="amount" name="amount" type="number" class="form-control" aria-describedby="emailHelp" placeholder="Rp.0" value="{{ old('amount') }}">
-                        <small class="form-text text-muted">Masukkan jumlah tarik (Minimal: Rp {{ number_format(getMinWithdrawal(), 0, ',', '.') }})</small>
-                        <div class="mt-2 p-2 bg-light rounded">
-                            <small class="text-info">
-                                <strong>Biaya Admin:</strong>Rp {{ getAdminFeeWithdrawal() }}<br>
-                                <strong>Minimal Penarikan:</strong> Rp {{ number_format(getMinWithdrawal(), 0, ',', '.') }}
-                            </small>
-                        </div>
-                        @error('amount')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="progress hide" id="progress">
-                        <div class="progress-bar progress-bar-striped text-bg-primary progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-
-                    <button type="button" class="btn bg-primary-subtle text-primary  waves-effect" data-bs-dismiss="modal">
-                        Tutup
-                    </button>
-                    <button type="submit" class="btn bg-primary text-white waves-effect">
-                        Submit
-                    </button>
-                </div>
-            </form>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>

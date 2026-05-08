@@ -87,29 +87,29 @@
 }
 
 .dropzone-area {
-    border: 2px dashed #EE128C;
+    border: 2px dashed #255c83;
     border-radius: 12px;
     padding: 30px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    background: rgba(238, 18, 140, 0.1);
+    background: rgba(37, 92, 131, 0.1);
 }
 
 .dropzone-area:hover {
-    border-color: #EE128C;
-    background: rgba(238, 18, 140, 0.2);
+    border-color: #255c83;
+    background: rgba(37, 92, 131, 0.2);
 }
 
 .dropzone-area.dragover {
     border-color: #10b981;
-    background: rgba(238, 18, 140, 0.2);
+    background: rgba(37, 92, 131, 0.2);
     transform: scale(1.02);
 }
 
 .dropzone-icon {
     font-size: 2.5rem;
-    color: #EE128C;
+    color: #255c83;
     margin-bottom: 12px;
 }
 

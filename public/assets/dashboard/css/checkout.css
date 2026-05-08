@@ -335,12 +335,12 @@ body {
 
 .btn-outline-custom {
     background: white;
-    border: 2px solid #EE128C;
-    color: #EE128C;
+    border: 2px solid #255c83;
+    color: #255c83;
 }
 
 .btn-outline-custom:hover {
-    background: #EE128C;
+    background: #255c83;
     color: white;
     transform: translateY(-2px);
 }
