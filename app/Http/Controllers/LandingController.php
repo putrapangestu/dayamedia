@@ -113,7 +113,7 @@ class LandingController extends Controller
             }, function ($query) {
                 $query->orderBy('year_published', 'desc');
             })
-            ->paginate(12)
+            ->paginate(10)
             ->withQueryString();
 
         $categories = Category::orderBy('name', 'asc')->get();

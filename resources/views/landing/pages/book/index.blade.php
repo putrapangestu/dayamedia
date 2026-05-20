@@ -9,7 +9,7 @@
         <div class="flex items-center gap-3 w-full">
             <div class="kt-input w-full">
                 <i class="ki-filled ki-magnifier"></i>
-                <input placeholder="Cari produk..." type="text" value="Nike" />
+                <input placeholder="Cari buku atau penulis, penerbit, atau kategori..." type="text" name="search"/>
                 <span class="kt-badge kt-badge-outline -me-1.5">⌘ K</span>
             </div>
             <button class="lg:hidden kt-btn kt-btn-primary" data-kt-drawer-toggle="#drawers_shop_filter">
@@ -28,11 +28,11 @@
                 <div class="kt-card p-4 flex flex-col gap-3">
                     <span class="text-sm font-medium text-mono">Kategori</span>
                     <div class="flex flex-col gap-2">
-                        @foreach(['Sneakers','Running Shoes','Boots','Golf','Sandals','Work Shoes','Casual Wear','Outdoor Gear','Sportswear','Basketball','Loafers','Winter'] as $cat)
-                        <label class="flex items-center gap-2 cursor-pointer group">
-                            <input class="kt-checkbox kt-checkbox-sm" type="checkbox" value="{{ $cat }}" />
-                            <span class="text-sm text-secondary-foreground group-hover:text-mono transition-colors">{{ $cat }}</span>
-                        </label>
+                        @foreach($categories as $cat)
+                            <label class="flex items-center gap-2 cursor-pointer group">
+                                <input class="kt-checkbox kt-checkbox-sm" type="checkbox" value="{{ $cat->id }}" name="category_id[]"/>
+                                <span class="text-sm text-secondary-foreground group-hover:text-mono transition-colors">{{ $cat->name }}</span>
+                            </label>
                         @endforeach
                     </div>
                 </div>
@@ -52,14 +52,14 @@
                 {{-- Toolbar --}}
                 <div class="flex flex-wrap items-center gap-3 justify-between">
                     <h3 class="text-sm text-mono font-medium">
-                        1 - 12 dari <span class="text-destructive font-semibold">280 hasil</span> untuk "Nike"
+                        1 - 10 dari <span class="text-destructive font-semibold">{{ $books->total() }} hasil</span> {{ request()->search ? 'untuk "'. request()->search . '"' : '' }}
                     </h3>
                     <div class="flex items-center gap-2.5">
-                        <select class="kt-select w-[160px] bg-background" data-kt-select="true">
-                            <option selected value="1">Harga Tertinggi</option>
-                            <option value="2">Harga Terendah</option>
-                            <option value="3">Rating Tertinggi</option>
-                            <option value="4">Terbaru</option>
+                        <select class="kt-select w-[160px] bg-background" data-kt-select="true" name="sort">
+                            <option selected value="price_high">Harga Tertinggi</option>
+                            <option value="price_low">Harga Terendah</option>
+                            <option value="latest">Terbaru</option>
+                            <option value="oldest">Terlama</option>
                         </select>
                         <div class="kt-toggle-group" data-kt-tabs="true">
                             <a class="kt-btn kt-btn-icon active" data-kt-tab-toggle="#shop1_grids" href="#">
@@ -76,74 +76,83 @@
                 <div id="shop1_grids">
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-2">
 
-                        @for ($i = 1; $i <= 12; $i++)
-                        {{-- Card 1 --}}
-                        <div class="kt-card">
-                            <div class="kt-card-content flex flex-col justify-between p-2.5 gap-3">
-                                <div>
-                                    {{-- Gambar --}}
-                                    <div class="kt-card relative bg-accent/50 w-full mb-3 shadow-none overflow-hidden"
-                                        data-kt-context-menu="true" data-kt-context-menu-trigger="true">
-                                        <img
-                                            alt=""
-                                            class="w-full cursor-pointer object-cover block"
-                                            style="aspect-ratio: 1 / 1.41;"
+                        @forelse ($books as $book)
+                            {{-- Card 1 --}}
+                            <div class="kt-card">
+                                <div class="kt-card-content flex flex-col justify-between p-2.5 gap-3">
+                                    <div>
+                                        {{-- Gambar --}}
+                                        <div class="kt-card relative bg-accent/50 w-full mb-3 shadow-none overflow-hidden"
+                                            data-kt-context-menu="true" data-kt-context-menu-trigger="true">
+                                            <img
+                                                alt=""
+                                                class="w-full cursor-pointer object-cover block"
+                                                style="aspect-ratio: 1 / 1.41;"
+                                                data-kt-drawer-toggle="#drawers_shop_product_details"
+                                                src="{{ asset('storage/'. $book->cover) }}"
+                                            />
+                                            <div class="kt-context-menu w-56 hidden" data-kt-context-menu-menu="true">
+                                                <ul class="kt-context-menu-sub">
+                                                    <li><button class="kt-context-menu-link" data-kt-context-menu-dismiss="true" data-kt-drawer-toggle="#drawers_shop_product_details" type="button">Quick View</button></li>
+                                                    <li><button class="kt-context-menu-link" data-kt-context-menu-dismiss="true" data-kt-drawer-toggle="#drawers_shop_cart" type="button">Add to Cart</button></li>
+                                                    <li class="kt-context-menu-separator"></li>
+                                                    <li><button class="kt-context-menu-link" data-kt-context-menu-dismiss="true" type="button">Add to Wishlist</button></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        {{-- Judul 1 baris + elipsis --}}
+                                        <a class="hover:text-primary text-sm font-medium text-mono px-2.5 block truncate"
                                             data-kt-drawer-toggle="#drawers_shop_product_details"
-                                            src="https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg"
-                                        />
-                                        <div class="kt-context-menu w-56 hidden" data-kt-context-menu-menu="true">
-                                            <ul class="kt-context-menu-sub">
-                                                <li><button class="kt-context-menu-link" data-kt-context-menu-dismiss="true" data-kt-drawer-toggle="#drawers_shop_product_details" type="button">Quick View</button></li>
-                                                <li><button class="kt-context-menu-link" data-kt-context-menu-dismiss="true" data-kt-drawer-toggle="#drawers_shop_cart" type="button">Add to Cart</button></li>
-                                                <li class="kt-context-menu-separator"></li>
-                                                <li><button class="kt-context-menu-link" data-kt-context-menu-dismiss="true" type="button">Add to Wishlist</button></li>
-                                            </ul>
+                                            title="{{ $book->title }}"
+                                            href="#">
+                                            {{ $book->title }}
+                                        </a>
+
+                                        {{-- Penulis --}}
+                                        <p class="text-xs text-muted-foreground px-2.5 mt-0.5 truncate">
+                                            @if ($book->authors->count() > 0)
+                                                @php
+                                                    $firstAuthor = $book->authors->first();
+                                                    $firstName = $firstAuthor->author ?? ($firstAuthor->user->full_name ?? null);
+                                                @endphp
+                                                {{ $firstName }}{{ $book->authors->count() > 1 ? ', dkk.' : '' }}
+                                            @else
+                                                -
+                                            @endif
+                                        </p>
+                                    </div>
+
+                                    {{-- Harga + Tombol --}}
+                                    <div class="flex flex-col gap-2 px-2.5 pb-1">
+                                        {{-- Harga --}}
+                                        <p class="text-sm font-semibold text-mono">
+                                            Rp. {{ number_format($book->price_digital, 2, '.', ',') }}
+                                            <span class="text-muted-foreground font-normal">-</span>
+                                            Rp. {{ number_format($book->price_physical, 2, '.', ',') }}
+                                        </p>
+
+                                        {{-- Tombol --}}
+                                        <div class="flex items-center gap-1.5">
+                                            <a href="{{ route('bookDetail', $book->slug) }}"
+                                                class="kt-btn kt-btn-outline kt-btn-sm flex-1"
+                                                data-kt-drawer-toggle="#drawers_shop_product_details">
+                                                <i class="ki-filled ki-eye"></i>
+                                                Detail
+                                            </a>
+                                            <button
+                                                class="kt-btn kt-btn-primary kt-btn-sm"
+                                                data-kt-drawer-toggle="#drawers_shop_cart">
+                                                <i class="ki-filled ki-handcart"></i>
+                                            </button>
                                         </div>
                                     </div>
 
-                                    {{-- Judul 1 baris + elipsis --}}
-                                    <a class="hover:text-primary text-sm font-medium text-mono px-2.5 block truncate"
-                                        data-kt-drawer-toggle="#drawers_shop_product_details"
-                                        title="Cloud Shift Lightweight Runner Pro Edition"
-                                        href="#">
-                                        Cloud Shift Lightweight Runner Pro Edition
-                                    </a>
-
-                                    {{-- Penulis --}}
-                                    <p class="text-xs text-muted-foreground px-2.5 mt-0.5 truncate">
-                                        @php $authors = ['Budi Santoso', 'Rina Marlina', 'Ahmad Fauzi']; @endphp
-                                        {{ $authors[0] }}{{ count($authors) > 1 ? ', dkk' : '' }}
-                                    </p>
                                 </div>
-
-                                {{-- Harga + Tombol --}}
-                                <div class="flex flex-col gap-2 px-2.5 pb-1">
-                                    {{-- Harga --}}
-                                    <p class="text-sm font-semibold text-mono">
-                                        Rp10.000
-                                        <span class="text-muted-foreground font-normal">-</span>
-                                        Rp15.000
-                                    </p>
-
-                                    {{-- Tombol --}}
-                                    <div class="flex items-center gap-1.5">
-                                        <a href="#"
-                                            class="kt-btn kt-btn-outline kt-btn-sm flex-1"
-                                            data-kt-drawer-toggle="#drawers_shop_product_details">
-                                            <i class="ki-filled ki-eye"></i>
-                                            Detail
-                                        </a>
-                                        <button
-                                            class="kt-btn kt-btn-primary kt-btn-sm"
-                                            data-kt-drawer-toggle="#drawers_shop_cart">
-                                            <i class="ki-filled ki-handcart"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
                             </div>
-                        </div>
-                        @endfor
+                        @empty
+
+                        @endforelse
                     </div>
                 </div>
                 {{-- ===== END GRID VIEW ===== --}}
@@ -152,23 +161,7 @@
                 <div class="hidden" id="shop1_lists">
                     <div class="grid grid-cols-1 gap-5">
 
-                        @php
-                        $listProducts = [
-                            ['img'=>'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg','name'=>'Cloud Shift Lightweight Runner Pro Edition','rating'=>'5.0','sku'=>'SH-001-BLK-42','brand'=>'Nike','cat'=>'Sneakers','old'=>'','price'=>'$99.00'],
-                            ['img'=>'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg','name'=>'Titan Edge High Impact Stability Lightweight Trainers','rating'=>'3.5','sku'=>'SNK-XY-WHT-10','brand'=>'Adidas','cat'=>'Running Shoes','old'=>'','price'=>'$65.99'],
-                            ['img'=>'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg','name'=>'Wave Strike Dynamic Boost Sneaker','rating'=>'4.7','sku'=>'BT-A1-YLW-8','brand'=>'Timberland','cat'=>'Boots','old'=>'','price'=>'$120.00'],
-                            ['img'=>'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg','name'=>'Wave Strike Dynamic Boost Sneaker','rating'=>'3.2','sku'=>'SD-Z9-BRN-39','brand'=>'Birkenstock','cat'=>'Sandals','old'=>'$179.00','price'=>'$140.00'],
-                            ['img'=>'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg','name'=>'Cloud Shift Lightweight Runner Pro Edition','rating'=>'4.1','sku'=>'WRK-77-BLK-9','brand'=>'Dr. Martens','cat'=>'Work Shoes','old'=>'$140.00','price'=>'$99.00'],
-                            ['img'=>'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg','name'=>'Titan Edge High Impact Stability Lightweight Trainers','rating'=>'3.5','sku'=>'SNK-555-GRY-11','brand'=>'New Balance','cat'=>'Sneakers','old'=>'','price'=>'$65.99'],
-                            ['img'=>'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg','name'=>'Velocity Boost Xtreme High Shock Absorbers','rating'=>'4.9','sku'=>'BT-777-BLK-9','brand'=>'UGG','cat'=>'Boots','old'=>'','price'=>'$110.00'],
-                            ['img'=>'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg','name'=>'Wave Strike Dynamic Boost Sneaker','rating'=>'4.7','sku'=>'BT-A1-YLW-8','brand'=>'Timberland','cat'=>'Boots','old'=>'','price'=>'$120.00'],
-                            ['img'=>'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg','name'=>'Titan Edge High Impact Stability Lightweight Trainers','rating'=>'3.5','sku'=>'WRK-333-GRN-10','brand'=>'Caterpillar','cat'=>'Work Shoes','old'=>'$110.00','price'=>'$46.00'],
-                            ['img'=>'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg','name'=>'Wave Strike Dynamic Boost Sneaker','rating'=>'4.7','sku'=>'SNK-888-RED-42','brand'=>'Reebok','cat'=>'Sneakers','old'=>'','price'=>'$120.00'],
-                            ['img'=>'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg','name'=>'Velocity Boost Xtreme High Shock Absorbers','rating'=>'4.9','sku'=>'BT-444-BRN-7','brand'=>'Columbia','cat'=>'Hiking Boots','old'=>'','price'=>'$110.00'],
-                        ];
-                        @endphp
-
-                        @foreach($listProducts as $p)
+                        @foreach($books as $book)
                         <div class="kt-card">
                             <div class="kt-card-content flex items-center justify-between p-3 gap-4">
 
@@ -179,7 +172,7 @@
                                         alt="img"
                                         class="w-full h-full object-cover cursor-pointer block"
                                         data-kt-drawer-toggle="#drawers_shop_product_details"
-                                        src="{{ $p['img'] }}"
+                                        src="{{ asset('storage/'. $book->cover) }}"
                                     />
                                 </div>
 
@@ -189,27 +182,34 @@
                                     {{-- Judul --}}
                                     <a class="hover:text-primary text-sm font-medium text-mono truncate block"
                                         data-kt-drawer-toggle="#drawers_shop_product_details"
-                                        title="{{ $p['name'] }}"
+                                        title="{{ $book->title }}"
                                         href="#">
-                                        {{ $p['name'] }}
+                                        {{ $book->title }}
                                     </a>
 
                                     {{-- Penulis --}}
                                     <p class="text-xs text-muted-foreground truncate">
-                                        @php $authors = ['Budi Santoso', 'Rina Marlina', 'Ahmad Fauzi']; @endphp
-                                        {{ $authors[0] }}{{ count($authors) > 1 ? ', dkk' : '' }}
+                                        @if ($book->authors->count() > 0)
+                                            @php
+                                                $firstAuthor = $book->authors->first();
+                                                $firstName = $firstAuthor->author ?? ($firstAuthor->user->full_name ?? null);
+                                            @endphp
+                                            {{ $firstName }}{{ $book->authors->count() > 1 ? ', dkk.' : '' }}
+                                        @else
+                                            -
+                                        @endif
                                     </p>
 
                                     {{-- Meta: SKU, Brand, Kategori --}}
                                     <div class="flex items-center flex-wrap gap-x-3 gap-y-0.5 mt-0.5">
                                         <span class="text-xs text-secondary-foreground">
-                                            SKU: <span class="font-medium text-foreground">{{ $p['sku'] }}</span>
+                                            ISBN: <span class="font-medium text-foreground">{{ $book->code_isbn }}</span>
                                         </span>
                                         <span class="text-xs text-secondary-foreground">
-                                            Brand: <span class="font-medium text-foreground">{{ $p['brand'] }}</span>
+                                            Bahasa: <span class="font-medium text-foreground">{{ $book->language }}</span>
                                         </span>
                                         <span class="text-xs text-secondary-foreground">
-                                            Kategori: <span class="font-medium text-foreground">{{ $p['cat'] }}</span>
+                                            Kategori: <span class="font-medium text-foreground">{{ $book->category->name }}</span>
                                         </span>
                                     </div>
 
@@ -220,24 +220,24 @@
 
                                     {{-- Harga --}}
                                     <div class="flex flex-col items-end">
-                                        @if($p['old'])
-                                        <span class="text-xs text-secondary-foreground line-through">{{ $p['old'] }}</span>
-                                        @endif
-                                        <span class="text-sm font-semibold text-mono">{{ $p['price'] }}</span>
-                                        @if(isset($p['price_max']))
-                                        <span class="text-xs text-muted-foreground">s/d {{ $p['price_max'] }}</span>
+                                        {{-- @if($book->price_digital)
+                                            <span class="text-xs text-secondary-foreground line-through">Rp.{{ number_format($book->price_digital, 2, '.', ',') }}</span>
+                                        @endif --}}
+                                        <span class="text-sm font-semibold text-mono">{{ number_format($book->price_digital, 2, '.', ',') }}</span>
+                                        @if(isset($book->price_physical))
+                                            <span class="text-xs text-muted-foreground">s/d Rp.{{ number_format($book->price_physical, 2, '.', ',') }}</span>
                                         @endif
                                     </div>
 
                                     {{-- Tombol --}}
                                     <div class="flex items-center gap-1.5">
-                                        <a href="#"
+                                        <a href="{{ route('bookDetail', $book->slug) }}"
                                             class="kt-btn kt-btn-outline kt-btn-sm"
                                             data-kt-drawer-toggle="#drawers_shop_product_details">
                                             <i class="ki-filled ki-eye"></i>
                                             Detail
                                         </a>
-                                        <button class="kt-btn kt-btn-primary kt-btn-sm shrink-0"
+                                        <button type="button" class="kt-btn kt-btn-primary kt-btn-sm shrink-0"
                                             data-kt-drawer-toggle="#drawers_shop_cart">
                                             <i class="ki-filled ki-handcart"></i>
                                             Keranjang
@@ -254,16 +254,23 @@
                 </div>
                 {{-- ===== END LIST VIEW ===== --}}
 
+                {{-- ===== PAGINATION ===== --}}
+                <div class="mt-6">
+                    {{ $books->links() }}
+                </div>
+
             </div>
             {{-- ===== END KONTEN PRODUK ===== --}}
 
-        </div>
+    </form>
     </div>
 </div>
 
 {{-- ===== DRAWER FILTER MOBILE ===== --}}
-<div class="hidden kt-drawer kt-drawer-end card flex-col max-w-[90%] w-[320px] top-5 bottom-5 end-5 rounded-xl border border-border"
+<form action="{{ url()->current() }}" method="GET" class="hidden kt-drawer kt-drawer-end card flex-col max-w-[90%] w-[320px] top-5 bottom-5 end-5 rounded-xl border border-border"
     data-kt-drawer="true" data-kt-drawer-container="body" id="drawers_shop_filter">
+    @if(request('search')) <input type="hidden" name="search" value="{{ request('search') }}"> @endif
+    @if(request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
     <div class="kt-card-header ps-5 pr-2">
         <h3 class="kt-card-title">Filter</h3>
         <button class="kt-btn kt-btn-sm kt-btn-icon kt-btn-ghost shrink-0" data-kt-drawer-dismiss="true">
@@ -306,8 +313,11 @@
         <div class="flex flex-col gap-3 px-5">
             <span class="text-sm font-medium text-mono">Kategori</span>
             <div class="flex flex-wrap gap-2.5 mb-2">
-                @foreach(['Sneakers','Running Shoes','Boots','Golf','Sandals','Work Shoes','Casual Wear','Outdoor Gear','Sportswear','Chelsea Boots','Loafers','Slip-On','Winter','Espadrilles','Basketball'] as $cat)
-                <span class="kt-badge kt-badge-outline rounded-full cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors">{{ $cat }}</span>
+                @foreach($categories as $cat)
+                <label class="cursor-pointer">
+                    <input type="checkbox" name="category_id[]" value="{{ $cat->id }}" class="hidden peer" {{ in_array($cat->id, (array)request('category_id', [])) ? 'checked' : '' }} />
+                    <span class="kt-badge kt-badge-outline rounded-full peer-checked:bg-primary peer-checked:text-primary-foreground hover:bg-primary hover:text-primary-foreground transition-colors">{{ $cat->name }}</span>
+                </label>
                 @endforeach
             </div>
         </div>
@@ -388,10 +398,43 @@
 
     </div>
     <div class="kt-card-footer grid grid-cols-2 gap-2.5">
-        <button class="kt-btn kt-btn-outline">Reset</button>
-        <button class="kt-btn kt-btn-primary">Terapkan</button>
+        <a href="{{ url()->current() }}" class="kt-btn kt-btn-outline flex items-center justify-center">Reset</a>
+        <button type="submit" class="kt-btn kt-btn-primary">Terapkan</button>
     </div>
-</div>
+</form>
 {{-- ===== END DRAWER FILTER MOBILE ===== --}}
 
 @endsection
+
+@push('scripts')
+<script>
+    function addToCart(bookId) {
+        // Sesuaikan "/cart/add" dengan URL sebenarnya dari router CartController@addToCart.
+        // Contoh: const url = "{{ route('cart.add') }}";
+        const url = '/cart/add';
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                book_id: bookId,
+                quantity: 1,
+                type: 'digital' // ubah jika ingin dynamic type (digital/physical)
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message); // Bisa diubah menggunakan Library Toast/SweetAlert
+            } else if (data.error) {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
+@endpush
