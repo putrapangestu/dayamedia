@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <x-header-page
         title="Profile Pengguna"
-        description="Pengaturan profile pengguna di Azzia"
+        description="Pengaturan profile pengguna di Daya Media"
         >
         </x-header-page>
 
@@ -15,7 +15,7 @@
                     <div class="border-bottom px-4 py-2 d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="card-title">Pengaturan Profile</h6>
-                            <p>Pengaturan profile pengguna di Azzia.</p>
+                            <p>Pengaturan profile pengguna di Daya Media.</p>
                         </div>
                         <div>
                             <a href="" class="btn btn-primary">Simpan</a>
@@ -55,7 +55,7 @@
                     <div class="border-bottom px-4 py-2 d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="card-title">Reset Password</h6>
-                            <p>Reset password pengguna di Azzia.</p>
+                            <p>Reset password pengguna di Daya Media.</p>
                         </div>
                         <div>
                             <a href="" class="btn btn-primary">Simpan</a>

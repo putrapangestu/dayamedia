@@ -20,7 +20,7 @@ class SettingsSeeder extends Seeder
 
         // Bank information settings
         $this->createSetting('bank_name', 'Bank Mandiri', 'string', 'Nama Bank', 'payment');
-        $this->createSetting('bank_account_name', 'PT Azzia Indonesia', 'string', 'Nama Rekening', 'payment');
+        $this->createSetting('bank_account_name', 'PT Daya Media', 'string', 'Nama Rekening', 'payment');
         $this->createSetting('bank_account_number', '1234567890', 'string', 'Nomor Rekening', 'payment');
         $this->createSetting('bank_swift_code', '', 'string', 'Kode SWIFT', 'payment');
         $this->createSetting('bank_branch', '', 'string', 'Cabang Bank', 'payment');

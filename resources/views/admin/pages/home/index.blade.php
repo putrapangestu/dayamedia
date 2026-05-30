@@ -20,7 +20,7 @@
                         <h3 class="mb-1 fw-semibold fs-8 d-flex align-content-center">
                             {{ $userCount }}
                         </h3>
-                        <p class="mb-0 text-dark">Pengguna Azzia</p>
+                        <p class="mb-0 text-dark">Pengguna Daya Media</p>
                     </div>
                     <div class="ps-4 pe-4 border-end border-muted border-opacity-10">
                         <h3 class="mb-1 fw-semibold fs-8 d-flex align-content-center">

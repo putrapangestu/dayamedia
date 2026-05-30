@@ -5,7 +5,7 @@
         <div class="container-fluid">
           <x-header-page
             title="Buku"
-            description="List buku yang terdaftar di Azzia"
+            description="List buku yang terdaftar di Daya Media"
             >
             <x-slot:actions>
                 <a href="{{ route('admin.book.create') }}" class="btn btn-primary">

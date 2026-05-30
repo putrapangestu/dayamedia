@@ -52,6 +52,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
     <link href="{{ asset('') }}assets/landing/vendors/apexcharts/apexcharts.css" rel="stylesheet" />
     <link href="{{ asset('') }}assets/landing/vendors/keenicons/styles.bundle.css" rel="stylesheet" />
     <link href="{{ asset('') }}assets/landing/css/styles.css" rel="stylesheet" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <!-- Google tag (gtag.js) -->
     <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-52YZ3XGZJ6"></script>
     <script>

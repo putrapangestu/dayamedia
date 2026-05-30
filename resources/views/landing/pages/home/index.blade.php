@@ -1,232 +1,158 @@
 @extends('landing.layouts.app')
 
 @section('content')
-    <!-- =========================================
-         MOCK DATA (Hanya untuk tampilan sementara)
-    ========================================== -->
-    @php
-        $books = [
-            ['title' => 'Algoritma & Struktur Data', 'author' => 'Budi Santoso', 'price_min' => 'Rp40.000', 'price_max' => 'Rp110.000', 'cover' => 'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg'],
-            ['title' => 'Pemrograman Python', 'author' => 'Rina Marlina, dkk', 'price_min' => 'Rp35.000', 'price_max' => 'Rp95.000', 'cover' => 'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg'],
-            ['title' => 'Jaringan Komputer', 'author' => 'Ahmad Fauzi', 'price_min' => 'Rp50.000', 'price_max' => 'Rp130.000', 'cover' => 'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg'],
-            ['title' => 'Kecerdasan Buatan', 'author' => 'Dr. Hendra', 'price_min' => 'Rp55.000', 'price_max' => 'Rp145.000', 'cover' => 'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg'],
-            ['title' => 'UI/UX Design Masterclass', 'author' => 'Siska UI', 'price_min' => 'Rp75.000', 'price_max' => 'Rp200.000', 'cover' => 'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg'],
-            ['title' => 'Laravel untuk Pemula', 'author' => 'Dev Indo', 'price_min' => 'Rp60.000', 'price_max' => 'Rp150.000', 'cover' => 'https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg'],
-        ];
-    @endphp
-
     <div class="kt-container-fixed pb-16">
 
         <!-- =========================================
-             1. HERO SECTION
+             1. HERO SECTION (Client's Preferred Hero)
         ========================================== -->
-        <div class="flex flex-col-reverse md:flex-row items-center min-h-[400px] md:h-[500px] gap-8 md:gap-10 mb-12 mt-6 md:mt-0">
-            <div class="flex-1 flex flex-col gap-5 text-center md:text-left">
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium w-fit mx-auto md:mx-0">
-                    <i class="ki-filled ki-rocket text-base"></i> Platform Literasi Terbaik
+        <div class="flex flex-col-reverse lg:flex-row items-center min-h-[500px] lg:h-[600px] gap-10 mb-16 mt-6 lg:mt-0">
+            <div class="flex-1 flex flex-col gap-6 text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-bold w-fit mx-auto lg:mx-0 animate-bounce-slow">
+                    <i class="ki-filled ki-rocket text-base"></i> Selamat Datang di Daya Media
                 </div>
-                <h2 class="text-4xl md:text-5xl font-semibold text-mono leading-tight">
-                    Bersama Daya Media Nusantara, <br/>
-                    <span class="text-primary">Jelajahi Dunia Buku</span>
-                </h2>
-                <p class="text-muted-foreground text-lg max-w-lg mx-auto md:mx-0">
-                    Kami mendukung penulis untuk menjadi talenta yang berharga, dan membantu pembaca menemukan karya-karya terbaik dari penjuru negeri.
+                <h1 class="text-4xl md:text-5xl xl:text-6xl font-bold text-gray-900 leading-[1.1] tracking-tight">
+                    Tempat terbaik untuk <br/>
+                    <span class="text-primary italic">Membaca, Menulis</span> <br class="hidden xl:block"/> 
+                    & <span class="text-primary">Kolaborasi</span> Buku
+                </h1>
+                <p class="text-gray-500 text-lg md:text-xl max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
+                    Daya Media adalah platform terpadu untuk membeli buku, menulis karya sendiri, dan berkolaborasi dengan penulis lain dalam satu ekosistem yang modern.
                 </p>
-                <div class="flex items-center justify-center md:justify-start gap-4 mt-2">
-                    <button class="kt-btn kt-btn-primary kt-btn-lg">
-                        Mulai Membaca <i class="ki-filled ki-arrow-right ms-2"></i>
-                    </button>
-                    <button class="kt-btn kt-btn-outline kt-btn-lg">
-                        Daftar Penulis
-                    </button>
+                <div class="flex items-center justify-center lg:justify-start gap-4 mt-4">
+                    <a href="{{ route('login') }}" class="kt-btn kt-btn-primary kt-btn-lg px-10 py-5 rounded-2xl font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-all">
+                        Gabung Bersama Kami <i class="ki-filled ki-arrow-right ms-2"></i>
+                    </a>
                 </div>
             </div>
-            <div class="flex-1 flex justify-center md:justify-end">
-                <img class="w-full max-w-[350px] md:max-w-[450px] object-contain drop-shadow-xl hover:scale-105 transition-transform duration-500" src="{{ asset('assets/images/hero.avif') }}" alt="Hero Illustration">
+
+            <!-- Hero Image (Client's Preferred hero.avif) -->
+            <div class="flex-1 w-full lg:w-auto flex justify-center lg:justify-end relative">
+                <!-- Background Ornaments behind hero -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-primary/5 rounded-full blur-[100px] -z-10 animate-pulse-slow"></div>
+                <div class="absolute -top-10 -right-10 w-24 h-24 bg-yellow-400/20 rounded-full blur-2xl animate-bounce-slow"></div>
+                <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-secondary/20 rounded-full blur-2xl animate-pulse"></div>
+
+                <div class="relative group animate-float">
+                    <img src="{{ asset('assets/images/hero.avif') }}" 
+                         alt="Daya Media Platform" 
+                         class="w-full max-w-[450px] xl:max-w-[550px] h-auto object-contain drop-shadow-[0_20px_50px_rgba(var(--primary-rgb),0.3)] group-hover:scale-105 transition-transform duration-700">
+                    
+                    <!-- Additional Decorative Floating Cards -->
+                    <div class="absolute top-1/4 -left-6 bg-white border border-gray-100 p-3 rounded-2xl shadow-xl animate-float-slow hidden xl:flex items-center gap-3">
+                        <div class="size-8 rounded-lg bg-green-100 text-green-600 flex items-center justify-center">
+                            <i class="ki-filled ki-check text-base"></i>
+                        </div>
+                        <span class="text-[10px] font-black text-gray-900 uppercase tracking-wider">ISBN Terverifikasi</span>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- =========================================
-             2. KEUNTUNGAN BERGABUNG (BENEFITS)
+             2. KEUNTUNGAN BERGABUNG
         ========================================== -->
-        <div class="mb-16">
-            <div class="text-center mb-8">
-                <h3 class="text-2xl text-mono font-semibold">Keuntungan Bergabung Bersama Kami</h3>
-                <p class="text-muted-foreground mt-2">Alasan mengapa ribuan pembaca dan penulis memilih kami.</p>
+        <div class="mb-20">
+            <div class="text-center mb-12">
+                <span class="text-primary font-bold text-sm uppercase tracking-widest mb-3 block">Ekosistem Penulis</span>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Bangun Karya, Kelola Royalti, Raih Penghasilan</h3>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Card 1 -->
-                <div class="kt-card hover:border-primary transition-colors duration-300">
-                    <div class="kt-card-content p-6 flex flex-col items-center text-center gap-4">
-                        <div class="size-14 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                            <i class="ki-filled ki-book-open text-3xl"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-lg font-semibold text-mono mb-1">Koleksi Lengkap</h4>
-                            <p class="text-sm text-muted-foreground">Ribuan buku dari berbagai genre tersedia untuk Anda.</p>
-                        </div>
+                @php
+                    $features = [
+                        ['icon' => 'ki-users', 'title' => 'Kolaborasi Penulis', 'desc' => 'Menulis buku bersama penulis lain secara terstruktur.'],
+                        ['icon' => 'ki-wallet', 'title' => 'Royalti Otomatis', 'desc' => 'Pembagian royalti otomatis sesuai kontribusi penulis.'],
+                        ['icon' => 'ki-abstract-26', 'title' => 'Program Afiliasi', 'desc' => 'Dapatkan komisi dengan mempromosikan buku.'],
+                        ['icon' => 'ki-chart-line-up', 'title' => 'Dashboard Analytics', 'desc' => 'Pantau penjualan dan performa secara real-time.'],
+                    ];
+                @endphp
+                @foreach($features as $f)
+                <div class="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-300 group text-center">
+                    <div class="size-16 rounded-2xl bg-gray-50 text-primary flex items-center justify-center mx-auto mb-6 group-hover:bg-primary group-hover:text-white transition-colors duration-500">
+                        <i class="ki-filled {{ $f['icon'] }} text-4xl"></i>
                     </div>
+                    <h4 class="text-lg font-bold text-gray-900 mb-2">{{ $f['title'] }}</h4>
+                    <p class="text-sm text-gray-500 font-medium leading-relaxed">{{ $f['desc'] }}</p>
                 </div>
-                <!-- Card 2 -->
-                <div class="kt-card hover:border-primary transition-colors duration-300">
-                    <div class="kt-card-content p-6 flex flex-col items-center text-center gap-4">
-                        <div class="size-14 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                            <i class="ki-filled ki-discount text-3xl"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-lg font-semibold text-mono mb-1">Harga Terjangkau</h4>
-                            <p class="text-sm text-muted-foreground">Dapatkan penawaran terbaik dan diskon setiap minggunya.</p>
-                        </div>
-                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- =========================================
+             3. REKOMENDASI BUKU (Restored Banner)
+        ========================================== -->
+        <div class="flex flex-col gap-6 mb-20">
+            <div class="flex items-end justify-between gap-4 border-b border-gray-100 pb-5">
+                <div class="flex flex-col gap-1">
+                    <h3 class="text-2xl font-bold text-gray-900 tracking-tight">Rekomendasi Buku</h3>
+                    <p class="text-gray-500 text-sm font-medium">Temukan buku pilihan terbaik berdasarkan minat dan tren.</p>
                 </div>
-                <!-- Card 3 -->
-                <div class="kt-card hover:border-primary transition-colors duration-300">
-                    <div class="kt-card-content p-6 flex flex-col items-center text-center gap-4">
-                        <div class="size-14 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                            <i class="ki-filled ki-delivery-time text-3xl"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-lg font-semibold text-mono mb-1">Pengiriman Cepat</h4>
-                            <p class="text-sm text-muted-foreground">Bekerja sama dengan ekspedisi terpercaya di seluruh Indonesia.</p>
-                        </div>
-                    </div>
+                <a href="{{ route('catalog') }}" class="hidden sm:flex items-center gap-1 text-sm font-bold text-primary hover:underline">
+                    Lihat Semua <i class="ki-filled ki-arrow-right text-base"></i>
+                </a>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
+                <!-- Restored Side Banner -->
+                <div class="w-full lg:w-[260px] flex-shrink-0 relative group">
+                    <div class="absolute inset-0 bg-primary rounded-3xl rotate-2 group-hover:rotate-0 transition-transform duration-500 shadow-xl opacity-10"></div>
+                    <img src="https://www.bukuloka.com/_app/immutable/assets/new-release-1.quzve9Cc.png" alt="Featured" class="relative w-full h-full object-cover rounded-3xl shadow-lg border border-white transform group-hover:-translate-y-2 transition-transform duration-500">
                 </div>
-                <!-- Card 4 -->
-                <div class="kt-card hover:border-primary transition-colors duration-300">
-                    <div class="kt-card-content p-6 flex flex-col items-center text-center gap-4">
-                        <div class="size-14 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                            <i class="ki-filled ki-verify text-3xl"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-lg font-semibold text-mono mb-1">100% Original</h4>
-                            <p class="text-sm text-muted-foreground">Kami menjamin keaslian setiap buku yang Anda beli.</p>
-                        </div>
-                    </div>
+                
+                <div class="flex-grow grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-5">
+                    @forelse ($recommendations as $book)
+                        @include('landing.pages.home.partials.book-card', ['book' => $book])
+                    @empty
+                        <p class="col-span-full text-gray-400 font-medium text-center py-10 bg-gray-50 rounded-2xl border border-dashed border-gray-200 italic">Belum ada rekomendasi buku.</p>
+                    @endforelse
                 </div>
             </div>
         </div>
 
         <!-- =========================================
-             3. REKOMENDASI BUKU
+             4. PAKET BUKU INDIVIDU (Light Gray Background)
         ========================================== -->
-        <div class="flex flex-col gap-5 mb-12">
-            <div class="flex items-center justify-between gap-4">
-                <div class="flex flex-col gap-0.5">
-                    <h3 class="text-xl md:text-2xl text-mono font-semibold">
-                        Rekomendasi Buku
-                    </h3>
-                    <p class="text-muted text-sm">Pilihan rekomendasi buku terbaik untuk menemani waktu bacamu.</p>
-                </div>
-                <a href="#" class="text-xs md:text-sm font-semibold text-primary hover:underline flex items-center gap-1 whitespace-nowrap">
-                    Lihat semua <i class="ki-filled ki-arrow-right text-xs"></i>
-                </a>
+        <div class="mb-20 relative">
+            <div class="absolute inset-y-0 -inset-x-4 sm:-inset-x-10 lg:-inset-x-20 bg-gray-100/70 rounded-[4rem] -z-10 overflow-hidden">
+                <div class="absolute top-0 right-0 size-96 bg-primary/10 blur-[100px] rounded-full translate-x-1/3 -translate-y-1/3"></div>
+                <div class="absolute bottom-0 left-0 size-96 bg-primary/5 blur-[80px] rounded-full -translate-x-1/3 translate-y-1/3"></div>
             </div>
-
-            <div class="flex flex-col lg:flex-row gap-4 lg:gap-5">
-                <div class="w-full lg:w-[220px] xl:w-[250px] flex-shrink-0">
-                    <img src="https://www.bukuloka.com/_app/immutable/assets/new-release-1.quzve9Cc.png" alt="" class="w-full h-full lg:h-full object-cover rounded-md">
+            
+            <div class="py-16 px-4">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-4">Paket Penerbitan Individu</h3>
+                    <p class="text-gray-500 text-lg max-w-2xl mx-auto font-medium">Wujudkan karya impian Anda dengan dukungan penerbitan profesional kelas dunia.</p>
                 </div>
-                <div class="flex-grow grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
-                    @php
-                        $similar = [
-                            [
-                                'title' => 'Algoritma & Struktur Data',
-                                'author' => 'Budi Santoso',
-                                'price_min' => 'Rp40.000',
-                                'price_max' => 'Rp110.000',
-                            ],
-                            [
-                                'title' => 'Pemrograman Python untuk Pemula',
-                                'author' => 'Rina Marlina, dkk',
-                                'price_min' => 'Rp35.000',
-                                'price_max' => 'Rp95.000',
-                            ],
-                            [
-                                'title' => 'Jaringan Komputer Terapan',
-                                'author' => 'Ahmad Fauzi',
-                                'price_min' => 'Rp50.000',
-                                'price_max' => 'Rp130.000',
-                            ],
-                            [
-                                'title' => 'Kecerdasan Buatan Modern',
-                                'author' => 'Dr. Hendra Wijaya',
-                                'price_min' => 'Rp55.000',
-                                'price_max' => 'Rp145.000',
-                            ],
-                            [
-                                'title' => 'Kecerdasan Buatan Modern',
-                                'author' => 'Dr. Hendra Wijaya',
-                                'price_min' => 'Rp55.000',
-                                'price_max' => 'Rp145.000',
-                            ],
-                        ];
-                    @endphp
 
-                    @foreach ($similar as $book)
-                        <div class="kt-card">
-                            <div class="kt-card-content flex flex-col justify-between p-2.5 gap-3">
-                                <div>
-                                    {{-- Gambar --}}
-                                    <div class="kt-card relative bg-accent/50 w-full mb-3 shadow-none overflow-hidden"
-                                        data-kt-context-menu="true" data-kt-context-menu-trigger="true">
-                                        <img
-                                            alt=""
-                                            class="w-full cursor-pointer object-cover block"
-                                            style="aspect-ratio: 1 / 1.41;"
-                                            data-kt-drawer-toggle="#drawers_shop_product_details"
-                                            src="https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg"
-                                        />
-                                        <div class="kt-context-menu w-56 hidden" data-kt-context-menu-menu="true">
-                                            <ul class="kt-context-menu-sub">
-                                                <li><button class="kt-context-menu-link" data-kt-context-menu-dismiss="true" data-kt-drawer-toggle="#drawers_shop_product_details" type="button">Quick View</button></li>
-                                                <li><button class="kt-context-menu-link" data-kt-context-menu-dismiss="true" data-kt-drawer-toggle="#drawers_shop_cart" type="button">Add to Cart</button></li>
-                                                <li class="kt-context-menu-separator"></li>
-                                                <li><button class="kt-context-menu-link" data-kt-context-menu-dismiss="true" type="button">Add to Wishlist</button></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-
-                                    {{-- Judul 1 baris + elipsis --}}
-                                    <a class="hover:text-primary text-sm font-medium text-mono px-2.5 block truncate"
-                                        data-kt-drawer-toggle="#drawers_shop_product_details"
-                                        title="Cloud Shift Lightweight Runner Pro Edition"
-                                        href="#">
-                                        Cloud Shift Lightweight Runner Pro Edition
-                                    </a>
-
-                                    {{-- Penulis --}}
-                                    <p class="text-xs text-muted-foreground px-2.5 mt-0.5 truncate">
-                                        @php $authors = ['Budi Santoso', 'Rina Marlina', 'Ahmad Fauzi']; @endphp
-                                        {{ $authors[0] }}{{ count($authors) > 1 ? ', dkk' : '' }}
-                                    </p>
-                                </div>
-
-                                {{-- Harga + Tombol --}}
-                                <div class="flex flex-col gap-2 px-2.5 pb-1">
-                                    {{-- Harga --}}
-                                    <p class="text-sm font-semibold text-mono">
-                                        Rp10.000
-                                        <span class="text-muted-foreground font-normal">-</span>
-                                        Rp15.000
-                                    </p>
-
-                                    {{-- Tombol --}}
-                                    <div class="flex items-center gap-1.5">
-                                        <a href="#"
-                                            class="kt-btn kt-btn-outline kt-btn-sm flex-1"
-                                            data-kt-drawer-toggle="#drawers_shop_product_details">
-                                            <i class="ki-filled ki-eye"></i>
-                                            Detail
-                                        </a>
-                                        <button
-                                            class="kt-btn kt-btn-primary kt-btn-sm"
-                                            data-kt-drawer-toggle="#drawers_shop_cart">
-                                            <i class="ki-filled ki-handcart"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @foreach ($individualPackages as $package)
+                        <div class="bg-white border border-gray-200 rounded-[2.5rem] p-8 flex flex-col hover:border-primary/30 shadow-sm hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 group relative">
+                            <div class="flex justify-between items-start mb-8">
+                                <h4 class="text-xl font-bold text-gray-900 group-hover:text-primary transition-colors">{{ $package->name }}</h4>
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-full">
+                                    {{ $package->max_authors_default }} Penulis
+                                </span>
                             </div>
+                            
+                            <div class="mb-8">
+                                <span class="text-sm font-bold text-gray-400">Mulai dari</span>
+                                <div class="text-3xl font-black text-primary tracking-tight mt-1">
+                                    Rp{{ number_format($package->price, 0, ',', '.') }}
+                                </div>
+                            </div>
+
+                            <ul class="space-y-4 mb-10 flex-grow">
+                                @foreach($package->benefits->take(5) as $benefit)
+                                    <li class="flex items-start gap-3">
+                                        <i class="ki-filled ki-check-circle text-green-500 text-xl"></i>
+                                        <span class="text-sm font-medium text-gray-600 transition-colors">{{ $benefit->benefit_name }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+
+                            <a href="{{ route('individual-books.purchase', $package) }}" class="w-full py-4 bg-primary text-white font-bold rounded-2xl text-center shadow-lg shadow-primary/20 hover:scale-[1.03] active:scale-95 transition-all">
+                                Pilih Paket
+                            </a>
                         </div>
                     @endforeach
                 </div>
@@ -234,258 +160,142 @@
         </div>
 
         <!-- =========================================
-             4. BUKU TERBARU
+             5. BUKU TERBARU & TERLARIS (Restored Banners)
         ========================================== -->
-        <div class="flex flex-col gap-5 mb-12">
-            <div class="flex items-center justify-between gap-4">
-                <div class="flex flex-col gap-0.5">
-                    <h3 class="text-xl md:text-2xl text-mono font-semibold">
-                        Buku Terbaru
-                    </h3>
-                    <p class="text-muted text-sm">Rilisan baru dengan kualitas isi terbaik untuk pengalaman membaca yang istimewa. </p>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
+            <!-- Terbaru -->
+            <div class="flex flex-col gap-6">
+                <div class="flex items-center justify-between border-b border-gray-100 pb-5">
+                    <h3 class="text-2xl font-black text-gray-900">Rilisan Terbaru</h3>
+                    <a href="{{ route('catalog') }}" class="text-sm font-bold text-primary hover:underline">Semua</a>
                 </div>
-                <a href="#" class="text-xs md:text-sm font-semibold text-primary hover:underline flex items-center gap-1 whitespace-nowrap">
-                    Lihat semua <i class="ki-filled ki-arrow-right text-xs"></i>
-                </a>
+                <div class="flex flex-col sm:flex-row gap-6">
+                    <div class="w-full sm:w-48 shrink-0">
+                         <img src="https://www.bukuloka.com/_app/immutable/assets/new-release-1.quzve9Cc.png" alt="New" class="w-full h-full object-cover rounded-3xl shadow-md border-4 border-gray-50">
+                    </div>
+                    <div class="flex-grow grid grid-cols-2 gap-4">
+                        @foreach ($latestBooks->take(4) as $book)
+                            @include('landing.pages.home.partials.book-mini-card', ['book' => $book])
+                        @endforeach
+                    </div>
+                </div>
             </div>
 
-            <div class="flex flex-col lg:flex-row gap-4 lg:gap-5">
-                <div class="w-full lg:w-[220px] xl:w-[250px] flex-shrink-0">
-                    <img src="https://www.bukuloka.com/_app/immutable/assets/new-release-1.quzve9Cc.png" alt="" class="w-full h-full lg:h-full object-cover rounded-md">
+            <!-- Terlaris -->
+            <div class="flex flex-col gap-6">
+                <div class="flex items-center justify-between border-b border-gray-100 pb-5">
+                    <h3 class="text-2xl font-black text-gray-900">Buku Terlaris</h3>
+                    <a href="{{ route('catalog') }}" class="text-sm font-bold text-primary hover:underline">Semua</a>
                 </div>
-                <div class="flex-grow grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
-                    @php
-                        $similar = [
-                            [
-                                'title' => 'Algoritma & Struktur Data',
-                                'author' => 'Budi Santoso',
-                                'price_min' => 'Rp40.000',
-                                'price_max' => 'Rp110.000',
-                            ],
-                            [
-                                'title' => 'Pemrograman Python untuk Pemula',
-                                'author' => 'Rina Marlina, dkk',
-                                'price_min' => 'Rp35.000',
-                                'price_max' => 'Rp95.000',
-                            ],
-                            [
-                                'title' => 'Jaringan Komputer Terapan',
-                                'author' => 'Ahmad Fauzi',
-                                'price_min' => 'Rp50.000',
-                                'price_max' => 'Rp130.000',
-                            ],
-                            [
-                                'title' => 'Kecerdasan Buatan Modern',
-                                'author' => 'Dr. Hendra Wijaya',
-                                'price_min' => 'Rp55.000',
-                                'price_max' => 'Rp145.000',
-                            ],
-                            [
-                                'title' => 'Kecerdasan Buatan Modern',
-                                'author' => 'Dr. Hendra Wijaya',
-                                'price_min' => 'Rp55.000',
-                                'price_max' => 'Rp145.000',
-                            ],
-                        ];
-                    @endphp
-
-                    @foreach ($similar as $book)
-                        <div class="kt-card">
-                            <div class="kt-card-content flex flex-col justify-between p-2.5 gap-3">
-                                <div>
-                                    {{-- Gambar --}}
-                                    <div class="kt-card relative bg-accent/50 w-full mb-3 shadow-none overflow-hidden"
-                                        data-kt-context-menu="true" data-kt-context-menu-trigger="true">
-                                        <img
-                                            alt=""
-                                            class="w-full cursor-pointer object-cover block"
-                                            style="aspect-ratio: 1 / 1.41;"
-                                            data-kt-drawer-toggle="#drawers_shop_product_details"
-                                            src="https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg"
-                                        />
-                                        <div class="kt-context-menu w-56 hidden" data-kt-context-menu-menu="true">
-                                            <ul class="kt-context-menu-sub">
-                                                <li><button class="kt-context-menu-link" data-kt-context-menu-dismiss="true" data-kt-drawer-toggle="#drawers_shop_product_details" type="button">Quick View</button></li>
-                                                <li><button class="kt-context-menu-link" data-kt-context-menu-dismiss="true" data-kt-drawer-toggle="#drawers_shop_cart" type="button">Add to Cart</button></li>
-                                                <li class="kt-context-menu-separator"></li>
-                                                <li><button class="kt-context-menu-link" data-kt-context-menu-dismiss="true" type="button">Add to Wishlist</button></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-
-                                    {{-- Judul 1 baris + elipsis --}}
-                                    <a class="hover:text-primary text-sm font-medium text-mono px-2.5 block truncate"
-                                        data-kt-drawer-toggle="#drawers_shop_product_details"
-                                        title="Cloud Shift Lightweight Runner Pro Edition"
-                                        href="#">
-                                        Cloud Shift Lightweight Runner Pro Edition
-                                    </a>
-
-                                    {{-- Penulis --}}
-                                    <p class="text-xs text-muted-foreground px-2.5 mt-0.5 truncate">
-                                        @php $authors = ['Budi Santoso', 'Rina Marlina', 'Ahmad Fauzi']; @endphp
-                                        {{ $authors[0] }}{{ count($authors) > 1 ? ', dkk' : '' }}
-                                    </p>
-                                </div>
-
-                                {{-- Harga + Tombol --}}
-                                <div class="flex flex-col gap-2 px-2.5 pb-1">
-                                    {{-- Harga --}}
-                                    <p class="text-sm font-semibold text-mono">
-                                        Rp10.000
-                                        <span class="text-muted-foreground font-normal">-</span>
-                                        Rp15.000
-                                    </p>
-
-                                    {{-- Tombol --}}
-                                    <div class="flex items-center gap-1.5">
-                                        <a href="#"
-                                            class="kt-btn kt-btn-outline kt-btn-sm flex-1"
-                                            data-kt-drawer-toggle="#drawers_shop_product_details">
-                                            <i class="ki-filled ki-eye"></i>
-                                            Detail
-                                        </a>
-                                        <button
-                                            class="kt-btn kt-btn-primary kt-btn-sm"
-                                            data-kt-drawer-toggle="#drawers_shop_cart">
-                                            <i class="ki-filled ki-handcart"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    @endforeach
+                <div class="flex flex-col sm:flex-row gap-6">
+                    <div class="w-full sm:w-48 shrink-0">
+                         <img src="https://www.bukuloka.com/_app/immutable/assets/new-release-1.quzve9Cc.png" alt="Best" class="w-full h-full object-cover rounded-3xl shadow-md border-4 border-gray-50">
+                    </div>
+                    <div class="flex-grow grid grid-cols-2 gap-4">
+                        @foreach ($bestSellingBooks->take(4) as $book)
+                            @include('landing.pages.home.partials.book-mini-card', ['book' => $book])
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- =========================================
-             5. BUKU TERLARIS
+             6. BUKU KOLABORASI
         ========================================== -->
-        <div class="flex flex-col gap-5 mb-12">
-            <div class="flex items-center justify-between gap-4">
-                <div class="flex flex-col gap-0.5">
-                    <h3 class="text-xl md:text-2xl text-mono font-semibold">
-                        Buku Terlaris
-                    </h3>
-                    <p class="text-muted text-sm">Buku unggulan dengan antusiasme pembaca yang luar biasa </p>
+        <div class="flex flex-col gap-6 mb-16">
+            <div class="flex items-end justify-between border-b border-gray-100 pb-5">
+                <div class="flex flex-col gap-1">
+                    <h3 class="text-2xl font-black text-gray-900 tracking-tight">Gabung Menulis Bersama</h3>
+                    <p class="text-gray-500 text-sm font-medium">Buku kolaborasi yang sedang mencari penulis berbakat.</p>
                 </div>
-                <a href="#" class="text-xs md:text-sm font-semibold text-primary hover:underline flex items-center gap-1 whitespace-nowrap">
-                    Lihat semua <i class="ki-filled ki-arrow-right text-xs"></i>
+                <a href="{{ route('collaboration') }}" class="text-sm font-bold text-primary hover:underline whitespace-nowrap">
+                    Lihat Semua <i class="ki-filled ki-arrow-right text-base"></i>
                 </a>
             </div>
 
-            <div class="flex flex-col lg:flex-row gap-4 lg:gap-5">
-                <div class="w-full lg:w-[220px] xl:w-[250px] flex-shrink-0">
-                    <img src="https://www.bukuloka.com/_app/immutable/assets/new-release-1.quzve9Cc.png" alt="" class="w-full h-full lg:h-full object-cover rounded-md">
-                </div>
-                <div class="flex-grow grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
-                    @php
-                        $similar = [
-                            [
-                                'title' => 'Algoritma & Struktur Data',
-                                'author' => 'Budi Santoso',
-                                'price_min' => 'Rp40.000',
-                                'price_max' => 'Rp110.000',
-                            ],
-                            [
-                                'title' => 'Pemrograman Python untuk Pemula',
-                                'author' => 'Rina Marlina, dkk',
-                                'price_min' => 'Rp35.000',
-                                'price_max' => 'Rp95.000',
-                            ],
-                            [
-                                'title' => 'Jaringan Komputer Terapan',
-                                'author' => 'Ahmad Fauzi',
-                                'price_min' => 'Rp50.000',
-                                'price_max' => 'Rp130.000',
-                            ],
-                            [
-                                'title' => 'Kecerdasan Buatan Modern',
-                                'author' => 'Dr. Hendra Wijaya',
-                                'price_min' => 'Rp55.000',
-                                'price_max' => 'Rp145.000',
-                            ],
-                            [
-                                'title' => 'Kecerdasan Buatan Modern',
-                                'author' => 'Dr. Hendra Wijaya',
-                                'price_min' => 'Rp55.000',
-                                'price_max' => 'Rp145.000',
-                            ],
-                        ];
-                    @endphp
-
-                    @foreach ($similar as $book)
-                        <div class="kt-card">
-                            <div class="kt-card-content flex flex-col justify-between p-2.5 gap-3">
-                                <div>
-                                    {{-- Gambar --}}
-                                    <div class="kt-card relative bg-accent/50 w-full mb-3 shadow-none overflow-hidden"
-                                        data-kt-context-menu="true" data-kt-context-menu-trigger="true">
-                                        <img
-                                            alt=""
-                                            class="w-full cursor-pointer object-cover block"
-                                            style="aspect-ratio: 1 / 1.41;"
-                                            data-kt-drawer-toggle="#drawers_shop_product_details"
-                                            src="https://azzia.id/storage/book/cover/tR5UGfQnem2mthYFC1LkVjXHOAs6exhKUAdrpt4L.jpg"
-                                        />
-                                        <div class="kt-context-menu w-56 hidden" data-kt-context-menu-menu="true">
-                                            <ul class="kt-context-menu-sub">
-                                                <li><button class="kt-context-menu-link" data-kt-context-menu-dismiss="true" data-kt-drawer-toggle="#drawers_shop_product_details" type="button">Quick View</button></li>
-                                                <li><button class="kt-context-menu-link" data-kt-context-menu-dismiss="true" data-kt-drawer-toggle="#drawers_shop_cart" type="button">Add to Cart</button></li>
-                                                <li class="kt-context-menu-separator"></li>
-                                                <li><button class="kt-context-menu-link" data-kt-context-menu-dismiss="true" type="button">Add to Wishlist</button></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-
-                                    {{-- Judul 1 baris + elipsis --}}
-                                    <a class="hover:text-primary text-sm font-medium text-mono px-2.5 block truncate"
-                                        data-kt-drawer-toggle="#drawers_shop_product_details"
-                                        title="Cloud Shift Lightweight Runner Pro Edition"
-                                        href="#">
-                                        Cloud Shift Lightweight Runner Pro Edition
-                                    </a>
-
-                                    {{-- Penulis --}}
-                                    <p class="text-xs text-muted-foreground px-2.5 mt-0.5 truncate">
-                                        @php $authors = ['Budi Santoso', 'Rina Marlina', 'Ahmad Fauzi']; @endphp
-                                        {{ $authors[0] }}{{ count($authors) > 1 ? ', dkk' : '' }}
-                                    </p>
-                                </div>
-
-                                {{-- Harga + Tombol --}}
-                                <div class="flex flex-col gap-2 px-2.5 pb-1">
-                                    {{-- Harga --}}
-                                    <p class="text-sm font-semibold text-mono">
-                                        Rp10.000
-                                        <span class="text-muted-foreground font-normal">-</span>
-                                        Rp15.000
-                                    </p>
-
-                                    {{-- Tombol --}}
-                                    <div class="flex items-center gap-1.5">
-                                        <a href="#"
-                                            class="kt-btn kt-btn-outline kt-btn-sm flex-1"
-                                            data-kt-drawer-toggle="#drawers_shop_product_details">
-                                            <i class="ki-filled ki-eye"></i>
-                                            Detail
-                                        </a>
-                                        <button
-                                            class="kt-btn kt-btn-primary kt-btn-sm"
-                                            data-kt-drawer-toggle="#drawers_shop_cart">
-                                            <i class="ki-filled ki-handcart"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5">
+                @foreach ($books as $book)
+                    @include('landing.pages.home.partials.collab-card', ['book' => $book])
+                @endforeach
             </div>
         </div>
 
     </div>
+
+    <!-- Restored & Enhanced CTA -->
+    <section class="bg-gray-900 py-16 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(var(--primary-rgb),0.15),transparent_50%)]"></div>
+        <div class="kt-container-fixed relative z-10">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-10">
+                <div class="text-center lg:text-left">
+                    <h3 class="text-3xl font-black text-white mb-4 italic">Mendukung Perjalanan Literasimu.</h3>
+                    <p class="text-gray-400 text-lg font-medium max-w-xl">Punya naskah yang ingin diterbitkan? Atau ingin berkolaborasi dengan komunitas kami? Hubungi tim kami sekarang.</p>
+                </div>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="https://wa.me/6282333390205" target="_blank" class="px-10 py-5 bg-green-500 hover:bg-green-600 text-white font-black rounded-2xl shadow-2xl shadow-green-500/20 flex items-center gap-3 transition-all hover:scale-105">
+                        <i class="ki-filled ki-whatsapp text-3xl"></i> Hubungi WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Style for animations -->
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
+        .animate-pulse-slow { animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .animate-bounce-slow { animation: bounce 3s infinite; }
+    </style>
 @endsection
+
+@push('js')
+<script>
+$(document).ready(function() {
+    $('.add-to-cart-btn').on('click', function(e) {
+        e.preventDefault();
+        @guest window.location.href = "{{ route('login') }}"; return; @endguest
+
+        let btn = $(this);
+        let icon = btn.find('i');
+        let originalClass = icon.attr('class');
+
+        btn.prop('disabled', true);
+        icon.attr('class', 'ki-filled ki-arrows-circle animate-spin text-lg');
+
+        $.ajax({
+            url: '{{ route('cart.add') }}',
+            method: 'POST',
+            data: { _token: '{{ csrf_token() }}', book_id: btn.data('book-id') },
+            success: function() {
+                icon.attr('class', 'ki-filled ki-check text-lg');
+                btn.addClass('bg-green-500 border-green-500').removeClass('bg-primary border-primary');
+                setTimeout(() => {
+                    btn.prop('disabled', false);
+                    icon.attr('class', originalClass);
+                    btn.addClass('bg-primary border-primary').removeClass('bg-green-500 border-green-500');
+                }, 2000);
+            },
+            error: function() {
+                icon.attr('class', 'ki-filled ki-cross text-lg');
+                btn.addClass('bg-red-500 border-red-500').removeClass('bg-primary border-primary');
+                setTimeout(() => {
+                    btn.prop('disabled', false);
+                    icon.attr('class', originalClass);
+                    btn.addClass('bg-primary border-primary').removeClass('bg-red-500 border-red-500');
+                }, 2000);
+            }
+        });
+    });
+});
+</script>
+@endpush

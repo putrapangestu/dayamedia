@@ -5,7 +5,7 @@
         <div class="container-fluid">
           <x-header-page
             title="Editor"
-            description="List editor yang terdaftar di Azzia"
+            description="List editor yang terdaftar di Daya Media"
             >
             <x-slot:actions>
                 <a href="{{ route('admin.editor.create') }}" class="btn btn-primary">

@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
-        config(['app.name' => 'Penerbit Azzia']);
+        config(['app.name' => 'Daya Media']);
         Carbon::setLocale('id');
     }
 }

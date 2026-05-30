@@ -5,7 +5,7 @@
         <div class="container-fluid">
           <x-header-page
             title="Kategori Buku"
-            description="List kategori buku yang terdaftar di Azzia"
+            description="List kategori buku yang terdaftar di Daya Media"
             >
             <x-slot:actions>
                 <a href="{{ route('admin.category.create') }}" class="btn btn-primary">

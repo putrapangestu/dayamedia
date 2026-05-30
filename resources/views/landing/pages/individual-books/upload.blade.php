@@ -1,230 +1,181 @@
 @extends('landing.layouts.app')
 
-@push('css')
-    <!-- Select2 CSS -->
-    <link href="{{ asset('assets/dashboard/libs/select2/dist/css/select2.min.css') }}" rel="stylesheet" />
-    <style>
-        .select2-container .select2-selection--single {
-            height: 3.25rem;
-            border-radius: 0.75rem;
-            border: 1px solid #dee2e6;
-            display: flex;
-            align-items: center;
-            padding: 0 0.75rem;
-        }
-        .select2-container--default .select2-selection--single .select2-selection__rendered {
-            line-height: normal;
-            padding-left: 0;
-            color: #212529;
-        }
-        .select2-container--default .select2-selection--single .select2-selection__arrow {
-            height: 100%;
-            right: 0.75rem;
-        }
-        .select2-container--default.select2-container--focus .select2-selection--single {
-            border-color: var(--bs-primary);
-            box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
-            outline: 0;
-        }
-        .custom-card {
-            border-radius: 1rem;
-            box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
-            border: 1px solid rgba(0,0,0,.125);
-            overflow: hidden;
-        }
-        .custom-card-header {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid rgba(0,0,0,.125);
-            padding: 1.5rem;
-        }
-        .form-control, .form-select {
-            border-radius: 0.75rem;
-            padding: 0.75rem 1.25rem;
-            min-height: 3.25rem;
-        }
-        .form-control:focus, .form-select:focus {
-            box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
-            border-color: var(--bs-primary);
-        }
-        .btn-custom {
-            border-radius: 0.75rem;
-            padding: 0.75rem 2rem;
-            font-weight: 600;
-        }
-        .section-title {
-            border-left: 4px solid var(--bs-primary);
-            padding-left: 0.75rem;
-            font-weight: bold;
-            color: #212529;
-            margin-bottom: 1.5rem;
-        }
-        .section-title-success {
-            border-left-color: var(--bs-success);
-        }
-    </style>
-@endpush
+@section('title', 'Upload Naskah - Daya Media')
 
 @section('content')
-<div class="bg-light py-5 min-vh-100">
-    <div class="container" style="max-width: 1000px;">
-        <div class="text-center mb-5">
-            <h1 class="h2 fw-bold text-dark mb-2">Unggah Naskah Buku Individu</h1>
-            <p class="text-muted">Lengkapi data buku Anda untuk memulai proses editorial.</p>
+<div class="bg-gray-50/50 min-h-screen pb-20 pt-10">
+    <div class="kt-container-fixed">
+        
+        {{-- ===== BREADCRUMB ===== --}}
+        <div class="flex items-center gap-2 text-sm font-medium mb-10">
+            <a href="{{ route('home') }}" class="text-gray-500 hover:text-primary transition-colors">Beranda</a>
+            <i class="ki-filled ki-right text-[10px] text-gray-400"></i>
+            <a href="{{ route('member') }}" class="text-gray-500 hover:text-primary transition-colors">Akun Saya</a>
+            <i class="ki-filled ki-right text-[10px] text-gray-400"></i>
+            <span class="text-gray-900">Upload Naskah</span>
         </div>
 
-        <div class="card custom-card border-0">
-            <div class="custom-card-header d-flex justify-content-between align-items-center bg-primary bg-opacity-10 border-bottom-0">
-                <div class="d-flex align-items-center">
-                    <iconify-icon icon="solar:bill-list-bold" class="text-primary fs-1 me-3"></iconify-icon>
-                    <div>
-                        <p class="small fw-bold text-primary text-uppercase tracking-widest mb-0">Transaksi Terkonfirmasi</p>
-                        <h4 class="h5 fw-bold text-dark mb-0">{{ $transaction->transaction_code }}</h4>
-                    </div>
-                </div>
-                <div class="text-end">
-                    <p class="small text-muted mb-0">Paket</p>
-                    <p class="fw-bold text-dark mb-0">{{ $transaction->individualBookPackage?->name }}</p>
-                </div>
-            </div>
-
-            <div class="card-body p-4 p-md-5">
-                <form action="{{ route('individual-books.upload.store', $transaction) }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-
-                    <div class="row g-5">
-                        <div class="col-md-6">
-                            <h3 class="h5 section-title">Informasi Buku</h3>
-
-                            <div class="mb-4">
-                                <label class="form-label fw-bold text-dark">Judul Buku <span class="text-danger">*</span></label>
-                                <input type="text" name="title" value="{{ old('title', $book?->title ?? "") }}"
-                                       class="form-control"
-                                       placeholder="Masukkan judul lengkap buku" required />
+        <div class="max-w-[900px] mx-auto">
+            <div class="bg-white border border-gray-100 rounded-[3rem] shadow-xl shadow-gray-200/40 overflow-hidden">
+                
+                <!-- Header Section -->
+                <div class="p-8 sm:p-12 border-b border-gray-100 bg-primary/[0.02] relative">
+                    <div class="absolute top-0 right-0 size-40 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                    
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
+                        <div class="flex items-center gap-4">
+                            <div class="size-16 rounded-[1.5rem] bg-primary text-white flex items-center justify-center shadow-xl shadow-primary/30">
+                                <i class="ki-filled ki-file-up text-4xl"></i>
                             </div>
-
-                            <div class="mb-4">
-                                <label class="form-label fw-bold text-dark">Kategori <span class="text-danger">*</span></label>
-                                <select name="category_id" id="categorySelect" class="form-select" required>
-                                    <option value=""></option>
-                                    @foreach($categories as $cat)
-                                        <option value="{{ $cat->id }}" @selected(old('category_id', $book?->category_id ?? "") == $cat->id)>{{ $cat->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="form-label fw-bold text-dark">Deskripsi / Abstrak <span class="text-danger">*</span></label>
-                                <textarea name="description" rows="5"
-                                          class="form-control"
-                                          placeholder="Tuliskan deskripsi singkat atau abstrak buku Anda..." required>{{ old('description', $book?->description ?? "") }}</textarea>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <h3 class="h5 section-title section-title-success">Berkas & Penulis</h3>
-
-                            <div class="p-4 bg-light rounded-3 border mb-4">
-                                @if($modules?->file_path)
-                                    <div class="mb-3">
-                                        <a href="{{ asset('storage/' . $modules?->file_path) }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                                            <i class="ti ti-file-text"></i> Lihat File Saat Ini
-                                        </a>
-                                    </div>
-                                @endif
-
-                                <div class="mb-4">
-                                    <x-dropzone
-                                        name="full_content"
-                                        label="File Naskah"
-                                        accept="application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                                        :maxSize="10"
-                                        :required="!$modules?->file_path"
-                                        helperText="Upload file naskah (DOC, DOCX - Max: 10MB)"
-                                    />
-                                </div>
-
-                                @if($modules?->file_path_turnitin)
-                                    <div class="mb-3">
-                                        <a href="{{ asset('storage/' . $modules?->file_path_turnitin) }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                                            <i class="ti ti-file-text"></i> Lihat File Turnitin Saat Ini
-                                        </a>
-                                    </div>
-                                @endif
-
-                                <div>
-                                    <x-dropzone
-                                        name="turnitin_file"
-                                        label="File Turnitin"
-                                        accept="application/pdf"
-                                        :maxSize="5"
-                                        :required="!$modules?->file_path_turnitin"
-                                        helperText="Upload file turnitin (PDF - Max: 5MB)"
-                                    />
-                                </div>
-                            </div>
-
                             <div>
-                                @php
-                                    $maxDefault = $transaction->individualBookPackage->max_authors_default ?? 3;
-                                    $extraAuthors = $transaction->additional_authors_count ?? 0;
-                                    $totalAuthors = $maxDefault + $extraAuthors;
-                                @endphp
-                                <label class="form-label fw-bold text-dark d-flex justify-content-between align-items-center">
-                                    <span>Penulis Buku (Total: {{ $totalAuthors }} Slot)</span>
-                                </label>
-                                <div id="authorsContainer" class="d-flex flex-column gap-3 mt-2">
-                                    {{-- Penulis Pertama (User Login) --}}
-                                    <div>
-                                        <label class="form-label small text-muted fw-semibold mb-1">Penulis 1 (Utama)</label>
-                                        <input type="text"
-                                               class="form-control bg-light text-muted"
-                                               value="{{ auth()->user()->full_name }}" readonly />
-                                    </div>
+                                <h1 class="text-2xl font-black text-gray-900 tracking-tight">Upload Naskah</h1>
+                                <p class="text-sm font-medium text-gray-500 mt-1 uppercase tracking-widest">Transaksi: <span class="text-primary font-black">{{ $transaction->transaction_code }}</span></p>
+                            </div>
+                        </div>
+                        <div class="px-4 py-2 bg-white border border-gray-200 rounded-xl shadow-sm">
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Paket Anda</p>
+                            <p class="text-sm font-bold text-gray-900 leading-none">{{ $transaction->individualBookPackage->name }}</p>
+                        </div>
+                    </div>
+                </div>
 
-                                    {{-- Penulis Tambahan --}}
-                                    @for($i = 2; $i <= $totalAuthors; $i++)
-                                        <div>
-                                            <label class="form-label small text-muted fw-semibold mb-1">Penulis {{ $i }} (Opsional)</label>
-                                            <input type="text" name="additional_authors[]"
-                                                value="{{ $authors[$i-1]["author"] ?? "" }}"
-                                                class="form-control"
-                                                placeholder="Nama penulis ke-{{ $i }}" />
-                                        </div>
-                                    @endfor
+                <!-- Form Section -->
+                <div class="p-8 sm:p-12">
+                    <form action="{{ route('individual-books.upload.store', $transaction) }}" method="POST" enctype="multipart/form-data" class="space-y-10">
+                        @csrf
+                        
+                        <!-- Section 1: Detail Buku -->
+                        <div class="space-y-6">
+                            <h3 class="text-sm font-black text-primary uppercase tracking-[0.3em] flex items-center gap-3">
+                                <div class="w-8 h-px bg-primary/30"></div> 01. Detail Identitas Buku
+                            </h3>
+                            
+                            <div class="grid grid-cols-1 gap-6">
+                                <div class="flex flex-col gap-2">
+                                    <label class="text-xs font-bold text-gray-700 uppercase tracking-widest ml-1">Judul Lengkap Naskah <span class="text-red-500">*</span></label>
+                                    <input type="text" name="title" value="{{ old('title', $book->title ?? '') }}" required
+                                        class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-bold focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all" placeholder="Masukkan judul buku Anda...">
+                                </div>
+
+                                <div class="flex flex-col gap-2">
+                                    <label class="text-xs font-bold text-gray-700 uppercase tracking-widest ml-1">Kategori Buku <span class="text-red-500">*</span></label>
+                                    <select name="category_id" required class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-bold focus:bg-white transition-all appearance-none cursor-pointer">
+                                        <option value="">Pilih Kategori...</option>
+                                        @foreach($categories as $cat)
+                                            <option value="{{ $cat->id }}" {{ old('category_id', $book->category_id ?? '') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="flex flex-col gap-2">
+                                    <label class="text-xs font-bold text-gray-700 uppercase tracking-widest ml-1">Abstrak / Deskripsi Singkat <span class="text-red-500">*</span></label>
+                                    <textarea name="description" rows="5" required
+                                        class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-medium focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all" placeholder="Tuliskan ringkasan isi buku Anda di sini...">{{ old('description', $book->description ?? '') }}</textarea>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="pt-4 mt-4 border-top d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
-                        <div class="d-flex align-items-center text-warning bg-warning bg-opacity-10 px-3 py-2 rounded-3 border border-warning border-opacity-25 w-100 w-md-auto">
-                            <iconify-icon icon="solar:info-circle-bold" class="me-2 fs-4 flex-shrink-0"></iconify-icon>
-                            <p class="small mb-0">Pastikan data sudah benar. Setelah diunggah, naskah akan masuk ke proses editorial.</p>
+                        <!-- Section 2: Penulis Tambahan -->
+                        @if($transaction->additional_authors_count > 0)
+                        <div class="space-y-6">
+                            <h3 class="text-sm font-black text-primary uppercase tracking-[0.3em] flex items-center gap-3">
+                                <div class="w-8 h-px bg-primary/30"></div> 02. Penulis Tambahan
+                            </h3>
+                            <p class="text-xs font-medium text-gray-500 -mt-2 ml-11">Sesuai pesanan Anda, silakan lengkapi {{ $transaction->additional_authors_count }} nama penulis tambahan.</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                @for($i = 0; $i < $transaction->additional_authors_count; $i++)
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Nama Penulis {{ $i + 1 }}</label>
+                                        <input type="text" name="additional_authors[]" value="{{ old('additional_authors.'.$i, $authors[$i]['author'] ?? '') }}"
+                                            class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold focus:bg-white transition-all" placeholder="Nama Lengkap & Gelar">
+                                    </div>
+                                @endfor
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-custom shadow-sm d-flex align-items-center justify-content-center w-100 w-md-auto">
-                            <iconify-icon icon="solar:cloud-upload-bold" class="me-2 fs-4"></iconify-icon>
-                            Mulai Proses Editorial
-                        </button>
-                    </div>
-                </form>
+                        @endif
+
+                        <!-- Section 3: File Upload -->
+                        <div class="space-y-6">
+                            <h3 class="text-sm font-black text-primary uppercase tracking-[0.3em] flex items-center gap-3">
+                                <div class="w-8 h-px bg-primary/30"></div> 0{{ $transaction->additional_authors_count > 0 ? '3' : '2' }}. Upload File Naskah
+                            </h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <!-- Full Content -->
+                                <div class="space-y-3">
+                                    <label class="text-xs font-bold text-gray-700 uppercase tracking-widest ml-1 flex justify-between">
+                                        Naskah Lengkap <span class="text-red-500 text-[10px] normal-case font-medium">(PDF/DOCX)</span>
+                                    </label>
+                                    <div class="relative group cursor-pointer border-2 border-dashed border-gray-200 rounded-3xl p-8 text-center hover:border-primary/50 hover:bg-primary/[0.02] transition-all duration-300">
+                                        <input type="file" name="full_content" class="absolute inset-0 opacity-0 cursor-pointer z-10 file-input" accept=".pdf,.doc,.docx" {{ isset($modules->file_path) ? '' : 'required' }}>
+                                        <div class="space-y-3 placeholder-view">
+                                            <i class="ki-filled ki-document text-4xl text-gray-300 group-hover:text-primary transition-colors"></i>
+                                            <p class="text-sm font-bold text-gray-700">Pilih File Naskah</p>
+                                        </div>
+                                        <div class="hidden preview-view space-y-2">
+                                            <i class="ki-filled ki-file-added text-4xl text-green-500"></i>
+                                            <p class="text-xs font-black text-green-600 truncate px-4 file-name-display"></p>
+                                        </div>
+                                    </div>
+                                    @if(isset($modules->file_path))
+                                        <p class="text-[10px] text-green-600 font-bold ml-1 flex items-center gap-1"><i class="ki-filled ki-check-circle"></i> File naskah sudah terupload</p>
+                                    @endif
+                                </div>
+
+                                <!-- Turnitin -->
+                                <div class="space-y-3">
+                                    <label class="text-xs font-bold text-gray-700 uppercase tracking-widest ml-1 flex justify-between">
+                                        Hasil Turnitin <span class="text-gray-400 text-[10px] normal-case font-medium">(Opsional)</span>
+                                    </label>
+                                    <div class="relative group cursor-pointer border-2 border-dashed border-gray-200 rounded-3xl p-8 text-center hover:border-primary/50 hover:bg-primary/[0.02] transition-all duration-300">
+                                        <input type="file" name="turnitin_file" class="absolute inset-0 opacity-0 cursor-pointer z-10 file-input" accept=".pdf">
+                                        <div class="space-y-3 placeholder-view">
+                                            <i class="ki-filled ki-shield-search text-4xl text-gray-300 group-hover:text-primary transition-colors"></i>
+                                            <p class="text-sm font-bold text-gray-700">Laporan Turnitin</p>
+                                        </div>
+                                        <div class="hidden preview-view space-y-2">
+                                            <i class="ki-filled ki-file-added text-4xl text-green-500"></i>
+                                            <p class="text-xs font-black text-green-600 truncate px-4 file-name-display"></p>
+                                        </div>
+                                    </div>
+                                    @if(isset($modules->file_path_turnitin))
+                                        <p class="text-[10px] text-green-600 font-bold ml-1 flex items-center gap-1"><i class="ki-filled ki-check-circle"></i> File turnitin sudah terupload</p>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Actions -->
+                        <div class="pt-10 border-t border-gray-100 flex flex-col sm:flex-row items-center gap-4">
+                            <button type="submit" class="w-full sm:w-auto px-10 py-5 bg-primary text-white font-black rounded-2xl shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 text-lg group">
+                                <span>Simpan & Ajukan Editorial</span>
+                                <i class="ki-filled ki-send text-2xl group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
+                            </button>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest text-center sm:text-left">Pastikan semua data sudah benar sebelum mengirimkan naskah Anda.</p>
+                        </div>
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>
 </div>
-
 @endsection
 
 @push('js')
-<!-- Select2 JS -->
-<script src="{{ asset('assets/dashboard/libs/select2/dist/js/select2.full.min.js') }}"></script>
 <script>
     $(document).ready(function() {
-        $('#categorySelect').select2({
-            placeholder: "Pilih Kategori Buku",
-            allowClear: true,
-            width: '100%',
+        $('.file-input').on('change', function() {
+            const container = $(this).parent();
+            const file = this.files[0];
+            if (file) {
+                container.find('.placeholder-view').addClass('hidden');
+                container.find('.preview-view').removeClass('hidden');
+                container.find('.file-name-display').text(file.name);
+                container.addClass('border-green-300 bg-green-50/30');
+            }
         });
     });
 </script>
 @endpush
-

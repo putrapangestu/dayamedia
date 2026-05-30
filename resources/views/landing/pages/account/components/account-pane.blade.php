@@ -1,116 +1,174 @@
-<div class="row">
-    <div class="col-lg-4">        <div class="col-12">
-            <div class="card shadow-none border">
-            <div class="card-body">
-                <h4 class="mb-3">Reset Password</h4>
-                <form action="{{ route('account.password.update') }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="form-group mb-2">
-                        <label for="existing_password">Password Lama</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="existing_password"
-                                name="existing_password" placeholder="password">
-                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#existing_password">
-                                <i class="ti ti-eye"></i>
-                            </button>
-                        </div>
-                        @error('existing_password')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="form-group mb-2">
-                        <label for="new_password">Password Baru</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="new_password"
-                                name="new_password" placeholder="password">
-                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#new_password">
-                                <i class="ti ti-eye"></i>
-                            </button>
-                        </div>
-                        @error('new_password')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="form-group mb-2">
-                        <label for="new_password_confirmation">Konfirmasi Password Baru</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="new_password_confirmation"
-                                name="new_password_confirmation" placeholder="password">
-                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#new_password_confirmation">
-                                <i class="ti ti-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary w-100">Reset Password</button>
-                </form>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
+    <!-- 1. Informasi Profil -->
+    <div class="lg:col-span-8">
+        <div class="bg-white border border-gray-100 rounded-[2.5rem] shadow-sm overflow-hidden">
+            <div class="px-8 py-6 border-b border-gray-50 flex items-center gap-4 bg-primary/[0.02]">
+                <div class="size-10 rounded-xl bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20">
+                    <i class="ki-filled ki-user text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black text-gray-900 tracking-tight">Informasi Profil</h3>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Perbarui data diri dan kontak Anda</p>
+                </div>
             </div>
-        </div>
-        </div>
-    </div>
-    <div class="col-lg-8">
-        <div class="card shadow-none border">
-            <form action="{{ route('account.profile.update') }}" method="POST"
-                enctype="multipart/form-data">
+
+            <form action="{{ route('account.profile.update') }}" method="POST" enctype="multipart/form-data" class="p-8 sm:p-10 space-y-8">
                 @csrf
                 @method('PUT')
-                <div class="card-body row">
-                    <h4 class="mb-3">Informasi Pengguna</h4>
-                    <div class="col-md-4">
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="full_name"
-                                placeholder="Nama Lenkap" value="{{ old('full_name', $user->full_name) }}">
-                            <label>
-                                <i class="ti ti-user me-2 fs-4"></i>Nama Lenkap
-                            </label>
-                            @error('full_name')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Nama -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-bold text-gray-700 uppercase tracking-widest ml-1">Nama Lengkap</label>
+                        <input type="text" name="full_name" value="{{ old('full_name', $user->full_name) }}" 
+                            class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all" placeholder="Nama Lengkap">
+                        @error('full_name') <span class="text-red-500 text-[10px] font-bold ml-1">{{ $message }}</span> @enderror
+                    </div>
+
+                    <!-- Email -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-bold text-gray-700 uppercase tracking-widest ml-1">Alamat Email</label>
+                        <input type="email" name="email" value="{{ old('email', $user->email) }}" 
+                            class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all" placeholder="email@domain.com">
+                        @error('email') <span class="text-red-500 text-[10px] font-bold ml-1">{{ $message }}</span> @enderror
+                    </div>
+
+                    <!-- WhatsApp -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-bold text-gray-700 uppercase tracking-widest ml-1">No. WhatsApp</label>
+                        <div class="relative group">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-primary transition-colors">
+                                <i class="ki-filled ki-whatsapp text-xl"></i>
+                            </span>
+                            <input type="text" name="phone_number" value="{{ old('phone_number', $user->phone_number) }}" 
+                                class="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all" placeholder="08123456789">
+                        </div>
+                        @error('phone_number') <span class="text-red-500 text-[10px] font-bold ml-1">{{ $message }}</span> @enderror
+                    </div>
+
+                    <!-- Foto Profil -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-bold text-gray-700 uppercase tracking-widest ml-1">Foto Profil</label>
+                        <div class="relative group cursor-pointer border border-gray-200 rounded-xl p-2.5 bg-gray-50 hover:bg-white transition-all">
+                            <input type="file" name="photo" class="absolute inset-0 opacity-0 cursor-pointer z-10" onchange="previewAvatar(this)">
+                            <div class="flex items-center gap-3">
+                                <div id="avatar-input-preview" class="size-9 rounded-lg overflow-hidden border border-gray-200 bg-white">
+                                    <img src="{{ $user->photo ? asset('storage/' . $user->photo) : asset('assets/dashboard/images/profile/user-1.jpg') }}" class="w-full h-full object-cover">
+                                </div>
+                                <span class="text-xs font-bold text-gray-500">Klik untuk ganti foto</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-floating mb-3">
-                            <input type="email" class="form-control" name="email"
-                                placeholder="Email" value="{{ old('email', $user->email) }}">
-                            <label>
-                                <i class="ti ti-mail me-2 fs-4"></i>Email
-                            </label>
-                            @error('email')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="phone_number"
-                                placeholder="No Whatsapp" value="{{ old('phone_number', $user->phone_number) }}">
-                            <label>
-                                <i class="ti ti-phone me-2 fs-4"></i>No Whatsapp
-                            </label>
-                            @error('phone_number')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3">
-                            <textarea class="form-control h-140" name="address" placeholder="Alamat" id="address">{{ old('address', $user->address) }}</textarea>
-                            <label for="address"><i class="ti ti-home me-2 fs-4"> </i>Alamat</label>
-                            @error('address')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <x-dropzone name="photo" label="Foto Profil"
-                            helperText="Upload foto profil baru" />
-                        @error('photo')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <button class="btn btn-primary w-100">Simpan</button>
+                </div>
+
+                <!-- Alamat -->
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-bold text-gray-700 uppercase tracking-widest ml-1">Alamat Lengkap</label>
+                    <textarea name="address" rows="4" 
+                        class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all" placeholder="Masukkan alamat lengkap pengiriman...">{{ old('address', $user->address) }}</textarea>
+                    @error('address') <span class="text-red-500 text-[10px] font-bold ml-1">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="flex justify-end pt-4">
+                    <button type="submit" class="px-10 py-4 bg-primary text-white font-black rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.03] active:scale-95 transition-all flex items-center gap-2">
+                        <span>Simpan Perubahan</span>
+                        <i class="ki-filled ki-check text-xl"></i>
+                    </button>
                 </div>
             </form>
         </div>
     </div>
+
+    <!-- 2. Reset Password -->
+    <div class="lg:col-span-4">
+        <div class="bg-white border border-gray-100 rounded-[2.5rem] shadow-sm overflow-hidden sticky top-[180px]">
+            <div class="px-8 py-6 border-b border-gray-50 flex items-center gap-4 bg-yellow-500/[0.02]">
+                <div class="size-10 rounded-xl bg-yellow-500 text-white flex items-center justify-center shadow-lg shadow-yellow-500/20">
+                    <i class="ki-filled ki-lock text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black text-gray-900 tracking-tight">Keamanan</h3>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Perbarui kata sandi akun Anda</p>
+                </div>
+            </div>
+
+            <form action="{{ route('account.password.update') }}" method="POST" class="p-8 space-y-6">
+                @csrf
+                @method('PUT')
+
+                <!-- Current Password -->
+                <div class="flex flex-col gap-2">
+                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Password Lama</label>
+                    <div class="relative">
+                        <input type="password" name="existing_password" id="existing_password"
+                            class="w-full pl-4 pr-12 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold focus:bg-white transition-all" placeholder="••••••••">
+                        <button type="button" class="absolute inset-y-0 right-0 pr-4 text-gray-400 hover:text-primary toggle-password" data-target="#existing_password">
+                            <i class="ki-filled ki-eye"></i>
+                        </button>
+                    </div>
+                    @error('existing_password') <span class="text-red-500 text-[10px] font-bold ml-1">{{ $message }}</span> @enderror
+                </div>
+
+                <!-- New Password -->
+                <div class="flex flex-col gap-2">
+                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Password Baru</label>
+                    <div class="relative">
+                        <input type="password" name="new_password" id="new_password"
+                            class="w-full pl-4 pr-12 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold focus:bg-white transition-all" placeholder="••••••••">
+                        <button type="button" class="absolute inset-y-0 right-0 pr-4 text-gray-400 hover:text-primary toggle-password" data-target="#new_password">
+                            <i class="ki-filled ki-eye"></i>
+                        </button>
+                    </div>
+                    @error('new_password') <span class="text-red-500 text-[10px] font-bold ml-1">{{ $message }}</span> @enderror
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="flex flex-col gap-2">
+                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Konfirmasi Password Baru</label>
+                    <div class="relative">
+                        <input type="password" name="new_password_confirmation" id="new_password_confirmation"
+                            class="w-full pl-4 pr-12 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold focus:bg-white transition-all" placeholder="••••••••">
+                        <button type="button" class="absolute inset-y-0 right-0 pr-4 text-gray-400 hover:text-primary toggle-password" data-target="#new_password_confirmation">
+                            <i class="ki-filled ki-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-4 bg-gray-900 text-white font-black rounded-2xl shadow-xl hover:bg-black transition-all flex items-center justify-center gap-2">
+                    <span>Ganti Password</span>
+                    <i class="ki-filled ki-security-user text-xl"></i>
+                </button>
+            </form>
+        </div>
+    </div>
 </div>
+
+<script>
+    function previewAvatar(input) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.querySelector('#avatar-input-preview img').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    $(document).ready(function() {
+        $('.toggle-password').on('click', function() {
+            const target = $(this).data('target');
+            const input = $(target);
+            const icon = $(this).find('i');
+
+            if (input.attr('type') === 'password') {
+                input.attr('type', 'text');
+                icon.removeClass('ki-eye').addClass('ki-eye-slash');
+            } else {
+                input.attr('type', 'password');
+                icon.removeClass('ki-eye-slash').addClass('ki-eye');
+            }
+        });
+    });
+</script>

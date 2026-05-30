@@ -136,7 +136,7 @@ class AuthController extends Controller
             'expires_at' => now()->addMinutes(10),
         ]);
 
-        $message = "Kode OTP reset password Azzia: {$code}. Berlaku 10 menit. Jaga kerahasiaan kode ini.";
+        $message = "Kode OTP reset password Daya Media: {$code}. Berlaku 10 menit. Jaga kerahasiaan kode ini.";
         try {
             whatsapp_send(whatsapp_sanitize_number($user->phone_number), $message, 2);
         } catch (\Exception $e) {
@@ -216,18 +216,18 @@ class AuthController extends Controller
 
         try {
             if ($user->phone_number) {
-                whatsapp_send(whatsapp_sanitize_number($user->phone_number), 'Password akun Azzia Anda berhasil diperbarui.', 2);
+                whatsapp_send(whatsapp_sanitize_number($user->phone_number), 'Password akun Daya Media Anda berhasil diperbarui.', 2);
             }
         } catch (\Exception $e) {
             Log::error('WhatsApp send failed', [
                 'to' => whatsapp_sanitize_number($user->phone_number),
-                'message' => 'Password akun Azzia Anda berhasil diperbarui.',
+                'message' => 'Password akun Daya Media Anda berhasil diperbarui.',
                 'error' => $e->getMessage(),
             ]);
         }
         try {
             if ($user->email) {
-                Mail::raw('Password akun Azzia Anda berhasil diperbarui.', function ($m) use ($user) {
+                Mail::raw('Password akun Daya Media Anda berhasil diperbarui.', function ($m) use ($user) {
                     $m->to($user->email)->subject('Password Berhasil Diperbarui');
                 });
             }
@@ -235,7 +235,7 @@ class AuthController extends Controller
             Log::error('Email send failed', [
                 'to' => $user->email,
                 'subject' => 'Password Berhasil Diperbarui',
-                'content' => 'Password akun Azzia Anda berhasil diperbarui.',
+                'content' => 'Password akun Daya Media Anda berhasil diperbarui.',
                 'error' => $e->getMessage(),
             ]);
         }
@@ -285,7 +285,7 @@ class AuthController extends Controller
             'expires_at' => now()->addMinutes(10),
         ]);
 
-        $message = "Kode OTP reset password Azzia: {$code}. Berlaku 10 menit. Jaga kerahasiaan kode ini.";
+        $message = "Kode OTP reset password Daya Media: {$code}. Berlaku 10 menit. Jaga kerahasiaan kode ini.";
 
         try {
             whatsapp_send(whatsapp_sanitize_number($user->phone_number), $message, 2);

@@ -14,7 +14,7 @@
   <!-- Core Css -->
   <link rel="stylesheet" href="{{ asset('') }}assets/dashboard/css/styles.css" />
 
-  <title>Penerbit Azzia</title>
+  <title>Penerbit Daya Media</title>
 </head>
 
 <body>

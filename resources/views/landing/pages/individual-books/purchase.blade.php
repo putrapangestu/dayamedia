@@ -1,196 +1,221 @@
 @extends('landing.layouts.app')
 
+@section('title', 'Beli Paket ' . $package->name . ' - Daya Media')
+
 @section('content')
-<div class="bg-light py-5" style="min-height: 100vh;">
-    <div class="container" style="max-width: 1200px;">
-        <!-- Back Button -->
-        <div class="mb-4">
-            <a href="{{ route('individual-books.packages') }}" class="btn btn-link text-decoration-none text-secondary d-inline-flex align-items-center p-0">
-                <iconify-icon icon="solar:arrow-left-outline" class="me-2"></iconify-icon>
-                Kembali ke Daftar Paket
-            </a>
+<div class="bg-gray-50/50 min-h-screen pb-20 pt-10">
+    <div class="kt-container-fixed">
+        
+        {{-- ===== BREADCRUMB ===== --}}
+        <div class="flex items-center gap-2 text-sm font-medium mb-10">
+            <a href="{{ route('home') }}" class="text-gray-500 hover:text-primary transition-colors">Beranda</a>
+            <i class="ki-filled ki-right text-[10px] text-gray-400"></i>
+            <a href="{{ route('individual-books.packages') }}" class="text-gray-500 hover:text-primary transition-colors">Paket Buku</a>
+            <i class="ki-filled ki-right text-[10px] text-gray-400"></i>
+            <span class="text-gray-900">Checkout Paket</span>
         </div>
 
-        <div class="row g-4">
-            <!-- Left Column: Form -->
-            <div class="col-lg-8">
-                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-                    <!-- Card Header -->
-                    <div class="card-header bg-white border-bottom p-4">
-                        <h1 class="h3 fw-bold text-dark mb-2">Konfigurasi Pesanan</h1>
-                        <p class="text-muted mb-0">Sesuaikan paket Anda sebelum melanjutkan ke pembayaran.</p>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+            
+            <!-- Kiri: Detail Paket & Opsi -->
+            <div class="lg:col-span-8 space-y-8">
+                
+                <!-- Package Summary Card -->
+                <div class="bg-white border border-gray-100 rounded-[2.5rem] p-8 shadow-sm">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="size-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                            <i class="ki-filled ki-crown text-3xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-black text-gray-900 tracking-tight">{{ $package->name }}</h2>
+                            <p class="text-sm font-medium text-gray-500">Anda sedang melakukan pemesanan paket penerbitan individu.</p>
+                        </div>
                     </div>
 
-                    <!-- Card Body -->
-                    <div class="card-body p-4 p-md-5">
-                        <form action="{{ route('individual-books.purchase.store', $package) }}" method="POST" id="purchaseForm">
-                            @csrf
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-gray-50 rounded-3xl border border-gray-100 mb-8">
+                        <div class="space-y-1">
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Harga Dasar Paket</p>
+                            <p class="text-xl font-black text-gray-900">Rp{{ number_format($package->price, 0, ',', '.') }}</p>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Kapasitas Penulis</p>
+                            <p class="text-sm font-bold text-gray-700">Maks. {{ $package->max_authors_default }} Penulis (Bawaan)</p>
+                        </div>
+                    </div>
 
-                            <!-- Additional Authors Input -->
-                            <div class="mb-4">
-                                <label for="additionalAuthors" class="form-label fw-bold text-uppercase small text-secondary mb-3">
-                                    Jumlah Penulis Tambahan
-                                </label>
-
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-text bg-white border-end-0 rounded-start-3">
-                                        <iconify-icon icon="solar:users-group-rounded-bold" class="text-secondary fs-5"></iconify-icon>
-                                    </span>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        name="additional_authors_count"
-                                        id="additionalAuthors"
-                                        value="0"
-                                        class="form-control border-start-0 rounded-end-3 ps-0"
-                                        placeholder="0"
-                                    />
-                                </div>
-
-                                @if($additionalAuthorPrice > 0)
-                                    <div class="alert alert-info d-flex align-items-center mt-3 mb-0 border-0" style="background-color: #eff6ff; color: #1e40af;">
-                                        <iconify-icon icon="solar:info-circle-bold" class="me-2 fs-5"></iconify-icon>
-                                        <small>
-                                            Biaya per penulis tambahan: <span class="fw-bold">Rp {{ number_format($additionalAuthorPrice, 0, ',', '.') }}</span>
-                                        </small>
-                                    </div>
-                                @endif
-
-                                <small class="text-muted fst-italic d-block mt-2">
-                                    * Paket ini sudah termasuk {{ $package->max_authors_default }} penulis default.
-                                </small>
+                    <form id="purchase-form" action="{{ route('individual-books.purchase.store', $package) }}" method="POST" class="space-y-8">
+                        @csrf
+                        
+                        <!-- Additional Authors Option -->
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-lg font-bold text-gray-900 tracking-tight">Penulis Tambahan</h3>
+                                <span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-[9px] font-black uppercase rounded-md tracking-wider">Opsional</span>
                             </div>
-
-                            <div class="mb-4">
-                                <label for="promoCode" class="form-label fw-bold text-uppercase small text-secondary mb-3">
-                                    Kode Promo (Opsional)
-                                </label>
-
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-text bg-white border-end-0 rounded-start-3">
-                                        <iconify-icon icon="solar:ticket-bold" class="text-secondary fs-5"></iconify-icon>
-                                    </span>
-                                    <input
-                                        type="text"
-                                        name="promo_code"
-                                        id="promoCode"
-                                        value="{{ old('promo_code') }}"
-                                        class="form-control border-start-0 rounded-end-3 ps-0"
-                                        placeholder="Masukkan kode promo"
-                                    />
+                            <p class="text-sm text-gray-500 leading-relaxed">Jika naskah Anda ditulis oleh lebih dari {{ $package->max_authors_default }} orang, silakan tambahkan jumlah penulis di bawah ini.</p>
+                            
+                            <div class="flex items-center gap-4 p-5 bg-white border border-gray-100 rounded-2xl shadow-sm max-w-sm">
+                                <div class="flex flex-col flex-1">
+                                    <span class="text-xs font-bold text-gray-700 mb-1">Jumlah Orang</span>
+                                    <span class="text-[10px] text-gray-400 font-medium italic">Rp{{ number_format($additionalAuthorPrice, 0, ',', '.') }} / penulis</span>
+                                </div>
+                                <div class="flex items-center bg-gray-50 rounded-xl p-1 border border-gray-100">
+                                    <button type="button" onclick="changeExtraAuthors(-1)" class="size-8 flex items-center justify-center rounded-lg hover:bg-white text-gray-500 transition-all active:scale-90">
+                                        <i class="ki-filled ki-minus text-xs"></i>
+                                    </button>
+                                    <input type="number" name="additional_authors_count" id="extra-authors" value="0" min="0" readonly
+                                        class="w-12 text-center text-sm font-black bg-transparent border-none focus:ring-0">
+                                    <button type="button" onclick="changeExtraAuthors(1)" class="size-8 flex items-center justify-center rounded-lg hover:bg-white text-gray-500 transition-all active:scale-90">
+                                        <i class="ki-filled ki-plus text-xs"></i>
+                                    </button>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- Submit Button -->
-                            <div class="pt-3">
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center fw-bold rounded-3 shadow"
-                                    style="padding: 1rem 1.5rem;"
-                                >
-                                    <iconify-icon icon="solar:cart-check-bold" class="me-2 fs-4"></iconify-icon>
-                                    Lanjutkan ke Pembayaran
-                                </button>
-                                <p class="text-center text-muted small mt-3 mb-0">
-                                    Dengan melanjutkan, Anda menyetujui syarat dan ketentuan penerbitan kami.
-                                </p>
+                        <!-- Info Pemesan (Read-only for consistency) -->
+                        <div class="pt-8 border-t border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="flex flex-col gap-2">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nama Pemesan</label>
+                                <input type="text" value="{{ auth()->user()->full_name }}" readonly class="w-full px-4 py-3.5 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-900 cursor-not-allowed">
                             </div>
-                        </form>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">No. WhatsApp</label>
+                                <input type="text" value="{{ auth()->user()->phone_number ?? '-' }}" readonly class="w-full px-4 py-3.5 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-900 cursor-not-allowed">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Features Highlight -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-6 bg-white border border-gray-100 rounded-3xl shadow-sm flex gap-4">
+                        <div class="size-10 rounded-xl bg-green-50 text-green-600 flex items-center justify-center shrink-0">
+                            <i class="ki-filled ki-shield-tick text-xl"></i>
+                        </div>
+                        <p class="text-xs font-medium text-gray-500 leading-relaxed"><strong class="text-gray-900 block mb-1">Transaksi Aman</strong> Pembayaran diproses secara manual dengan verifikasi tim admin kami untuk menjamin keamanan.</p>
+                    </div>
+                    <div class="p-6 bg-white border border-gray-100 rounded-3xl shadow-sm flex gap-4">
+                        <div class="size-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                            <i class="ki-filled ki-message-question text-xl"></i>
+                        </div>
+                        <p class="text-xs font-medium text-gray-500 leading-relaxed"><strong class="text-gray-900 block mb-1">Butuh Bantuan?</strong> Tim support kami siap membantu jika Anda mengalami kesulitan dalam proses pemesanan.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Column: Summary -->
-            <div class="col-lg-4">
-                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-                    <!-- Summary Header -->
-                    <div class="card-header bg-light border-bottom p-4">
-                        <h3 class="h6 fw-bold text-dark mb-0">Ringkasan Pesanan</h3>
+            <!-- Kanan: Summary & Pay -->
+            <div class="lg:col-span-4 lg:sticky lg:top-[var(--header-height,100px)]">
+                <div class="bg-white border border-gray-100 rounded-[2.5rem] p-8 shadow-xl shadow-gray-200/40">
+                    <h3 class="text-xl font-bold text-gray-900 mb-8">Ringkasan Biaya</h3>
+
+                    <!-- Price Details -->
+                    <div class="space-y-4 mb-8">
+                        <div class="flex justify-between text-sm">
+                            <span class="font-medium text-gray-500">Harga Dasar Paket</span>
+                            <span class="font-bold text-gray-900">Rp{{ number_format($package->price, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="font-medium text-gray-500 italic">Penulis Tambahan (<span id="extra-count-text">0</span>)</span>
+                            <span class="font-bold text-gray-900" id="extra-price-text">Rp0</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="font-medium text-gray-500">Biaya Layanan (Admin)</span>
+                            <span class="font-bold text-gray-900">Rp{{ number_format(getAdminFeeTransaction(), 0, ',', '.') }}</span>
+                        </div>
+
+                        <!-- Promo (Optional, visual only for JS interaction) -->
+                        <div class="pt-6 border-t border-gray-100">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 block ml-1">Kupon Diskon</label>
+                            <div class="flex gap-2">
+                                <input type="text" form="purchase-form" name="promo_code" id="promo-code" class="flex-grow px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold uppercase placeholder:normal-case" placeholder="KODEPROMO">
+                                <button type="button" onclick="applyPromo()" class="px-4 py-3 bg-gray-900 text-white text-[10px] font-black uppercase rounded-xl hover:bg-black transition-all">Apply</button>
+                            </div>
+                            <div id="promo-msg" class="mt-2"></div>
+                        </div>
+
+                        <div class="pt-6 mt-2 border-t-2 border-dashed border-gray-100">
+                            <div class="flex justify-between items-end">
+                                <span class="text-xs font-black text-gray-400 uppercase tracking-widest">Total Bayar</span>
+                                <span class="text-3xl font-black text-primary tracking-tighter" id="grand-total-display">Rp0</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Summary Body -->
-                    <div class="card-body p-4">
-                        <!-- Package Details -->
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div>
-                                <p class="fw-semibold text-dark mb-1">{{ $package->name }}</p>
-                                <small class="text-muted">{{ $package->max_authors_default }} Penulis Default</small>
-                            </div>
-                            <p class="fw-bold text-dark mb-0">Rp {{ number_format($package->price, 0, ',', '.') }}</p>
-                        </div>
+                    <button type="submit" form="purchase-form" class="w-full py-5 bg-primary text-white font-black rounded-2xl shadow-2xl shadow-primary/30 hover:scale-[1.03] active:scale-95 transition-all flex items-center justify-center gap-3 text-lg group">
+                        <span>Konfirmasi & Beli</span>
+                        <i class="ki-filled ki-right text-2xl group-hover:translate-x-1 transition-transform"></i>
+                    </button>
 
-                        <!-- Additional Cost Row (Hidden by default) -->
-                        <div id="additionalCostRow" class="d-none">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div>
-                                    <p class="fw-semibold text-dark mb-1">Penulis Tambahan</p>
-                                    <small class="text-muted" id="additionalCountText">0 Penulis</small>
-                                </div>
-                                <p class="fw-bold text-dark mb-0" id="additionalCostText">Rp 0</p>
-                            </div>
-                        </div>
-
-                        <!-- Total Price -->
-                        <div class="border-top pt-3 mb-3">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <p class="fw-bold text-dark mb-0">Total Harga</p>
-                                <p class="h5 fw-bold text-primary mb-0" id="totalPriceText">
-                                    Rp {{ number_format($package->price, 0, ',', '.') }}
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Package Benefits -->
-                        {{-- <div class="pt-3">
-                            <p class="text-uppercase text-muted fw-bold mb-3" style="font-size: 0.7rem; letter-spacing: 0.1em;">
-                                Manfaat Paket:
-                            </p>
-                            <ul class="list-unstyled mb-0">
-                                @foreach($package->benefits->take(5) as $benefit)
-                                    <li class="d-flex align-items-start mb-2">
-                                        <iconify-icon icon="solar:check-circle-bold" class="text-success me-2 flex-shrink-0" style="font-size: 1.1rem; margin-top: 2px;"></iconify-icon>
-                                        <small class="text-secondary">{{ $benefit->benefit_name }}</small>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div> --}}
-                    </div>
+                    <p class="mt-6 text-center text-[10px] text-gray-400 font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                        <i class="ki-filled ki-shield-tick text-green-500 text-base"></i> Transaksi 100% Aman
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const input = document.getElementById('additionalAuthors');
-        const basePrice = {{ $package->price }};
-        const additionalPrice = {{ $additionalAuthorPrice }};
-
-        const additionalCostRow = document.getElementById('additionalCostRow');
-        const additionalCountText = document.getElementById('additionalCountText');
-        const additionalCostText = document.getElementById('additionalCostText');
-        const totalPriceText = document.getElementById('totalPriceText');
-
-        function formatRupiah(number) {
-            return 'Rp ' + new Intl.NumberFormat('id-ID').format(number);
-        }
-
-        input.addEventListener('input', function() {
-            const count = parseInt(this.value) || 0;
-            const additionalCost = count * additionalPrice;
-            const total = basePrice + additionalCost;
-
-            if (count > 0) {
-                additionalCostRow.classList.remove('d-none');
-                additionalCountText.innerText = count + ' Penulis';
-                additionalCostText.innerText = formatRupiah(additionalCost);
-            } else {
-                additionalCostRow.classList.add('d-none');
-            }
-
-            totalPriceText.innerText = formatRupiah(total);
-        });
-    });
-</script>
 @endsection
+
+@push('js')
+<script>
+    const basePrice = {{ (int)$package->price }};
+    const extraPricePerUnit = {{ (int)$additionalAuthorPrice }};
+    const adminFee = {{ (int)getAdminFeeTransaction() }};
+    let discount = 0;
+
+    function formatCurrency(num) {
+        return 'Rp' + new Intl.NumberFormat('id-ID').format(num);
+    }
+
+    function changeExtraAuthors(val) {
+        let input = document.getElementById('extra-authors');
+        let current = parseInt(input.value);
+        let next = current + val;
+        if(next >= 0) {
+            input.value = next;
+            calculateTotal();
+        }
+    }
+
+    function calculateTotal() {
+        const extraCount = parseInt(document.getElementById('extra-authors').value);
+        const totalExtraPrice = extraCount * extraPricePerUnit;
+        const subtotal = basePrice + totalExtraPrice;
+        const grandTotal = Math.max((subtotal + adminFee) - discount, 0);
+
+        document.getElementById('extra-count-text').innerText = extraCount;
+        document.getElementById('extra-price-text').innerText = formatCurrency(totalExtraPrice);
+        document.getElementById('grand-total-display').innerText = formatCurrency(grandTotal);
+    }
+
+    function applyPromo() {
+        const code = document.getElementById('promo-code').value.trim();
+        if(!code) return;
+
+        const extraCount = parseInt(document.getElementById('extra-authors').value);
+        const subtotal = basePrice + (extraCount * extraPricePerUnit);
+
+        $.ajax({
+            url: '{{ route("checkout.apply-promo") }}', // Reuse standard promo logic if compatible
+            method: 'POST',
+            data: { promo_code: code, _token: '{{ csrf_token() }}' },
+            success: function(res) {
+                if(res.success) {
+                    discount = res.discount;
+                    document.getElementById('promo-msg').innerHTML = `<p class="text-[10px] font-bold text-green-600 bg-green-50 px-3 py-2 rounded-lg"><i class="ki-filled ki-check-circle"></i> Promo berhasil: ${res.message}</p>`;
+                    document.getElementById('promo-code').readOnly = true;
+                    calculateTotal();
+                } else {
+                    document.getElementById('promo-msg').innerHTML = `<p class="text-[10px] font-bold text-red-500 px-3 py-2 bg-red-50 rounded-lg"><i class="ki-filled ki-information-2"></i> ${res.message}</p>`;
+                }
+            },
+            error: function() {
+                document.getElementById('promo-msg').innerHTML = `<p class="text-[10px] font-bold text-red-500 px-3 py-2 bg-red-50 rounded-lg"><i class="ki-filled ki-information-2"></i> Kode promo tidak valid.</p>`;
+            }
+        });
+    }
+
+    // Initial calc
+    calculateTotal();
+</script>
+@endpush

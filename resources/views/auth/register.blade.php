@@ -1,83 +1,149 @@
-@extends('auth.layout')
+@extends('landing.layouts.auth')
+
+@section('title', 'Daftar Member - Daya Media')
 
 @section('content')
-<div class="authentication-login min-vh-100 bg-body row justify-content-center align-items-center p-4">
-  <div class="auth-max-width col-sm-8 col-md-6 col-xl-7 px-4">
-    <h2 class="mb-1 fs-7 fw-bolder">Daftar member Azzia</h2>
-    <p class="mb-7">Lengkapi formulir dibawah ini untuk menjadi member Azzia</p>
+<section class="relative flex grow items-center justify-center py-10 overflow-hidden bg-white">
+    <!-- Logo Floating -->
+    <div class="absolute top-8 left-8 z-20">
+        <a href="{{ route('home') }}">
+            <img src="{{ asset('assets/azzia-logo.png') }}" class="h-10" alt="Daya Media Logo">
+        </a>
+    </div>
 
-    <form action="{{ route('register') }}" method="POST">
-      @csrf
-      <div class="mb-2">
-        <label for="input_name" class="form-label">Nama <span class="text-danger">*</span></label>
-        <input type="text" class="form-control" id="input_name" name="full_name" value="{{ old('full_name') }}" aria-describedby="emailHelp" placeholder="Budi Hartono">
-        @error('full_name')
-            <div class="text-danger">{{ $message }}</div>
-        @enderror
-      </div>
-      <div class="mb-2">
-        <label for="input_email" class="form-label">Email <span class="text-danger">*</span></label>
-        <input type="email" class="form-control" id="input_email" name="email" value="{{ old('email') }}" aria-describedby="emailHelp" placeholder="budi@gmail.com">
-        @error('email')
-            <div class="text-danger">{{ $message }}</div>
-        @enderror
-      </div>
-      <div class="mb-2">
-        <label for="input_phone" class="form-label">Nomor WhatsApp <span class="text-danger">*</span></label>
-        <input type="text" class="form-control" id="input_phone" name="phone_number" value="{{ old('phone_number') }}" aria-describedby="emailHelp" placeholder="08123456789">
-        @error('phone_number')
-            <div class="text-danger">{{ $message }}</div>
-        @enderror
-      </div>
-      <div class="mb-2">
-        <label for="exampleInputPassword1" class="form-label">Password <span class="text-danger">*</span></label>
-        <div class="input-group">
-          <input type="password" class="form-control" name="password" id="exampleInputPassword1" placeholder="password">
-          <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#exampleInputPassword1">
-            <i class="ti ti-eye"></i>
-          </button>
+    <!-- Ornamen Latar Belakang -->
+    <div class="absolute top-0 right-0 -translate-y-1/2 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+    
+    <div class="kt-container-fixed w-full max-w-[1200px] relative z-1">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            
+            <!-- Sisi Kiri: Informasi Benefits (Hanya Desktop) -->
+            <div class="hidden lg:flex lg:col-span-5 flex-col gap-10 pr-4">
+                <div class="flex flex-col gap-4">
+                    <h2 class="text-4xl font-extrabold text-gray-900 leading-tight">Gabung Menjadi <br/><span class="text-primary">Member Daya Media</span></h2>
+                    <p class="text-gray-500 font-medium">Dapatkan akses eksklusif untuk menerbitkan karya Anda ke jangkauan yang lebih luas.</p>
+                </div>
+                
+                <div class="flex flex-col gap-6">
+                    @php
+                        $benefits = [
+                            ['icon' => 'ki-notification-status', 'title' => 'Update Status Real-time', 'desc' => 'Pantau proses editing hingga terbit secara transparan.'],
+                            ['icon' => 'ki-wallet', 'title' => 'Transparansi Royalti', 'desc' => 'Dapatkan laporan penjualan yang jelas dan akurat.'],
+                            ['icon' => 'ki-users', 'title' => 'Komunitas Penulis', 'desc' => 'Kolaborasi dengan ribuan penulis luar biasa lainnya.'],
+                        ];
+                    @endphp
+                    @foreach($benefits as $b)
+                    <div class="flex gap-4 p-5 bg-gray-50/50 border border-gray-100 rounded-2xl hover:border-primary/30 hover:bg-primary/5 transition-colors">
+                        <div class="size-12 rounded-xl bg-white border border-gray-100 shadow-sm flex items-center justify-center text-primary shrink-0">
+                            <i class="ki-filled {{ $b['icon'] }} text-2xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-900 text-sm">{{ $b['title'] }}</h4>
+                            <p class="text-xs text-gray-500 font-medium mt-1">{{ $b['desc'] }}</p>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Sisi Kanan: Form Register -->
+            <div class="lg:col-span-7 xl:col-span-6 xl:col-start-7">
+                <div class="bg-white border border-gray-100 shadow-2xl shadow-gray-200/50 rounded-3xl p-8 sm:p-12 relative z-10">
+                    <div class="mb-8 text-center lg:text-left">
+                        <h1 class="text-2xl font-bold text-gray-900">Buat Akun Member</h1>
+                        <p class="text-gray-500 text-sm mt-2">Lengkapi data diri Anda untuk memulai perjalanan berkarya.</p>
+                    </div>
+
+                    <form action="{{ route('register') }}" method="POST" class="flex flex-col gap-5">
+                        @csrf
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div class="flex flex-col gap-2">
+                                <label class="text-xs font-bold text-gray-700 uppercase ml-1 tracking-wider">Nama Lengkap <span class="text-red-500">*</span></label>
+                                <input type="text" name="full_name" class="kt-input w-full px-4 py-3 bg-gray-50 border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all" placeholder="Budi Hartono" required value="{{ old('full_name') }}">
+                                @error('full_name') <span class="text-red-500 text-xs ml-1">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-xs font-bold text-gray-700 uppercase ml-1 tracking-wider">Email <span class="text-red-500">*</span></label>
+                                <input type="email" name="email" class="kt-input w-full px-4 py-3 bg-gray-50 border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all" placeholder="name@email.com" required value="{{ old('email') }}">
+                                @error('email') <span class="text-red-500 text-xs ml-1">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <label class="text-xs font-bold text-gray-700 uppercase ml-1 tracking-wider">Nomor WhatsApp <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
+                                    <i class="ki-filled ki-whatsapp"></i>
+                                </span>
+                                <input type="text" name="phone_number" id="phone_number" class="kt-input w-full pl-11 pr-4 py-3.5 bg-gray-50 border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all" placeholder="08123456789" required value="{{ old('phone_number') }}">
+                            </div>
+                            @error('phone_number') <span class="text-red-500 text-xs ml-1">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div class="flex flex-col gap-2">
+                                <label class="text-xs font-bold text-gray-700 uppercase ml-1 tracking-wider">Password <span class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <input type="password" name="password" id="password" class="kt-input w-full pl-4 pr-11 py-3 bg-gray-50 border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all" placeholder="••••••••" required>
+                                    <button type="button" class="absolute inset-y-0 right-0 pr-4 text-gray-400 hover:text-primary toggle-password" data-target="#password">
+                                        <i class="ki-filled ki-eye"></i>
+                                    </button>
+                                </div>
+                                @error('password') <span class="text-red-500 text-xs ml-1">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-xs font-bold text-gray-700 uppercase ml-1 tracking-wider">Konfirmasi <span class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <input type="password" name="password_confirmation" id="password_confirmation" class="kt-input w-full pl-4 pr-11 py-3 bg-gray-50 border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all" placeholder="••••••••" required>
+                                    <button type="button" class="absolute inset-y-0 right-0 pr-4 text-gray-400 hover:text-primary toggle-password" data-target="#password_confirmation">
+                                        <i class="ki-filled ki-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <label class="text-xs font-bold text-gray-700 uppercase ml-1 tracking-wider">Kode Referal (Opsional)</label>
+                            <input type="text" name="referral_code" class="kt-input w-full px-4 py-3 bg-gray-50 border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all" placeholder="123456" value="{{ old('referral_code', $referral_code) }}">
+                        </div>
+
+                        <button type="submit" class="kt-btn kt-btn-primary w-full py-4 mt-2 rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                            Mulai Sekarang
+                        </button>
+
+                        <div class="text-center mt-4">
+                            <span class="text-sm text-gray-500 font-medium">Sudah punya akun?</span>
+                            <a href="{{ route('login') }}" class="text-sm font-bold text-primary hover:underline ml-1">Masuk</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <small class="form-text text-muted">note: Password minimal 8 karakter</small>
-        @error('password')
-            <div class="text-danger">{{ $message }}</div>
-        @enderror
-      </div>
-      <div class="mb-2">
-        <label for="password_confirmation" class="form-label">Konfirmasi Password <span class="text-danger">*</span></label>
-        <div class="input-group">
-          <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" placeholder="password">
-          <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#password_confirmation">
-            <i class="ti ti-eye"></i>
-          </button>
-        </div>
-        @error('password_confirmation')
-            <div class="text-danger">{{ $message }}</div>
-        @enderror
-      </div>
-      <div class="mb-2">
-        <label for="exampleInputEmail1" class="form-label">Kode Referal</label>
-        <input type="text" class="form-control" id="exampleInputEmail1" name="referral_code" value="{{ old('referal_code', $referral_code) }}" aria-describedby="emailHelp" placeholder="123456">
-        @error('referal_code')
-            <div class="text-danger">{{ $message }}</div>
-        @enderror
-      </div>
-      <button type="submit" class="btn btn-primary w-100 py-8 mb-4 rounded-2">Daftar</button>
-      <div class="d-flex align-items-center justify-content-center">
-        <p class="fs-4 mb-0 fw-medium">Sudah memiliki akun?</p>
-        <a class="text-primary fw-medium ms-2" href="{{ route('login') }}">Masuk</a>
-      </div>
-    </form>
-  </div>
-</div>
+    </div>
+</section>
 @endsection
 
-@push('script')
+@push('js')
 <script>
-//   $(document).ready(function() {
-//     $('#input_phone').on('change', function() {
-//         console.log($(this).val());
-//         $(this).val($(this).val().replace(/\D/g, ''));
-//     });
-//   });
+    $(document).ready(function() {
+        $('.toggle-password').on('click', function() {
+            const target = $(this).data('target');
+            const input = $(target);
+            const icon = $(this).find('i');
+
+            if (input.attr('type') === 'password') {
+                input.attr('type', 'text');
+                icon.removeClass('ki-eye').addClass('ki-eye-slash');
+            } else {
+                input.attr('type', 'password');
+                icon.removeClass('ki-eye-slash').addClass('ki-eye');
+            }
+        });
+
+        $('#phone_number').on('input', function() {
+            $(this).val($(this).val().replace(/\D/g, ''));
+        });
+    });
 </script>
 @endpush

@@ -5,7 +5,7 @@
         <div class="container-fluid">
           <x-header-page
             title="Member"
-            description="List member yang terdaftar di Azzia"
+            description="List member yang terdaftar di Daya Media"
             >
             <x-slot:actions>
                 <a href="{{ route('admin.member.create') }}" class="btn btn-primary">

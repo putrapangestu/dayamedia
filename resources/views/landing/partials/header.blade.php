@@ -27,7 +27,7 @@
                         data-kt-drawer-class="kt-drawer kt-drawer-start fixed z-10 top-0 bottom-0 w-full mr-5 max-w-[250px] p-5 lg:p-0 overflow-auto"
                         id="mega_menu_container">
                         <div class="kt-menu flex-col lg:flex-row gap-5 lg:gap-7.5" data-kt-menu="true" id="mega_menu">
-                            <div class="kt-menu-item active">
+                            <div class="kt-menu-item @if(Route::is('home')) active @endif">
                                 <a class="kt-menu-link border-b border-b-transparent kt-menu-item-active:border-b-gray-400 kt-menu-item-here:border-b-gray-400"
                                     href="{{ route('home') }}">
                                     <span
@@ -36,7 +36,7 @@
                                     </span>
                                 </a>
                             </div>
-                            <div class="kt-menu-item">
+                            <div class="kt-menu-item @if(Route::is('catalog') || Route::is('bookDetail')) active @endif">
                                 <a class="kt-menu-link border-b border-b-transparent kt-menu-item-active:border-b-gray-400 kt-menu-item-here:border-b-gray-400"
                                     href="{{ route('catalog') }}">
                                     <span
@@ -45,7 +45,7 @@
                                     </span>
                                 </a>
                             </div>
-                            <div class="kt-menu-item" data-kt-menu-item-offset="0,0|lg:-20px,10px"
+                            <div class="kt-menu-item @if(Route::is('individual-books.packages') || Route::is('collaboration')) active @endif" data-kt-menu-item-offset="0,0|lg:-20px,10px"
                                 data-kt-menu-item-offset-rtl="0,0|lg:20px,10px" data-kt-menu-item-overflow="true"
                                 data-kt-menu-item-placement="bottom-start"
                                 data-kt-menu-item-placement-rtl="bottom-end" data-kt-menu-item-toggle="dropdown"
@@ -141,7 +141,7 @@
                                 </div>
 
                             </div>
-                            <div class="kt-menu-item">
+                            <div class="kt-menu-item @if(Route::is('about')) active @endif">
                                 <a class="kt-menu-link border-b border-b-transparent kt-menu-item-active:border-b-gray-400 kt-menu-item-here:border-b-gray-400"
                                     href="{{ route('about') }}">
                                     <span

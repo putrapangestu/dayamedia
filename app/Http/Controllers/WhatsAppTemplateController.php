@@ -71,7 +71,7 @@ class WhatsAppTemplateController extends Controller
             'total_amount' => '150.000',
             'order_date' => date('d/m/Y'),
             'bank_name' => 'Bank Mandiri',
-            'bank_account_name' => 'PT Azzia Indonesia',
+            'bank_account_name' => 'PT Daya Media',
             'bank_account_number' => '1234567890',
             'expiry_time' => '24 jam',
             'time_remaining' => '12 jam',

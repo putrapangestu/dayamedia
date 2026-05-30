@@ -51,7 +51,7 @@ class BankInfoController extends Controller
     {
         $bankInfo = [
             'bank_name' => setting('bank_name', 'Bank Mandiri'),
-            'bank_account_name' => setting('bank_account_name', 'PT Azzia Indonesia'),
+            'bank_account_name' => setting('bank_account_name', 'PT Daya Media'),
             'bank_account_number' => setting('bank_account_number', '1234567890'),
             'bank_qr_code' => setting('bank_qr_code'),
             'bank_swift_code' => setting('bank_swift_code'),

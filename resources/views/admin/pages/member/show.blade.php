@@ -142,7 +142,7 @@
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-6">
                                     <div class="card hover-img overflow-hidden rounded-4 border-0 shadow-sm h-100 mb-0">
                                         <div class="position-relative">
-                                            <img src="{{ $book->cover ? asset('storage/' . $book->cover) : asset('assets/azzia-logo.png') }}" class="card-img-top" alt="Book Cover" style="height: 200px; object-fit: cover;">
+                                            <img src="{{ $book->cover ? asset('storage/' . $book->cover) : asset('assets/daya-media-logo.png') }}" class="card-img-top" alt="Book Cover" style="height: 200px; object-fit: cover;">
                                         </div>
                                         <div class="card-body p-2 d-flex flex-column">
                                             <h6 class="fw-bolder mb-1" style="color: #2a3547; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 2.8em;">{{ $book->title }}</h6>

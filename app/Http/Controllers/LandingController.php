@@ -321,26 +321,26 @@ class LandingController extends Controller
 
     public function checkout(): View|RedirectResponse
     {
-        // if (! session()->has('checkout_items')) {
-        //     return redirect()->route('cart')->with('error', 'Tidak ada item untuk checkout');
-        // }
+        if (! session()->has('checkout_items')) {
+            return redirect()->route('cart')->with('error', 'Tidak ada item untuk checkout');
+        }
 
         // Hapus promo code lama saat membuka halaman checkout
-        // session()->forget(['promo_code', 'promo_percentage', 'discount_amount']);
+        session()->forget(['promo_code', 'promo_percentage', 'discount_amount']);
 
-        // $items = session('checkout_items');
-        // $subtotal = session('checkout_total');
-        // $promoCode = null;
-        // $discountAmount = 0;
+        $items = session('checkout_items');
+        $subtotal = session('checkout_total');
+        $promoCode = null;
+        $discountAmount = 0;
 
-        // // Hitung biaya admin (nominal)
-        // $adminFee = getAdminFeeTransaction();
+        // Hitung biaya admin (nominal)
+        $adminFee = getAdminFeeTransaction();
 
-        // // Total akhir
-        // $total = $subtotal + $adminFee;
+        // Total akhir
+        $total = $subtotal + $adminFee;
 
-        // return view('landing.pages.checkout.index', compact('items', 'subtotal', 'total', 'promoCode', 'discountAmount', 'adminFee'));
-        return view('landing.pages.checkout.index');
+        return view('landing.pages.checkout.index', compact('items', 'subtotal', 'total', 'promoCode', 'discountAmount', 'adminFee'));
+        // return view('landing.pages.checkout.index');
     }
 
     public function readBook(string $slug)
