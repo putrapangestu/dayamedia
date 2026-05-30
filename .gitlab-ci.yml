@@ -20,16 +20,17 @@ deploy:
         --exclude=.user.ini \
         ./ "$DEPLOY_DIR/"
 
-    - sudo -u www bash -lc "
+    - |
+      sudo -u www bash -lc "
         cd '$DEPLOY_DIR'
 
         echo '=== NODE CHECK ==='
-        which node || echo 'node not found'
-        node -v || echo 'node version unavailable'
+        which node
+        node -v
 
         echo '=== NPM CHECK ==='
-        which npm || echo 'npm not found'
-        npm -v || echo 'npm version unavailable'
+        which npm
+        npm -v
 
         echo '=== COMPOSER INSTALL ==='
         composer install --no-interaction --prefer-dist --optimize-autoloader
