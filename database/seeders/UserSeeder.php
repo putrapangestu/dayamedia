@@ -24,5 +24,13 @@ class UserSeeder extends Seeder
 
             $user->assignRole($role->name);
         }
+
+        $usr = User::create([
+            'full_name' => 'user',
+            'email' => 'user@dayamedia.id',
+            'password' => bcrypt('password'),
+        ]);
+
+        $usr->assignRole('member');
     }
 }
