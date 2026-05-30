@@ -27,7 +27,7 @@ class LandingController extends Controller
         $recommendations = Book::with('authors.user', 'category')
             ->where('status', Book::STATUS_PUBLISHED)
             ->inRandomOrder()
-            ->limit(6)
+            ->limit(5)
             ->get();
 
         $books = Book::query()
