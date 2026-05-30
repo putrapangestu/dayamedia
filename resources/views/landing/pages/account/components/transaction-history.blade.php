@@ -7,9 +7,9 @@
     </div>
 
     @if($transactions->count() > 0)
-        <div class="bg-white border border-gray-100 rounded-[2.5rem] shadow-sm overflow-hidden">
-            <div class="overflow-x-auto custom-scrollbar">
-                <table class="w-full text-left border-collapse">
+        <div class="bg-white border border-gray-100 rounded-[2.5rem] shadow-sm overflow-hidden w-full min-w-0">
+            <div class="w-full overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse min-w-[700px]">
                     <thead>
                         <tr class="bg-gray-50/50">
                             <th class="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">No. Invoice</th>

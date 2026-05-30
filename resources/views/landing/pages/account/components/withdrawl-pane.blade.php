@@ -51,15 +51,15 @@
     </div>
 
     <!-- 2. Riwayat Penarikan -->
-    <div class="lg:col-span-7">
-        <div class="bg-white border border-gray-100 rounded-[2.5rem] shadow-sm overflow-hidden">
+    <div class="lg:col-span-7 min-w-0">
+        <div class="bg-white border border-gray-100 rounded-[2.5rem] shadow-sm overflow-hidden w-full">
             <div class="px-8 py-6 border-b border-gray-50 flex items-center gap-4 bg-gray-50/50">
                 <h3 class="text-lg font-black text-gray-900 tracking-tight">Riwayat Penarikan</h3>
             </div>
             
             @if($withdrawals->count() > 0)
-                <div class="overflow-x-auto custom-scrollbar">
-                    <table class="w-full text-left border-collapse">
+                <div class="w-full overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse min-w-[500px]">
                         <thead>
                             <tr class="bg-gray-50/50">
                                 <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Tanggal</th>

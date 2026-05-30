@@ -57,7 +57,7 @@
     </div>
 
     <!-- 3. Riwayat Komisi -->
-    <div class="bg-white border border-gray-100 rounded-[3rem] shadow-sm overflow-hidden">
+    <div class="bg-white border border-gray-100 rounded-[3rem] shadow-sm overflow-hidden w-full min-w-0">
         <div class="px-8 py-6 border-b border-gray-50 flex items-center justify-between bg-gray-50/50 flex-wrap gap-4">
             <h3 class="text-lg font-black text-gray-900 tracking-tight">Riwayat Komisi & Royalti</h3>
             <span class="px-4 py-1.5 bg-primary text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20">
@@ -66,8 +66,8 @@
         </div>
 
         @if($commissionHistories->count() > 0)
-            <div class="overflow-x-auto custom-scrollbar">
-                <table class="w-full text-left border-collapse text-nowrap">
+            <div class="w-full overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse text-nowrap min-w-[800px]">
                     <thead>
                         <tr class="bg-gray-100/50">
                             <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Detail Sumber</th>
