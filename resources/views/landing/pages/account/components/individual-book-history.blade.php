@@ -83,7 +83,7 @@
 
                     <div class="mt-6 pt-4 border-t border-gray-100 flex gap-3">
                         @if($trx->status == 'paid')
-                            <a href="{{ route('individual-books.upload.index', $trx) }}" class="flex-grow py-3 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all flex items-center justify-center gap-2">
+                            <a href="{{ route('individual-books.upload', $trx) }}" class="flex-grow py-3 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all flex items-center justify-center gap-2">
                                 <i class="ki-filled ki-file-up text-base"></i> Upload Naskah
                             </a>
                         @else
