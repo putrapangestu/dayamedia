@@ -46,8 +46,8 @@
                         </li>
                     @else
                         <li>
-                            <a href="{{ $paginator->previousPageUrl() }}" rel="prev" class="size-10 rounded-xl border border-gray-100 bg-white text-gray-600 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm" aria-label="@lang('pagination.previous')">
-                                <i class="ki-filled ki-left text-lg"></i>
+                            <a href="{{ $paginator->previousPageUrl() }}" rel="prev" class="size-10 rounded-xl border border-gray-100 bg-white text-gray-600 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm group" aria-label="@lang('pagination.previous')">
+                                <i class="ki-filled ki-left text-lg group-hover:text-white"></i>
                             </a>
                         </li>
                     @endif
@@ -82,8 +82,8 @@
                     {{-- Next Page Link --}}
                     @if ($paginator->hasMorePages())
                         <li>
-                            <a href="{{ $paginator->nextPageUrl() }}" rel="next" class="size-10 rounded-xl border border-gray-100 bg-white text-gray-600 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm" aria-label="@lang('pagination.next')">
-                                <i class="ki-filled ki-right text-lg"></i>
+                            <a href="{{ $paginator->nextPageUrl() }}" rel="next" class="size-10 rounded-xl border border-gray-100 bg-white text-gray-600 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm group" aria-label="@lang('pagination.next')">
+                                <i class="ki-filled ki-right text-lg group-hover:text-white"></i>
                             </a>
                         </li>
                     @else
