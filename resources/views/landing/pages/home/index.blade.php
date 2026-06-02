@@ -4,15 +4,15 @@
     <!-- =========================================
          1. HERO SECTION
     ========================================== -->
-    <section class="relative bg-primary overflow-hidden min-h-[500px] lg:h-[600px] flex items-center">
+    <section class="relative bg-primary overflow-hidden min-h-[500px] lg:h-[600px] flex items-center lg:items-end">
         <!-- Decorative Background Elements -->
         <div class="absolute top-0 right-0 w-1/2 h-full bg-white/5 skew-x-12 translate-x-1/4"></div>
         <div class="absolute -bottom-24 -left-24 size-96 bg-white/10 rounded-full blur-3xl"></div>
 
         <div class="kt-container-fixed relative z-10 w-full">
-            <div class="flex flex-col lg:flex-row items-center gap-10">
+            <div class="flex flex-col lg:flex-row items-center lg:items-end gap-10">
                 <!-- Hero Content -->
-                <div class="flex-1 text-center lg:text-left text-white py-10 lg:py-0">
+                <div class="flex-1 text-center lg:text-left text-white py-12 lg:pb-24 lg:pt-0">
                     <h1 class="text-4xl md:text-5xl xl:text-6xl font-black leading-[1.1] mb-6">
                         Wujudkan Karya Impian & Perluas Wawasan Tanpa Batas!
                     </h1>
@@ -32,16 +32,16 @@
                 </div>
 
                 <!-- Hero Image -->
-                <div class="flex-1 relative flex justify-center lg:justify-end">
-                    <div class="relative w-full max-w-[500px]">
+                <div class="flex-1 relative flex justify-center lg:justify-end self-end">
+                    <div class="relative w-full max-w-[500px] flex items-end">
                         <!-- Abstract circles -->
                         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] border border-white/20 rounded-full border-dashed animate-spin-slow"></div>
                         <div class="absolute top-10 right-10 size-6 bg-green-400 rounded-full animate-pulse"></div>
                         <div class="absolute bottom-20 left-0 size-10 bg-yellow-400 rounded-full animate-bounce-slow"></div>
 
-                        <img src="{{ asset('assets/images/hero.avif') }}"
+                        <img src="{{ asset('assets/images/hero-2.png') }}"
                              alt="Daya Media"
-                             class="relative z-10 w-full h-auto object-contain drop-shadow-2xl">
+                             class="relative z-10 w-full h-auto object-contain drop-shadow-2xl translate-y-2">
                     </div>
                 </div>
             </div>
@@ -103,7 +103,7 @@
             <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
                 <!-- Featured Banner -->
                 <div class="w-full lg:w-[200px] flex-shrink-0 relative group">
-                    <img src="https://www.bukuloka.com/_app/immutable/assets/new-release-1.quzve9Cc.png" alt="New Release" class="relative w-full h-full object-cover rounded-3xl shadow-lg border border-white transform group-hover:-translate-y-2 transition-transform duration-500">
+                    <img src="{{ asset('assets/images/new-release.jpeg') }}" alt="New Release" class="relative w-full h-full object-cover rounded-3xl shadow-lg border border-white transform group-hover:-translate-y-2 transition-transform duration-500">
                 </div>
 
                 <div class="flex-grow grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 xl:grid-cols-6 gap-5">
@@ -132,7 +132,7 @@
 
             <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
                 <div class="w-full lg:w-[200px] flex-shrink-0 relative group">
-                    <img src="https://www.bukuloka.com/_app/immutable/assets/new-release-1.quzve9Cc.png" alt="Rekomendasi" class="relative w-full h-full object-cover rounded-3xl shadow-lg border border-white transform group-hover:-translate-y-2 transition-transform duration-500">
+                    <img src="{{ asset('assets/images/new-release.jpeg') }}" alt="Rekomendasi" class="relative w-full h-full object-cover rounded-3xl shadow-lg border border-white transform group-hover:-translate-y-2 transition-transform duration-500">
                 </div>
 
                 <div class="flex-grow grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 xl:grid-cols-6 gap-5">
@@ -161,7 +161,7 @@
 
             <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
                 <div class="w-full lg:w-[200px] flex-shrink-0 relative group">
-                    <img src="https://www.bukuloka.com/_app/immutable/assets/new-release-1.quzve9Cc.png" alt="Populer" class="relative w-full h-full object-cover rounded-3xl shadow-lg border border-white transform group-hover:-translate-y-2 transition-transform duration-500">
+                    <img src="{{ asset('assets/images/new-release.jpeg') }}" alt="Populer" class="relative w-full h-full object-cover rounded-3xl shadow-lg border border-white transform group-hover:-translate-y-2 transition-transform duration-500">
                 </div>
 
                 <div class="flex-grow grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 xl:grid-cols-6 gap-5">
