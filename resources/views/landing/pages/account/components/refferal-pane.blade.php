@@ -26,7 +26,7 @@
         </div>
 
         <div class="mt-10 flex justify-center">
-            {{ $referrals->links() }}
+            {{ $referrals->links('vendor.pagination.landing-pagination') }}
         </div>
     @else
         <div class="py-20 text-center bg-white border border-gray-100 rounded-[3rem] shadow-sm">

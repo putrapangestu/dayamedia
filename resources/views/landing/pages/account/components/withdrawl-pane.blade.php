@@ -100,7 +100,7 @@
                     </table>
                 </div>
                 <div class="p-6 border-t border-gray-50 flex justify-center">
-                    {{ $withdrawals->links() }}
+                    {{ $withdrawals->links('vendor.pagination.landing-pagination') }}
                 </div>
             @else
                 <div class="py-20 text-center">
