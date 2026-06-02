@@ -48,13 +48,13 @@
                     <div class="position-relative p-7 border-start">
                           <ul class="">
                             <li class="mb-3">
-                              <a class="bg-hover-primary" href="https://wa.me/6282333390205" target="_blank">Konversi Karya Ilmiah</a>
+                              <a class="bg-hover-primary" href="https://wa.me/6281166012020" target="_blank">Konversi Karya Ilmiah</a>
                             </li>
                             <li class="mb-3">
-                              <a class="bg-hover-primary" href="https://wa.me/6282333390205" target="_blank">Pengurusan HAKI</a>
+                              <a class="bg-hover-primary" href="https://wa.me/6281166012020" target="_blank">Pengurusan HAKI</a>
                             </li>
                             <li class="mb-3">
-                              <a class="bg-hover-primary" href="https://wa.me/6282333390205" target="_blank">Jasa Parafrase</a>
+                              <a class="bg-hover-primary" href="https://wa.me/6281166012020" target="_blank">Jasa Parafrase</a>
                             </li>
                           </ul>
                         </div>

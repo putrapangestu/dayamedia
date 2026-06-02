@@ -12,7 +12,7 @@
         </div>
     </div>
     <div class="flex flex-col flex-grow px-1">
-        <a href="{{ route('bookDetail', $book->slug) }}" class="text-sm font-bold text-gray-900 leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">
+        <a href="{{ route('bookDetail', $book->slug) }}" class="text-sm font-bold text-gray-900 leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2 min-h-[40px]">
             {{ $book->title }}
         </a>
         <p class="text-[11px] text-gray-500 font-medium mb-3 line-clamp-1">
@@ -22,15 +22,12 @@
         </p>
         <div class="mt-auto pt-3 border-t border-gray-50">
             @php
-                $collectPrice = [$book->price_physical, $book->price_digital];
-                $min = min($collectPrice);
-                $max = max($collectPrice);
+                $collectPrice = array_filter([$book->price_physical, $book->price_digital]);
+                $min = !empty($collectPrice) ? min($collectPrice) : 0;
             @endphp
-            <div class="flex flex-wrap items-baseline gap-1">
-                <span class="text-sm font-black text-primary">Rp{{ number_format($min, 0, ',', '.') }}</span>
-                @if($min != $max)
-                    <span class="text-[10px] font-bold text-gray-400">- Rp{{ number_format($max, 0, ',', '.') }}</span>
-                @endif
+            <div class="flex flex-col gap-0.5">
+                <span class="text-[10px] font-bold text-gray-400">Mulai dari</span>
+                <span class="text-base font-black text-primary">Rp{{ number_format($min, 0, ',', '.') }}</span>
             </div>
         </div>
     </div>

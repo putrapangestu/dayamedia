@@ -119,7 +119,7 @@
       <div class="container-fluid">
         <div class="d-flex gap-3 justify-content-center align-items-center flex-md-nowrap flex-wrap">
           <p class="text-white fs-4 mb-0 text-md-start text-center">Kami di sini untuk mendukung perjalanan literasimu. Ada pertanyaan lain?</p>
-          <a href="https://wa.me/6282333390205" target="_blank" class="text-white fs-4 fw-semibold text-underline">Hubungi Kami</a>
+          <a href="https://wa.me/6281166012020" target="_blank" class="text-white fs-4 fw-semibold text-underline">Hubungi Kami</a>
         </div>
       </div>
     </section>

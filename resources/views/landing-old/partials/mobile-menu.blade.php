@@ -52,17 +52,17 @@
           <div class="collapse" id="jasaCollapse">
             <ul class="list-unstyled ps-4 mt-2">
               <li class="mb-2">
-                <a href="https://wa.me/6282333390205" target="_blank" class="text-dark link-primary d-block py-1">
+                <a href="https://wa.me/6281166012020" target="_blank" class="text-dark link-primary d-block py-1">
                   Konversi Karya Ilmiah
                 </a>
               </li>
               <li class="mb-2">
-                <a href="https://wa.me/6282333390205" target="_blank" class="text-dark link-primary d-block py-1">
+                <a href="https://wa.me/6281166012020" target="_blank" class="text-dark link-primary d-block py-1">
                   Pengurusan HAKI
                 </a>
               </li>
               <li class="mb-2">
-                <a href="https://wa.me/6282333390205" target="_blank" class="text-dark link-primary d-block py-1">
+                <a href="https://wa.me/6281166012020" target="_blank" class="text-dark link-primary d-block py-1">
                   Jasa Parafrase
                 </a>
               </li>

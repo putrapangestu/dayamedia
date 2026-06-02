@@ -62,7 +62,7 @@
                 </div>
                 <div>
                   <h6 class="fw-bold mb-1">Layanan Admin</h6>
-                  <a href="https://wa.me/6282333390205" target="_blank" class="text-muted fs-2 d-block text-decoration-none hover-primary mb-1">+62 823-3339-0205</a>
+                  <a href="https://wa.me/6281166012020" target="_blank" class="text-muted fs-2 d-block text-decoration-none hover-primary mb-1">+62 823-3339-0205</a>
                   <a href="https://wa.me/6282333390206" target="_blank" class="text-muted fs-2 d-block text-decoration-none hover-primary">+62 823-3339-0206</a>
                 </div>
               </div>

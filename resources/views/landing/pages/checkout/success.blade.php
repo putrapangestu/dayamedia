@@ -16,10 +16,10 @@
 
     <div class="kt-container-fixed relative z-10 w-full">
         <div class="max-w-[850px] mx-auto">
-            
+
             <!-- Success Header Card -->
             <div class="bg-white border border-gray-100 rounded-[3.5rem] shadow-2xl shadow-gray-200/50 overflow-hidden mb-10">
-                
+
                 <!-- Premium Header Design (Lead with Primary Color) -->
                 <div class="relative bg-primary p-12 sm:p-20 text-center overflow-hidden">
                     <!-- Subtle Patterns & Glows -->
@@ -34,11 +34,11 @@
                             <div class="absolute inset-2 border-2 border-dashed border-primary/20 rounded-[2rem]"></div>
                             <i class="ki-filled ki-check text-6xl text-primary relative z-10"></i>
                         </div>
-                        
+
                         <h1 class="text-3xl sm:text-5xl font-black text-white mb-6 tracking-tighter leading-tight">
                             Transaksi Berhasil <br class="hidden sm:block"/> Dibuat!
                         </h1>
-                        
+
                         <!-- Invoice Badge -->
                         <div class="inline-flex items-center gap-3 px-6 py-2.5 rounded-2xl bg-white text-primary shadow-xl">
                             <span class="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">No. Invoice</span>
@@ -49,7 +49,7 @@
                 </div>
 
                 <div class="p-8 sm:p-16 space-y-12">
-                    
+
                     <!-- 1. Detail Item (Missing section restored and enhanced) -->
                     <div class="space-y-6">
                         <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-3 ml-1">
@@ -112,7 +112,7 @@
                                     @endif
                                 </tbody>
                             </table>
-                            
+
                             <!-- Detailed Pricing Breakdown -->
                             <div class="p-6 bg-gray-100/50 flex flex-col gap-3">
                                 <div class="flex justify-between text-xs font-bold text-gray-500">
@@ -165,7 +165,7 @@
                             <p class="text-base font-black text-gray-900 mb-6 flex items-center gap-2">
                                 <i class="ki-filled ki-bank text-primary"></i> {{ $bankInfo['bank_name'] }}
                             </p>
-                            
+
                             <p class="text-[10px] font-bold text-gray-400 uppercase mb-2">Nomor Rekening</p>
                             <div class="flex items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200 mb-6 shadow-sm group-hover:border-primary/30 transition-colors">
                                 <span class="text-xl font-black text-primary tracking-widest" id="acc-number">{{ $bankInfo['bank_account'] }}</span>
@@ -185,7 +185,7 @@
                             <form action="{{ route('account.transaction.upload-payment', $transaction->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                                 @csrf
                                 @method('PUT')
-                                
+
                                 <div class="p-10 border-2 border-dashed border-gray-200 rounded-[3rem] hover:border-primary/50 hover:bg-primary/5 transition-all group text-center cursor-pointer relative shadow-inner">
                                     <input type="file" name="payment_proof" required class="absolute inset-0 opacity-0 cursor-pointer z-10" id="payment_proof_input" accept="image/*,application/pdf">
                                     <div class="space-y-4" id="upload-placeholder">
@@ -228,7 +228,7 @@
 
             <!-- Footer Help -->
             <div class="text-center">
-                <p class="text-sm text-gray-400 font-medium">Butuh panduan? <a href="https://wa.me/6282333390205" target="_blank" class="text-primary font-black hover:underline ml-1">WhatsApp Admin</a></p>
+                <p class="text-sm text-gray-400 font-medium">Butuh panduan? <a href="https://wa.me/6281166012020" target="_blank" class="text-primary font-black hover:underline ml-1">WhatsApp Admin</a></p>
             </div>
         </div>
     </div>

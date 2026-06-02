@@ -113,7 +113,7 @@
                                 <div class="kt-menu-dropdown kt-menu-default py-2.5 w-full max-w-[220px]">
                                     <div class="kt-menu-item">
                                         <a class="kt-menu-link"
-                                            href="https://wa.me/6282333390205" target="_blank"
+                                            href="https://wa.me/6281166012020" target="_blank"
                                             tabindex="0">
                                             <span class="kt-menu-title grow-0">
                                                 Konversi Karya Ilmiah
@@ -122,7 +122,7 @@
                                     </div>
                                     <div class="kt-menu-item">
                                         <a class="kt-menu-link"
-                                            href="https://wa.me/6282333390205" target="_blank"
+                                            href="https://wa.me/6281166012020" target="_blank"
                                             tabindex="0">
                                             <span class="kt-menu-title grow-0">
                                                 Pengurusan HAKI
@@ -131,7 +131,7 @@
                                     </div>
                                     <div class="kt-menu-item">
                                         <a class="kt-menu-link"
-                                            href="https://wa.me/6282333390205" target="_blank"
+                                            href="https://wa.me/6281166012020" target="_blank"
                                             tabindex="0">
                                             <span class="kt-menu-title grow-0">
                                                 Jasa Parafrase
@@ -157,6 +157,19 @@
             <!-- End of Mega Men -->
         </div>
         <!-- End of Logo -->
+
+        <!-- Search Bar -->
+        <div class="hidden md:flex items-center grow max-w-[400px] relative mx-4">
+            <form action="{{ route('catalog') }}" method="GET" class="w-full relative">
+                <input type="text" name="search" placeholder="Cari buku atau paket..."
+                    class="w-full bg-gray-100 border-none rounded-full py-2.5 ps-5 pe-12 text-sm focus:ring-2 focus:ring-primary/20 transition-all"
+                    value="{{ request('search') }}">
+                <button type="submit" class="absolute right-1.5 top-1.5 size-8 bg-primary text-white rounded-full flex items-center justify-center hover:scale-105 transition-transform">
+                    <i class="ki-filled ki-magnifier text-sm"></i>
+                </button>
+            </form>
+        </div>
+
         <!-- Topbar -->
         @if(auth()->check())
         <div class="flex items-center flex-wrap gap-3">
