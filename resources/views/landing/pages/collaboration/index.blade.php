@@ -129,7 +129,7 @@
 
                     {{-- ===== PAGINATION ===== --}}
                     <div class="mt-8 flex justify-center">
-                        {{ $books->appends(request()->only('search', 'category_id', 'sort'))->links('vendor.pagination.landing-pagination') }}
+                        {{ $books->appends(request()->only('search', 'category_id', 'sort'))->links('landing.partials.pagination') }}
                     </div>
 
                 </div>

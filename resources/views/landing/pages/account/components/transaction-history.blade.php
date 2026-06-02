@@ -66,7 +66,7 @@
         </div>
 
         <div class="mt-8 flex justify-center">
-            {{ $transactions->links('vendor.pagination.landing-pagination') }}
+            {{ $transactions->links('landing.partials.pagination') }}
         </div>
     @else
         <div class="py-20 text-center bg-white border border-gray-100 rounded-[3rem] shadow-sm">

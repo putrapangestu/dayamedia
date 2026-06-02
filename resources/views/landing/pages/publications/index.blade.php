@@ -69,7 +69,7 @@
                         @endforelse
                     </ul>
                     <div class="mt-3">
-                        {{ $books->links('vendor.pagination.landing-pagination') }}
+                        {{ $books->links('landing.partials.pagination') }}
                     </div>
                 </div>
             </div>

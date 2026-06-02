@@ -102,7 +102,7 @@
                 </table>
             </div>
             <div class="p-8 border-t border-gray-50 flex justify-center">
-                {{ $commissionHistories->links('vendor.pagination.landing-pagination') }}
+                {{ $commissionHistories->links('landing.partials.pagination') }}
             </div>
         @else
             <div class="py-20 text-center">
