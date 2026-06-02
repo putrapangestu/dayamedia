@@ -135,7 +135,7 @@
                     <img src="https://www.bukuloka.com/_app/immutable/assets/new-release-1.quzve9Cc.png" alt="Rekomendasi" class="relative w-full h-full object-cover rounded-3xl shadow-lg border border-white transform group-hover:-translate-y-2 transition-transform duration-500">
                 </div>
 
-                <div class="flex-grow grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-4 gap-5">
+                <div class="flex-grow grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 xl:grid-cols-6 gap-5">
                     @forelse ($recommendations as $book)
                         @include('landing.pages.home.partials.book-card', ['book' => $book])
                     @empty
@@ -164,7 +164,7 @@
                     <img src="https://www.bukuloka.com/_app/immutable/assets/new-release-1.quzve9Cc.png" alt="Populer" class="relative w-full h-full object-cover rounded-3xl shadow-lg border border-white transform group-hover:-translate-y-2 transition-transform duration-500">
                 </div>
 
-                <div class="flex-grow grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-4 gap-5">
+                <div class="flex-grow grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 xl:grid-cols-6 gap-5">
                     @forelse ($bestSellingBooks as $book)
                         @include('landing.pages.home.partials.book-card', ['book' => $book])
                     @empty
