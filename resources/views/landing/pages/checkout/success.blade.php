@@ -185,6 +185,7 @@
                             <form action="{{ route('account.transaction.upload-payment', $transaction->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                                 @csrf
                                 @method('PUT')
+                                <input type="hidden" name="payment_method" value="bank_transfer">
 
                                 <div class="p-10 border-2 border-dashed border-gray-200 rounded-[3rem] hover:border-primary/50 hover:bg-primary/5 transition-all group text-center cursor-pointer relative shadow-inner">
                                     <input type="file" name="payment_proof" required class="absolute inset-0 opacity-0 cursor-pointer z-10" id="payment_proof_input" accept="image/*,application/pdf">
@@ -194,7 +195,7 @@
                                         </div>
                                         <div>
                                             <p class="text-base font-bold text-gray-700">Klik untuk upload bukti transfer</p>
-                                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Format JPG, PNG, PDF (Max 5MB)</p>
+                                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Format JPG, PNG, PDF (Max 2MB)</p>
                                         </div>
                                     </div>
                                     <div class="hidden space-y-3" id="file-preview">
