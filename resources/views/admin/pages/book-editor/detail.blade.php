@@ -92,7 +92,9 @@
                     </div>
 
                     <!-- Step 5 -->
-                    <div class="timeline-item disabled">
+                    <div class="timeline-item disabled
+                        @if ($book->status == 'published') done @endif
+                    ">
                         <div class="timeline-circle">
                         <i class="ti ti-book"></i>
                         </div>
