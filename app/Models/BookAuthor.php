@@ -39,7 +39,7 @@ class BookAuthor extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id')->withTrashed();
     }
 
     /**
@@ -47,6 +47,6 @@ class BookAuthor extends Model
      */
     public function module()
     {
-        return $this->belongsTo(Module::class, 'module_id');
+        return $this->belongsTo(Module::class, 'module_id')->withTrashed();
     }
 }

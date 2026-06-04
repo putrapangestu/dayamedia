@@ -44,6 +44,6 @@ class TransactionDetail extends Model
      */
     public function module()
     {
-        return $this->belongsTo(Module::class);
+        return $this->belongsTo(Module::class)->withTrashed();
     }
 }

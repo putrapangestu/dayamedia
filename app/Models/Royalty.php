@@ -49,7 +49,7 @@ class Royalty extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed();
     }
 
     /**
@@ -65,7 +65,7 @@ class Royalty extends Model
      */
     public function transaction()
     {
-        return $this->belongsTo(Transaction::class);
+        return $this->belongsTo(Transaction::class)->withTrashed();
     }
 
     /**
@@ -73,7 +73,7 @@ class Royalty extends Model
      */
     public function transactionDetail()
     {
-        return $this->belongsTo(TransactionDetail::class);
+        return $this->belongsTo(TransactionDetail::class)->withTrashed();
     }
 
     /**

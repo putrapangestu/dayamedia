@@ -30,7 +30,7 @@ class PromoHistory extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id')->withTrashed();
     }
 
     /**
@@ -40,6 +40,6 @@ class PromoHistory extends Model
      */
     public function promo()
     {
-        return $this->belongsTo(Promo::class, 'promo_id', 'id');
+        return $this->belongsTo(Promo::class, 'promo_id', 'id')->withTrashed();
     }
 }
