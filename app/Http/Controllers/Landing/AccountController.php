@@ -92,6 +92,10 @@ class AccountController extends Controller
             $transaction = Transaction::where('id', $transaction)
                 ->where('user_id', auth()->id())
                 ->where('status', 'pending')
+                ->where(function ($query) {
+                    $query->whereNull('expired_at')
+                        ->orWhere('expired_at', '>', now());
+                })
                 ->firstOrFail();
 
             if ($transaction->payment_proof) {

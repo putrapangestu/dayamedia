@@ -62,8 +62,8 @@ class UpdateAffiliateLevels extends Command
             if ($newAffiliateLevel && $user->affiliate_level_id !== $newAffiliateLevel->id) {
                 $user->affiliate_level_id = $newAffiliateLevel->id;
                 $user->save();
-                $this->info("User {$user->name} has been updated to affiliate level {$newAffiliateLevel?->name}.");
-                Log::info("User {$user->name} (ID: {$user->id}) has been updated to affiliate level {$newAffiliateLevel?->name} (ID: {$newAffiliateLevel->id}).");
+                $this->info("User {$user->full_name} has been updated to affiliate level {$newAffiliateLevel?->name}.");
+                Log::info("User {$user->full_name} (ID: {$user->id}) has been updated to affiliate level {$newAffiliateLevel?->name} (ID: {$newAffiliateLevel->id}).");
             }
         }
 

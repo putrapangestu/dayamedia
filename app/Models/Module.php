@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -61,12 +62,103 @@ class Module extends Model
         return $this->hasMany(TransactionDetail::class);
     }
 
+    public function lockingTransactionDetails()
+    {
+        return $this->transactionDetails()->whereHas('transaction', function ($query) {
+            $query->where('status', 'paid')
+                ->orWhere(function ($query) {
+                    $query->where('status', 'pending')
+                        ->whereNotNull('expired_at')
+                        ->where('expired_at', '>', now());
+                });
+        });
+    }
+
+    public function activePendingTransactionDetails()
+    {
+        return $this->transactionDetails()->whereHas('transaction', function ($query) {
+            $query->where('status', 'pending')
+                ->whereNotNull('expired_at')
+                ->where('expired_at', '>', now());
+        });
+    }
+
+    public function paidTransactionDetails()
+    {
+        return $this->transactionDetails()->whereHas('transaction', function ($query) {
+            $query->where('status', 'paid');
+        });
+    }
+
+    public function scopeAvailableForOrder($query)
+    {
+        return $query->where('is_active', true)
+            ->whereNull('user_id')
+            ->whereDoesntHave('transactionDetails.transaction', function ($query) {
+                $query->where('status', 'paid')
+                    ->orWhere(function ($query) {
+                        $query->where('status', 'pending')
+                            ->whereNotNull('expired_at')
+                            ->where('expired_at', '>', now());
+                    });
+            });
+    }
+
     /**
      * Get the book authors for the module.
      */
     public function authors()
     {
         return $this->hasMany(BookAuthor::class, 'module_id', 'id');
+    }
+
+    public function getOrderLockStatusAttribute(): string
+    {
+        if ($this->user_id !== null || $this->hasLockingTransaction('paid')) {
+            return 'bought';
+        }
+
+        if (! $this->is_active) {
+            return 'inactive';
+        }
+
+        if ($this->hasLockingTransaction('pending')) {
+            return 'pending';
+        }
+
+        return 'available';
+    }
+
+    public function getIsLockedForOrderAttribute(): bool
+    {
+        return $this->order_lock_status !== 'available';
+    }
+
+    private function hasLockingTransaction(string $status): bool
+    {
+        if ($this->relationLoaded('transactionDetails')) {
+            return $this->transactionDetails->contains(function ($detail) use ($status) {
+                if (! $detail->transaction || $detail->transaction->status !== $status) {
+                    return false;
+                }
+
+                if ($status === 'paid') {
+                    return true;
+                }
+
+                if (! $detail->transaction->expired_at) {
+                    return false;
+                }
+
+                return Carbon::parse($detail->transaction->expired_at)->isFuture();
+            });
+        }
+
+        if ($status === 'paid') {
+            return $this->paidTransactionDetails()->exists();
+        }
+
+        return $this->activePendingTransactionDetails()->exists();
     }
 
     /**

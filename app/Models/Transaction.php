@@ -33,6 +33,16 @@ class Transaction extends Model
         'individual_book_rejected_reason',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'reminder_sent_at' => 'datetime',
+            'expired_at' => 'datetime',
+            'individual_book_confirmed_at' => 'datetime',
+            'individual_book_rejected_at' => 'datetime',
+        ];
+    }
+
     /**
      * Get the user that belongs to the transaction.
      */

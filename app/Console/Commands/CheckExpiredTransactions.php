@@ -43,7 +43,7 @@ class CheckExpiredTransactions extends Command
 
         foreach ($expiredTransactions as $transaction) {
             $transaction->update(['status' => 'expired']);
-            $this->line("Expired transaction: {$transaction->code}");
+            $this->line("Expired transaction: {$transaction->transaction_code}");
         }
 
         $this->info("Expired {$expiredTransactions->count()} transactions.");

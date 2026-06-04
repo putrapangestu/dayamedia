@@ -156,7 +156,7 @@ function checkStatus ($transaction) {
                                             <div class="d-flex">
                                                 <div>
                                                     <h6 class="mb-1 fw-bolder">{{ $transaction->transaction_code }}</h6>
-                                                    <p class="mb-1 text-muted fs-2">{{ $transaction->user->name }}</p>
+                                                    <p class="mb-1 text-muted fs-2">{{ $transaction->user->full_name }}</p>
                                                     <span class="mb-1 badge fs-2 bg-info-subtle text-info">{{ $transaction->created_at->format('d F Y') }}</span>
                                                     @if($transaction->payment_proof)
                                                         <br><span class="mb-1 badge fs-2 bg-success-subtle text-success">Bukti Bayar Tersedia</span>

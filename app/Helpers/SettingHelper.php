@@ -13,6 +13,32 @@ if (! function_exists('getSetting')) {
     }
 }
 
+if (! function_exists('setting')) {
+    /**
+     * Alias for settings used by older admin views/controllers.
+     *
+     * @param  mixed  $default
+     * @return mixed
+     */
+    function setting(string $key, $default = null)
+    {
+        return getSetting($key, $default);
+    }
+}
+
+if (! function_exists('setting_set')) {
+    /**
+     * Persist a setting value.
+     *
+     * @param  mixed  $value
+     * @return \App\Models\Setting
+     */
+    function setting_set(string $key, $value, string $type = 'string', string $description = '', string $group = 'general')
+    {
+        return \App\Models\Setting::set($key, $value, $type, $description, $group);
+    }
+}
+
 if (! function_exists('getAdminFeeTransaction')) {
     /**
      * Get admin fee for transaction (nominal Rp)

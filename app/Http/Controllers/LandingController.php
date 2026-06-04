@@ -34,7 +34,7 @@ class LandingController extends Controller
             ->with('authors.user', 'category', 'modules')
             ->where('status', Book::STATUS_OPEN)
             ->withCount(['modules as available_modules_count' => function ($q) {
-                $q->where('is_active', true)->whereNull('user_id');
+                $q->availableForOrder();
             }])
             ->orderBy('available_modules_count', 'desc')
             ->limit(6)
@@ -141,6 +141,7 @@ class LandingController extends Controller
             if ($a['chapter'] != $b['chapter']) {
                 return $a['chapter'] <=> $b['chapter'];
             }
+
             return strtotime($a['created_at']) <=> strtotime($b['created_at']);
         })->values();
 
@@ -153,7 +154,7 @@ class LandingController extends Controller
             ->with('authors.user', 'category', 'modules')
             ->whereIn('status', [Book::STATUS_OPEN, Book::STATUS_EDITING])
             ->withCount(['modules as available_modules_count' => function ($q) {
-                $q->where('is_active', true)->whereNull('user_id');
+                $q->availableForOrder();
             }])
             ->when($request->category_id, function ($query) use ($request) {
                 if (is_array($request->category_id)) {
@@ -207,7 +208,7 @@ class LandingController extends Controller
         // Counting active modules and authors
         $countActiveModules = $book->modules->where('is_active', true)->count();
         $countAuthorUploads = $book->modules->where('is_active', true)->where('user_id', '!=', null)->where('file_path', '!=', null)->count();
-        $countAuthors = $book->modules->where('user_id', '!=', null)->count();
+        $countAuthors = $book->modules->filter(fn ($module) => $module->order_lock_status !== 'available')->count();
 
         $checkEditing = $book?->bookEditors?->file_status == 'approved' ? true : false;
 
@@ -347,6 +348,10 @@ class LandingController extends Controller
     {
         $user = auth()->user();
         $book = Book::with('authors.user', 'category', 'modules.user', 'bookEditors.user')->where('slug', $slug)->firstOrFail();
+
+        if (! $user) {
+            return redirect()->route('login');
+        }
 
         $hasPurchased = Transaction::where('user_id', $user->id)
             ->where('status', 'paid')

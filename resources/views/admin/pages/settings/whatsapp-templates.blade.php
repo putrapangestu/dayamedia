@@ -140,7 +140,7 @@
 @push('js')
 <script>
 function previewTemplate(templateId) {
-    fetch(`/admin/whatsapp-templates/${templateId}/preview`)
+    fetch(`/admin/settings/whatsapp-templates/${templateId}/preview`)
         .then(response => response.json())
         .then(data => {
             document.getElementById('previewContent').innerHTML = 
@@ -156,7 +156,7 @@ function previewTemplate(templateId) {
 function testTemplate(templateId) {
     document.getElementById('testTemplateId').value = templateId;
     
-    fetch(`/admin/whatsapp-templates/${templateId}/preview`)
+    fetch(`/admin/settings/whatsapp-templates/${templateId}/preview`)
         .then(response => response.json())
         .then(data => {
             let variablesHtml = '';
@@ -192,7 +192,7 @@ document.getElementById('testForm').addEventListener('submit', function(e) {
         }
     }
     
-    fetch(`/admin/whatsapp-templates/${templateId}/send-test`, {
+    fetch(`/admin/settings/whatsapp-templates/${templateId}/send-test`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

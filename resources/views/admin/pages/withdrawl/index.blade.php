@@ -83,7 +83,7 @@
                                         <td>{{ \App\Helpers\PaginateHelper::generateItemNumber($loop, $withdrawls->perPage(), $withdrawls->currentPage()) }}</td>
                                         <td>
                                             <div class="d-flex"><div>
-                                                    <h6 class="mb-1">{{ $withdrawl->user->name }}</h6>
+                                                    <h6 class="mb-1">{{ $withdrawl->user->full_name }}</h6>
                                                     <p class="mb-1 text-muted fs-2">Sisa Saldo: Rp. {{ number_format($withdrawl->user->balance, 0, ',', '.') }}</p>
                                                 </div>
                                             </div>

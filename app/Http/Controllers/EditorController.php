@@ -18,7 +18,7 @@ class EditorController extends Controller
         $users = User::role('editor')
             ->with('bookEditors')
             ->when($request->search, function ($query) use ($request) {
-                $query->where('name', 'like', '%'.$request->search.'%');
+                $query->where('full_name', 'like', '%'.$request->search.'%');
             })
             ->when($request->status == 'active', function ($query) {
                 $query->whereNotNull('email_verified_at');

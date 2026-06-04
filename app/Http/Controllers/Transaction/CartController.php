@@ -75,7 +75,22 @@ class CartController extends Controller
 
     public function processCheckout(CheckoutProcessRequest $request)
     {
+        $moduleIds = collect($request->items)->pluck('module_id')->filter()->unique()->values();
+        if ($moduleIds->isNotEmpty()) {
+            $availableIds = Module::availableForOrder()
+                ->whereIn('id', $moduleIds)
+                ->pluck('id');
+
+            if ($moduleIds->diff($availableIds)->isNotEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'BAB sudah dibeli atau sedang menunggu pembayaran member lain.',
+                ], 422);
+            }
+        }
+
         $items = collect($request->items)->map(function ($item) {
+            $book = null;
             if (isset($item['book_id'])) {
                 $book = Book::find($item['book_id']);
             }

@@ -235,6 +235,22 @@ class TransactionBookController extends Controller
             }
 
             $details = collect($book['transaction_details'] ?? []);
+            $moduleIds = $details->pluck('module_id')->filter()->unique()->values();
+            if ($moduleIds->isNotEmpty()) {
+                $availableCount = Module::availableForOrder()
+                    ->whereIn('id', $moduleIds)
+                    ->lockForUpdate()
+                    ->count();
+
+                if ($availableCount !== $moduleIds->count()) {
+                    DB::rollBack();
+
+                    return response()->json([
+                        'message' => 'BAB sudah dibeli atau sedang menunggu pembayaran member lain.',
+                    ], 422);
+                }
+            }
+
             $subtotal = $details->sum(function ($detail) {
                 return ((int) ($detail['price_book'] ?? 0)) * ((int) ($detail['quantity'] ?? 0));
             });

@@ -26,7 +26,7 @@ class CreateBookTransactionRequest extends FormRequest
             // 'status' => 'required|in:ongoing,completed,canceled',
             'payment_method' => 'nullable',
             // 'transaction_code' => 'required|string|unique:transactions,transaction_code',
-            'payment_proof' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'payment_proof' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'promo_code' => 'nullable|string|max:50',
             'discount_amount' => 'nullable|min:0',
             'admin_fee' => 'nullable|min:0',
@@ -62,8 +62,8 @@ class CreateBookTransactionRequest extends FormRequest
             // 'transaction_code.unique' => 'Kode transaksi sudah digunakan.',
 
             // 'payment_proof.required' => 'Bukti pembayaran harus diisi.',
-            'payment_proof.image' => 'Bukti pembayaran harus berupa gambar.',
-            'payment_proof.mimes' => 'Bukti pembayaran harus berupa file jpeg, png, atau jpg.',
+            'payment_proof.file' => 'Bukti pembayaran harus berupa file.',
+            'payment_proof.mimes' => 'Bukti pembayaran harus berupa file jpg, jpeg, png, atau pdf.',
             'payment_proof.max' => 'Bukti pembayaran maksimal 2MB.',
 
             'transaction_details.required' => 'Detail transaksi harus diisi.',

@@ -161,12 +161,17 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 @foreach ($book->modules as $module)
-                    <div class="bg-white border {{ $module->user_id ? 'border-gray-200 opacity-75' : 'border-primary/20 hover:border-primary hover:shadow-lg hover:-translate-y-1' }} rounded-2xl p-5 transition-all duration-300 flex flex-col justify-between h-full">
+                    @php($lockStatus = $module->order_lock_status)
+                    <div class="bg-white border {{ $lockStatus !== 'available' ? 'border-gray-200 opacity-75' : 'border-primary/20 hover:border-primary hover:shadow-lg hover:-translate-y-1' }} rounded-2xl p-5 transition-all duration-300 flex flex-col justify-between h-full">
                         <div>
                             <div class="flex items-center justify-between mb-3">
                                 <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-100 px-2 py-1 rounded-md">Bab {{ $module->chapter }}</span>
-                                @if($module->user_id)
-                                    <span class="text-xs font-bold text-red-500 flex items-center gap-1"><i class="ki-filled ki-cross-circle"></i> Penuh</span>
+                                @if($lockStatus === 'bought')
+                                    <span class="text-xs font-bold text-red-500 flex items-center gap-1"><i class="ki-filled ki-cross-circle"></i> Sudah dibeli</span>
+                                @elseif($lockStatus === 'pending')
+                                    <span class="text-xs font-bold text-yellow-500 flex items-center gap-1"><i class="ki-filled ki-time"></i> Lagi dipesan</span>
+                                @elseif($lockStatus === 'inactive')
+                                    <span class="text-xs font-bold text-gray-400 flex items-center gap-1"><i class="ki-filled ki-cross-circle"></i> Tidak aktif</span>
                                 @else
                                     <span class="text-xs font-bold text-green-500 flex items-center gap-1"><i class="ki-filled ki-check-circle"></i> Tersedia</span>
                                 @endif
@@ -176,7 +181,7 @@
                         
                         <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
                             <span class="text-lg font-black text-primary">Rp{{ number_format($module->price, 0, ',', '.') }}</span>
-                            @if(!$module->user_id)
+                            @if($lockStatus === 'available')
                                 <button type="button" 
                                     class="checkout-module-btn px-5 py-2.5 bg-primary text-white text-xs font-black uppercase tracking-wider rounded-xl hover:bg-primary-dark shadow-md shadow-primary/20 transition-all active:scale-95 flex items-center gap-2"
                                     data-module-id="{{ $module->id }}"
@@ -187,7 +192,7 @@
                                 </button>
                             @else
                                 <span class="px-5 py-2.5 bg-gray-100 text-gray-400 text-xs font-black uppercase tracking-wider rounded-xl cursor-not-allowed">
-                                    Diambil
+                                    {{ $lockStatus === 'pending' ? 'Menunggu Bayar' : 'Terkunci' }}
                                 </span>
                             @endif
                         </div>
@@ -278,8 +283,9 @@ $(document).ready(function() {
                     btn.prop('disabled', false).html(originalHtml);
                 }
             },
-            error: function() {
-                Swal.fire({ icon: 'error', title: 'Error', text: 'Gagal memproses checkout. Silakan coba lagi.' });
+            error: function(xhr) {
+                const message = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Gagal memproses checkout. Silakan coba lagi.';
+                Swal.fire({ icon: 'error', title: 'Error', text: message });
                 btn.prop('disabled', false).html(originalHtml);
             }
         });

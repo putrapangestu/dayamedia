@@ -77,7 +77,9 @@ if (! function_exists('whatsapp_send_template')) {
 if (! function_exists('whatsapp_admin_notify')) {
     function whatsapp_admin_notify(string $message, ?int $delaySeconds = null): void
     {
-        $admins = getSetting('admin_whatsapp', env('WHATSAPP_ADMIN_NUMBER'));
+        $admins = getSetting('admin_whatsapp')
+            ?: getSetting('payment_confirmation_whatsapp')
+            ?: env('WHATSAPP_ADMIN_NUMBER');
         if (! $admins) {
             return;
         }

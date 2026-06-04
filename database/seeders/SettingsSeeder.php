@@ -27,7 +27,8 @@ class SettingsSeeder extends Seeder
         $this->createSetting('bank_address', '', 'string', 'Alamat Bank', 'payment');
 
         // Payment confirmation settings
-        $this->createSetting('payment_confirmation_whatsapp', '6281234567890', 'string', 'Nomor WhatsApp untuk konfirmasi pembayaran', 'payment');
+        $this->createSetting('admin_whatsapp', '6281166012020,6281166031010', 'string', 'Nomor WhatsApp admin untuk notifikasi', 'notification');
+        $this->createSetting('payment_confirmation_whatsapp', '6281166012020,6281166031010', 'string', 'Nomor WhatsApp untuk konfirmasi pembayaran', 'payment');
         $this->createSetting('payment_confirmation_email', 'admin@azzia.id', 'string', 'Email untuk konfirmasi pembayaran', 'payment');
 
         // Royalty settings

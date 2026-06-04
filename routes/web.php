@@ -29,7 +29,7 @@ use App\Http\Controllers\Transaction\WithdrawController;
 use App\Http\Controllers\WhatsAppTemplateController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/test', function() {
+Route::get('/test', function () {
     return view('landing.layouts.app');
 });
 
@@ -186,10 +186,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
     // Royalty Routes
     Route::get('royalty', [RoyaltyController::class, 'index'])->name('royalty.index');
-    Route::get('royalty/{royalty}', [RoyaltyController::class, 'show'])->name('royalty.show');
-    Route::post('royalty/{royalty}/process-payment', [RoyaltyController::class, 'processPayment'])->name('royalty.process-payment');
     Route::get('royalty/settings', [RoyaltyController::class, 'settings'])->name('royalty.settings');
     Route::post('royalty/settings/update', [RoyaltyController::class, 'updateSettings'])->name('royalty.settings.update');
+    Route::get('royalty/{royalty}', [RoyaltyController::class, 'show'])->name('royalty.show');
+    Route::post('royalty/{royalty}/process-payment', [RoyaltyController::class, 'processPayment'])->name('royalty.process-payment');
 
     // Bank Information Routes
     Route::get('settings/bank-info', [BankInfoController::class, 'index'])->name('settings.bank-info');
@@ -197,11 +197,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('api/bank-info', [BankInfoController::class, 'show'])->name('api.bank-info');
 
     // WhatsApp Templates Routes
-    Route::get('settings/whatsapp-templates', [WhatsAppTemplateController::class, 'index'])->name('admin.whatsapp-templates.index');
-    Route::get('settings/whatsapp-templates/{template}/edit', [WhatsAppTemplateController::class, 'edit'])->name('admin.whatsapp-templates.edit');
-    Route::put('settings/whatsapp-templates/{template}', [WhatsAppTemplateController::class, 'update'])->name('admin.whatsapp-templates.update');
-    Route::get('settings/whatsapp-templates/{template}/preview', [WhatsAppTemplateController::class, 'preview'])->name('admin.whatsapp-templates.preview');
-    Route::post('settings/whatsapp-templates/{template}/send-test', [WhatsAppTemplateController::class, 'sendTest'])->name('admin.whatsapp-templates.send-test');
+    Route::get('settings/whatsapp-templates', [WhatsAppTemplateController::class, 'index'])->name('whatsapp-templates.index');
+    Route::get('settings/whatsapp-templates/{template}/edit', [WhatsAppTemplateController::class, 'edit'])->name('whatsapp-templates.edit');
+    Route::put('settings/whatsapp-templates/{template}', [WhatsAppTemplateController::class, 'update'])->name('whatsapp-templates.update');
+    Route::get('settings/whatsapp-templates/{template}/preview', [WhatsAppTemplateController::class, 'preview'])->name('whatsapp-templates.preview');
+    Route::post('settings/whatsapp-templates/{template}/send-test', [WhatsAppTemplateController::class, 'sendTest'])->name('whatsapp-templates.send-test');
 
     // Affiliate Order Routes
     Route::resource('affiliate-order', AffiliateOrderController::class);
