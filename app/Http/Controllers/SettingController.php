@@ -76,7 +76,7 @@ class SettingController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'file' => 'required|file|mimes:pdf,jpg,jpeg,png,gif|max:5120',
+            'file' => 'required|file|mimes:pdf,jpg,jpeg,png,gif,doc,docx|max:5120',
             'member' => 'array',
             'member.*' => 'exists:users,id',
         ]);
