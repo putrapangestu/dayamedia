@@ -5,7 +5,7 @@
 @section('content')
 <div class="bg-gray-50/50 min-h-screen pb-20 pt-10">
     <div class="kt-container-fixed">
-        
+
         {{-- ===== BREADCRUMB ===== --}}
         <div class="flex items-center gap-2 text-sm font-medium mb-10">
             <a href="{{ route('home') }}" class="text-gray-500 hover:text-primary transition-colors">Beranda</a>
@@ -17,11 +17,11 @@
 
         <div class="max-w-[900px] mx-auto">
             <div class="bg-white border border-gray-100 rounded-[3rem] shadow-xl shadow-gray-200/40 overflow-hidden">
-                
+
                 <!-- Header Section -->
                 <div class="p-8 sm:p-12 border-b border-gray-100 bg-primary/[0.02] relative">
                     <div class="absolute top-0 right-0 size-40 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                    
+
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
                         <div class="flex items-center gap-4">
                             <div class="size-16 rounded-[1.5rem] bg-primary text-white flex items-center justify-center shadow-xl shadow-primary/30">
@@ -43,13 +43,13 @@
                 <div class="p-8 sm:p-12">
                     <form action="{{ route('individual-books.upload.store', $transaction) }}" method="POST" enctype="multipart/form-data" class="space-y-10">
                         @csrf
-                        
+
                         <!-- Section 1: Detail Buku -->
                         <div class="space-y-6">
                             <h3 class="text-sm font-black text-primary uppercase tracking-[0.3em] flex items-center gap-3">
                                 <div class="w-8 h-px bg-primary/30"></div> 01. Detail Identitas Buku
                             </h3>
-                            
+
                             <div class="grid grid-cols-1 gap-6">
                                 <div class="flex flex-col gap-2">
                                     <label class="text-xs font-bold text-gray-700 uppercase tracking-widest ml-1">Judul Lengkap Naskah <span class="text-red-500">*</span></label>
@@ -61,18 +61,38 @@
                                 </div>
 
                                 <div class="flex flex-col gap-2">
-                                    <label class="text-xs font-bold text-gray-700 uppercase tracking-widest ml-1">Kategori Buku <span class="text-red-500">*</span></label>
-                                    <div class="relative">
-                                        <select name="category_id" required class="w-full px-5 py-4 pr-12 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-bold text-gray-900 focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all appearance-none cursor-pointer">
-                                            <option value="">Pilih Kategori...</option>
+                                    <label class="text-xs font-bold text-gray-700 uppercase tracking-widest ml-1">
+                                        Kategori Buku <span class="text-red-500">*</span>
+                                    </label>
+
+                                    <div class="relative w-full">
+                                        <select
+                                            name="category_id"
+                                            required
+                                            class="block w-full h-[58px] rounded-2xl border border-gray-200 bg-gray-50 px-5 pr-12 text-sm font-bold text-gray-900 shadow-sm outline-none transition-all appearance-none cursor-pointer focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
+                                            style="display:block !important; visibility:visible !important; opacity:1 !important; color:#111827 !important;"
+                                        >
+                                            <option value="" disabled {{ old('category_id', $book->category_id ?? '') ? '' : 'selected' }}>
+                                                Pilih Kategori...
+                                            </option>
+
                                             @foreach($categories as $cat)
-                                                <option value="{{ $cat->id }}" {{ old('category_id', $book->category_id ?? '') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                                                <option
+                                                    value="{{ $cat->id }}"
+                                                    {{ old('category_id', $book->category_id ?? '') == $cat->id ? 'selected' : '' }}
+                                                >
+                                                    {{ $cat->name }}
+                                                </option>
                                             @endforeach
                                         </select>
+
                                         <i class="ki-filled ki-down absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
                                     </div>
+
                                     @error('category_id')
-                                        <p class="text-xs font-bold text-red-500 ml-1">{{ $message }}</p>
+                                        <p class="text-xs font-bold text-red-500 ml-1">
+                                            {{ $message }}
+                                        </p>
                                     @enderror
                                 </div>
 
@@ -104,7 +124,7 @@
                                     Anda memesan {{ $extraAuthors }} penulis tambahan, total {{ $totalAuthors }} slot penulis.
                                 @endif
                             </p>
-                            
+
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="flex flex-col gap-2">
                                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Penulis 1 (Utama)</label>
@@ -127,7 +147,7 @@
                             <h3 class="text-sm font-black text-primary uppercase tracking-[0.3em] flex items-center gap-3">
                                 <div class="w-8 h-px bg-primary/30"></div> 03. Upload File Naskah
                             </h3>
-                            
+
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <!-- Full Content -->
                                 <div class="space-y-3">
