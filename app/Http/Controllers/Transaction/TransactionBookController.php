@@ -131,7 +131,7 @@ class TransactionBookController extends Controller
 
                     $books = Book::where('id', $detail->book_id)->with('authors', 'modules')->first();
                     if ($books) {
-                        TransactionHelper::calculateCommissionRoyalti($commission, $books, $transaction);
+                        TransactionHelper::calculateCommissionRoyalti($commission, $books, $transaction, $detail);
 
                         // create book history
                         BookHistory::create([

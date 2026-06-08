@@ -63,7 +63,7 @@
                 <div class="card shadow-none border">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title mb-0">Target Afiliasi (Bulan Ini)</h4>
-                        <span class="badge bg-info-subtle text-info">Omset: Rp {{ number_format($commissionTotalMonth, 0, ',', '.') }}</span>
+                        <span class="badge bg-info-subtle text-info">Omset: Rp {{ number_format($affiliateRevenueTotalMonth, 0, ',', '.') }}</span>
                     </div>
                     <div class="card-body">
                         <div id="chart"></div>
@@ -318,7 +318,7 @@
             name: 'Pendapatan Omset',
             data: [{
                 x: 'Total Omset',
-                y: {{ $commissionTotalMonth }},
+                y: {{ $affiliateRevenueTotalMonth }},
                 goals: goals
             }]
         }],

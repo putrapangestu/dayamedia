@@ -33,6 +33,7 @@ class LandingController extends Controller
         $books = Book::query()
             ->with('authors.user', 'category', 'modules')
             ->where('status', Book::STATUS_OPEN)
+            ->where('is_individual', false)
             ->withCount(['modules as available_modules_count' => function ($q) {
                 $q->availableForOrder();
             }])
@@ -126,6 +127,14 @@ class LandingController extends Controller
         $book = Book::with('authors.user', 'authors.module', 'category', 'bookEditors.user')->where('slug', $slug)->firstOrFail();
 
         $books = Book::query()->where(['category_id' => $book->category_id, 'status' => Book::STATUS_PUBLISHED, ['id', '!=', $book->id]])->limit(6)->get();
+        $hasPurchased = auth()->check()
+            ? Transaction::where('user_id', auth()->id())
+                ->where('status', 'paid')
+                ->whereHas('details', function ($query) use ($book) {
+                    $query->where('book_id', $book->id);
+                })
+                ->exists()
+            : false;
 
         $authors = [];
         $loop = 0;
@@ -145,7 +154,7 @@ class LandingController extends Controller
             return strtotime($a['created_at']) <=> strtotime($b['created_at']);
         })->values();
 
-        return view('landing.pages.book.detail', compact('book', 'books', 'authors'));
+        return view('landing.pages.book.detail', compact('book', 'books', 'authors', 'hasPurchased'));
     }
 
     public function collaboration(Request $request): View
@@ -153,6 +162,7 @@ class LandingController extends Controller
         $books = Book::query()
             ->with('authors.user', 'category', 'modules')
             ->whereIn('status', [Book::STATUS_OPEN, Book::STATUS_EDITING])
+            ->where('is_individual', false)
             ->withCount(['modules as available_modules_count' => function ($q) {
                 $q->availableForOrder();
             }])
@@ -203,7 +213,11 @@ class LandingController extends Controller
     public function collaborationDetail(string $slug): View
     {
         session()->forget(['checkout_items', 'checkout_total']);
-        $book = Book::with('authors.user', 'category', 'modules.user', 'modules.transactionDetails.transaction', 'bookEditors')->where('slug', $slug)->firstOrFail();
+        $book = Book::with('authors.user', 'category', 'modules.user', 'modules.transactionDetails.transaction', 'bookEditors')
+            ->where('slug', $slug)
+            ->where('is_individual', false)
+            ->whereIn('status', [Book::STATUS_OPEN, Book::STATUS_EDITING, Book::STATUS_PUBLISHED])
+            ->firstOrFail();
 
         // Counting active modules and authors
         $countActiveModules = $book->modules->where('is_active', true)->count();
@@ -211,8 +225,15 @@ class LandingController extends Controller
         $countAuthors = $book->modules->filter(fn ($module) => $module->order_lock_status !== 'available')->count();
 
         $checkEditing = $book?->bookEditors?->file_status == 'approved' ? true : false;
+        $similarBooks = Book::with('authors.user', 'modules')
+            ->where('is_individual', false)
+            ->whereIn('status', [Book::STATUS_OPEN, Book::STATUS_EDITING])
+            ->where('id', '!=', $book->id)
+            ->inRandomOrder()
+            ->limit(6)
+            ->get();
 
-        return view('landing.pages.collaboration.detail', compact('book', 'countActiveModules', 'countAuthors', 'countAuthorUploads', 'checkEditing'));
+        return view('landing.pages.collaboration.detail', compact('book', 'countActiveModules', 'countAuthors', 'countAuthorUploads', 'checkEditing', 'similarBooks'));
     }
 
     public function publications(Request $request): View
@@ -242,7 +263,9 @@ class LandingController extends Controller
             ->paginate(10);
 
         $bookColaborators = Module::where('user_id', $user->id)
-            ->whereHas('book')
+            ->whereHas('book', function ($query) {
+                $query->where('is_individual', false);
+            })
             ->with('book')
             ->paginate(10);
 
@@ -253,6 +276,15 @@ class LandingController extends Controller
 
         $referralCount = $referrals->count();
         $collaborationCount = $bookColaborators->count();
+
+        $referralUserIds = $user->referral_code
+            ? User::whereNotNull('use_referral_code')->where('use_referral_code', $user->referral_code)->pluck('id')
+            : collect();
+        $affiliateRevenueTotalMonth = Transaction::whereIn('user_id', $referralUserIds)
+            ->where('status', 'paid')
+            ->whereMonth('created_at', $now->month)
+            ->whereYear('created_at', $now->year)
+            ->sum('total_price');
 
         $commissionHistories = CommissionHistory::where('user_id', $user->id)
             ->with('transaction.user.affiliateLevel')
@@ -296,6 +328,7 @@ class LandingController extends Controller
             'bookHistories',
             'affiliateLevels',
             'commissionTotalMonth',
+            'affiliateRevenueTotalMonth',
             'documents',
         ));
     }
@@ -376,7 +409,9 @@ class LandingController extends Controller
             }
         }
 
-        return view('landing.pages.book.reader', compact('book'));
+        $activeModules = $book->modules->filter(fn ($module) => $module->is_active)->sortBy('chapter')->values();
+
+        return view('landing.pages.book.reader', compact('book', 'activeModules'));
     }
 
     public function applyPromo(Request $request)

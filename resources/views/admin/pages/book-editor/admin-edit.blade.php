@@ -176,13 +176,8 @@
                         <label for="new_book_id" class="form-label">Pilih Buku Tujuan <span class="text-danger">*</span></label>
                         <select class="form-control @error('new_book_id') is-invalid @enderror" id="new_book_id" name="new_book_id" required>
                             <option value="">-- Pilih Buku --</option>
-                            @foreach(\App\Models\Book::where('status', \App\Models\Book::STATUS_EDITING)
-                                        ->whereDoesntHave('bookEditors', function($query) {
-                                            $query->where('status', '!=', 'rejected');
-                                        })
-                                        ->where('id', '!=', $bookEditor->book_id)
-                                        ->get() as $book)
-                                <option value="{{ $book->id }}">{{ $book->title }} ({{ $book->modules->count() }} bab)</option>
+                            @foreach($transferBooks as $book)
+                                <option value="{{ $book->id }}">{{ $book->title }} ({{ $book->modules_count }} bab)</option>
                             @endforeach
                         </select>
                         @error('new_book_id')

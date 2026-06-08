@@ -78,7 +78,14 @@ class RoyaltyController extends Controller
      */
     public function settings()
     {
-        return view('admin.pages.royalty.settings');
+        $royaltyStats = [
+            'paid_royalty' => Royalty::where('status', 'paid')->sum('amount'),
+            'pending_royalty' => Royalty::where('status', 'pending')->sum('amount'),
+            'paid_referral' => Royalty::where('type', 'referral')->where('status', 'paid')->sum('amount'),
+            'pending_referral' => Royalty::where('type', 'referral')->where('status', 'pending')->sum('amount'),
+        ];
+
+        return view('admin.pages.royalty.settings', compact('royaltyStats'));
     }
 
     /**

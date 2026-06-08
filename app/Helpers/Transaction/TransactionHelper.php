@@ -6,6 +6,7 @@ use App\Models\AffiliateLevel;
 use App\Models\Book;
 use App\Models\CommissionHistory;
 use App\Models\Transaction;
+use App\Models\TransactionDetail;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -92,11 +93,16 @@ class TransactionHelper
     /**
      * calculate commission for royalti and percentage.
      */
-    public static function calculateCommissionRoyalti($commission, Book $books, Transaction $transaction)
+    public static function calculateCommissionRoyalti($commission, Book $books, Transaction $transaction, ?TransactionDetail $transactionDetail = null)
     {
-        if (CommissionHistory::where('transaction_id', $transaction->id)
-            ->where('type', 'royalti')
-            ->exists()) {
+        $historyQuery = CommissionHistory::where('transaction_id', $transaction->id)
+            ->where('type', 'royalti');
+
+        if ($transactionDetail) {
+            $historyQuery->where('transaction_detail_id', $transactionDetail->id);
+        }
+
+        if ($historyQuery->exists()) {
             return;
         }
 
@@ -117,6 +123,7 @@ class TransactionHelper
             CommissionHistory::create([
                 'user_id' => $module->user_id,
                 'transaction_id' => $transaction->id,
+                'transaction_detail_id' => $transactionDetail?->id,
                 'amount' => $writerCommission,
                 'type' => 'royalti',
             ]);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Master\Editor\CreateEditorRequest;
 use App\Http\Requests\Master\Editor\UpdateEditorRequest;
+use App\Models\AffiliateLevel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -32,8 +33,9 @@ class EditorController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->withQueryString();
+        $affiliateLevels = AffiliateLevel::all();
 
-        return view('admin.pages.editor.index', compact('users'));
+        return view('admin.pages.editor.index', compact('users', 'affiliateLevels'));
     }
 
     /**

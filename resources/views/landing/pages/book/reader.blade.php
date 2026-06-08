@@ -112,11 +112,11 @@
                                         <div id="pdf-pages-container"></div>
                                     </div>
 
-                                    @if($book->modules->where('is_active', true)->count() > 0)
+                                    @if($activeModules->count() > 0)
                                         <div class="mt-4">
                                             <h6 class="fw-bold mb-3">Daftar Bab</h6>
                                             <div class="list-group">
-                                                @foreach($book->modules->where('is_active', true)->sortBy('chapter') as $module)
+                                                @foreach($activeModules as $module)
                                                     <div class="list-group-item d-flex justify-content-between align-items-center">
                                                         <div>
                                                             <h6 class="mb-1">BAB {{ $module->chapter }}: {{ $module->title }}</h6>

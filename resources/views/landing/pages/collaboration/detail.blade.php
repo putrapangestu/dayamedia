@@ -209,7 +209,7 @@
             
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-5">
                 {{-- To reuse the similar books logic from backend, assuming $similarBooks or another variable is passed. If not, keeping structural placeholder or fetching --}}
-                @forelse(\App\Models\Book::with('authors.user', 'modules')->whereIn('status', ['open', 'editing'])->where('id', '!=', $book->id)->inRandomOrder()->limit(6)->get() as $item)
+                @forelse($similarBooks as $item)
                     @include('landing.pages.home.partials.collab-card', ['book' => $item])
                 @empty
                     <div class="col-span-full py-10 text-center text-gray-500 font-medium bg-white rounded-3xl border border-gray-100">

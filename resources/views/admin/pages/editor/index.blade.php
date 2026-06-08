@@ -40,7 +40,7 @@
                                 <label class="form-label">Tingkat Affiliate</label>
                                 <select class="form-control" name="affiliate_level_id">
                                     <option value="">Semua Tingkat</option>
-                                    @foreach(\App\Models\AffiliateLevel::all() as $level)
+                                    @foreach($affiliateLevels as $level)
                                         <option value="{{ $level->id }}" {{ request('affiliate_level_id') == $level->id ? 'selected' : '' }}>
                                             {{ $level->name }}
                                         </option>

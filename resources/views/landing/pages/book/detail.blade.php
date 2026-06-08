@@ -292,15 +292,6 @@
                                 </div>
                             </div>
 
-                            @php
-                                $hasPurchased = auth()->check() ? \App\Models\Transaction::where('user_id', auth()->id())
-                                    ->where('status', 'paid')
-                                    ->whereHas('details', function ($query) use ($book) {
-                                        $query->where('book_id', $book->id);
-                                    })
-                                    ->exists() : false;
-                            @endphp
-
                             @if($hasPurchased)
                                 <a href="{{ route('book.read', $book->slug) }}" class="w-full py-4 bg-green-500 text-white font-black rounded-2xl shadow-xl shadow-green-500/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 text-base">
                                     <i class="ki-filled ki-book-open text-xl"></i> Baca E-Book Sekarang

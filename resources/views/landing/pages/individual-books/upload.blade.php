@@ -54,51 +54,78 @@
                                 <div class="flex flex-col gap-2">
                                     <label class="text-xs font-bold text-gray-700 uppercase tracking-widest ml-1">Judul Lengkap Naskah <span class="text-red-500">*</span></label>
                                     <input type="text" name="title" value="{{ old('title', $book->title ?? '') }}" required
-                                        class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-bold focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all" placeholder="Masukkan judul buku Anda...">
+                                        class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-bold text-gray-900 focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all" placeholder="Masukkan judul buku Anda...">
+                                    @error('title')
+                                        <p class="text-xs font-bold text-red-500 ml-1">{{ $message }}</p>
+                                    @enderror
                                 </div>
 
                                 <div class="flex flex-col gap-2">
                                     <label class="text-xs font-bold text-gray-700 uppercase tracking-widest ml-1">Kategori Buku <span class="text-red-500">*</span></label>
-                                    <select name="category_id" required class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-bold focus:bg-white transition-all appearance-none cursor-pointer">
-                                        <option value="">Pilih Kategori...</option>
-                                        @foreach($categories as $cat)
-                                            <option value="{{ $cat->id }}" {{ old('category_id', $book->category_id ?? '') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
-                                        @endforeach
-                                    </select>
+                                    <div class="relative">
+                                        <select name="category_id" required class="w-full px-5 py-4 pr-12 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-bold text-gray-900 focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all appearance-none cursor-pointer">
+                                            <option value="">Pilih Kategori...</option>
+                                            @foreach($categories as $cat)
+                                                <option value="{{ $cat->id }}" {{ old('category_id', $book->category_id ?? '') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <i class="ki-filled ki-down absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                                    </div>
+                                    @error('category_id')
+                                        <p class="text-xs font-bold text-red-500 ml-1">{{ $message }}</p>
+                                    @enderror
                                 </div>
 
                                 <div class="flex flex-col gap-2">
                                     <label class="text-xs font-bold text-gray-700 uppercase tracking-widest ml-1">Abstrak / Deskripsi Singkat <span class="text-red-500">*</span></label>
                                     <textarea name="description" rows="5" required
-                                        class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-medium focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all" placeholder="Tuliskan ringkasan isi buku Anda di sini...">{{ old('description', $book->description ?? '') }}</textarea>
+                                        class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all" placeholder="Tuliskan ringkasan isi buku Anda di sini...">{{ old('description', $book->description ?? '') }}</textarea>
+                                    @error('description')
+                                        <p class="text-xs font-bold text-red-500 ml-1">{{ $message }}</p>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Section 2: Penulis Tambahan -->
-                        @if($transaction->additional_authors_count > 0)
+                        <!-- Section 2: Penulis Buku -->
                         <div class="space-y-6">
+                            @php
+                                $maxDefaultAuthors = $transaction->individualBookPackage->max_authors_default ?? 3;
+                                $extraAuthors = $transaction->additional_authors_count ?? 0;
+                                $totalAuthors = $maxDefaultAuthors + $extraAuthors;
+                            @endphp
+
                             <h3 class="text-sm font-black text-primary uppercase tracking-[0.3em] flex items-center gap-3">
-                                <div class="w-8 h-px bg-primary/30"></div> 02. Penulis Tambahan
+                                <div class="w-8 h-px bg-primary/30"></div> 02. Penulis Buku
                             </h3>
-                            <p class="text-xs font-medium text-gray-500 -mt-2 ml-11">Sesuai pesanan Anda, silakan lengkapi {{ $transaction->additional_authors_count }} nama penulis tambahan.</p>
+                            <p class="text-xs font-medium text-gray-500 -mt-2 ml-11">
+                                Paket ini mencakup {{ $maxDefaultAuthors }} penulis bawaan.
+                                @if($extraAuthors > 0)
+                                    Anda memesan {{ $extraAuthors }} penulis tambahan, total {{ $totalAuthors }} slot penulis.
+                                @endif
+                            </p>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                @for($i = 0; $i < $transaction->additional_authors_count; $i++)
+                                <div class="flex flex-col gap-2">
+                                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Penulis 1 (Utama)</label>
+                                    <input type="text" value="{{ auth()->user()->full_name }}"
+                                        class="w-full px-4 py-3.5 bg-gray-100 border border-gray-200 rounded-xl text-sm font-bold text-gray-500" readonly>
+                                </div>
+
+                                @for($i = 2; $i <= $totalAuthors; $i++)
                                     <div class="flex flex-col gap-2">
-                                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Nama Penulis {{ $i + 1 }}</label>
-                                        <input type="text" name="additional_authors[]" value="{{ old('additional_authors.'.$i, $authors[$i]['author'] ?? '') }}"
-                                            class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold focus:bg-white transition-all" placeholder="Nama Lengkap & Gelar">
+                                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Penulis {{ $i }}</label>
+                                        <input type="text" name="additional_authors[]" value="{{ old('additional_authors.'.($i - 2), $authors[$i - 2]['author'] ?? '') }}"
+                                            class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-900 focus:bg-white transition-all" placeholder="Nama lengkap penulis {{ $i }}">
                                     </div>
                                 @endfor
                             </div>
                         </div>
-                        @endif
 
                         <!-- Section 3: File Upload -->
                         <div class="space-y-6">
                             <h3 class="text-sm font-black text-primary uppercase tracking-[0.3em] flex items-center gap-3">
-                                <div class="w-8 h-px bg-primary/30"></div> 0{{ $transaction->additional_authors_count > 0 ? '3' : '2' }}. Upload File Naskah
+                                <div class="w-8 h-px bg-primary/30"></div> 03. Upload File Naskah
                             </h3>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -118,6 +145,9 @@
                                             <p class="text-xs font-black text-green-600 truncate px-4 file-name-display"></p>
                                         </div>
                                     </div>
+                                    @error('full_content')
+                                        <p class="text-xs font-bold text-red-500 ml-1">{{ $message }}</p>
+                                    @enderror
                                     @if(isset($modules->file_path))
                                         <p class="text-[10px] text-green-600 font-bold ml-1 flex items-center gap-1"><i class="ki-filled ki-check-circle"></i> File naskah sudah terupload</p>
                                     @endif
@@ -139,6 +169,9 @@
                                             <p class="text-xs font-black text-green-600 truncate px-4 file-name-display"></p>
                                         </div>
                                     </div>
+                                    @error('turnitin_file')
+                                        <p class="text-xs font-bold text-red-500 ml-1">{{ $message }}</p>
+                                    @enderror
                                     @if(isset($modules->file_path_turnitin))
                                         <p class="text-[10px] text-green-600 font-bold ml-1 flex items-center gap-1"><i class="ki-filled ki-check-circle"></i> File turnitin sudah terupload</p>
                                     @endif

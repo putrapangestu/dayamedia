@@ -41,8 +41,9 @@ class MemberController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->appends($request->only(['name', 'status', 'affiliate_level_id']));
+        $affiliateLevels = AffiliateLevel::all();
 
-        return view('admin.pages.member.index', compact('users'));
+        return view('admin.pages.member.index', compact('users', 'affiliateLevels'));
     }
 
     /**
@@ -60,7 +61,7 @@ class MemberController extends Controller
     {
         $validated = $request->validated();
 
-        $affiliateLevel = AffiliateLevel::orderBy('percentage','asc')->first();
+        $affiliateLevel = AffiliateLevel::orderBy('percentage', 'asc')->first();
 
         $user = User::create([
             'full_name' => $validated['full_name'],
@@ -70,7 +71,7 @@ class MemberController extends Controller
             'degree' => $validated['degree'],
             'phone_number' => $validated['phone_number'],
             'referral_code' => Str::upper(Str::random(4).now()->format('s').Str::random(2)),
-            'affiliate_level_id' => $affiliateLevel?->id ?? null
+            'affiliate_level_id' => $affiliateLevel?->id ?? null,
         ]);
 
         $user->assignRole('member');
@@ -116,6 +117,16 @@ class MemberController extends Controller
             ->whereYear('created_at', $now->year)
             ->sum('amount');
 
+        $referralUserIds = $member->referral_code
+            ? User::whereNotNull('use_referral_code')->where('use_referral_code', $member->referral_code)->pluck('id')
+            : collect();
+
+        $affiliateRevenueTotalMonth = \App\Models\Transaction::whereIn('user_id', $referralUserIds)
+            ->where('status', 'paid')
+            ->whereMonth('created_at', $now->month)
+            ->whereYear('created_at', $now->year)
+            ->sum('total_price');
+
         $affiliateLevels = \App\Models\AffiliateLevel::orderBy('min_earning', 'asc')->get();
 
         $commissionHistories = \App\Models\CommissionHistory::where('user_id', $member->id)
@@ -135,6 +146,7 @@ class MemberController extends Controller
             'ownedBooks',
             'collaborationModules',
             'commissionTotalMonth',
+            'affiliateRevenueTotalMonth',
             'affiliateLevels',
             'commissionHistories',
             'referralUsers'

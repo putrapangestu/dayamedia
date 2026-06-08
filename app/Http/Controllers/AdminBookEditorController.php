@@ -43,8 +43,15 @@ class AdminBookEditorController extends Controller
     public function edit(string $id)
     {
         $bookEditor = BookEditor::with(['book', 'user'])->findOrFail($id);
+        $transferBooks = Book::withCount('modules')
+            ->where('status', Book::STATUS_EDITING)
+            ->whereDoesntHave('bookEditors', function ($query) {
+                $query->where('status', '!=', 'rejected');
+            })
+            ->where('id', '!=', $bookEditor->book_id)
+            ->get();
 
-        return view('admin.pages.book-editor.admin-edit', compact('bookEditor'));
+        return view('admin.pages.book-editor.admin-edit', compact('bookEditor', 'transferBooks'));
     }
 
     /**

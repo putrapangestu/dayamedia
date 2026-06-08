@@ -22,6 +22,7 @@ class CommissionHistory extends Model
     protected $fillable = [
         'user_id',
         'transaction_id',
+        'transaction_detail_id',
         'amount',
         'type',
     ];
@@ -40,5 +41,10 @@ class CommissionHistory extends Model
     public function transaction()
     {
         return $this->belongsTo(Transaction::class, 'transaction_id')->withTrashed();
+    }
+
+    public function transactionDetail()
+    {
+        return $this->belongsTo(TransactionDetail::class, 'transaction_detail_id')->withTrashed();
     }
 }

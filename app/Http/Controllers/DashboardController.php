@@ -23,7 +23,13 @@ class DashboardController extends Controller
             ->whereRelation('authors', 'user_id', null)
             ->orderBy('created_at', 'asc')
             ->limit(5)
-            ->get();
+            ->get()
+            ->map(function (Book $book) {
+                $book->filled_authors_count = $book->authors->filter(fn ($author) => $author->user_id !== null)->count();
+                $book->total_authors_count = $book->authors->count();
+
+                return $book;
+            });
 
         // Filter selection (default: monthly with current month & year)
         $filterType = $request->input('filter_type', 'monthly');

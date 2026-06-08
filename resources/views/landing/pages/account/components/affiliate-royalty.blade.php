@@ -43,14 +43,20 @@
 
     <!-- 2. Target Afiliasi (Horizontal Chart) -->
     <div class="bg-white border border-gray-100 rounded-[3rem] shadow-sm overflow-hidden p-8 sm:p-10">
-        <div class="flex items-center gap-4 mb-8">
-            <div class="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
-                <i class="ki-filled ki-chart-line text-xl"></i>
+        <div class="flex flex-col gap-4 mb-8 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex items-center gap-4">
+                <div class="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                    <i class="ki-filled ki-chart-line text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black text-gray-900 tracking-tight">Target Omset Bulanan</h3>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Dihitung dari total transaksi member yang mendaftar melalui link afiliasi Anda</p>
+                </div>
             </div>
-            <div>
-                <h3 class="text-lg font-black text-gray-900 tracking-tight">Target Omset Bulanan</h3>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Pantau progres pencapaian level afiliasi Anda</p>
-            </div>
+
+            <span class="inline-flex w-fit rounded-xl bg-blue-50 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-blue-700">
+                Omset: Rp{{ number_format($affiliateRevenueTotalMonth ?? 0, 0, ',', '.') }}
+            </span>
         </div>
 
         <div id="affiliate-target-chart" class="w-full"></div>
@@ -139,7 +145,7 @@
                 name: 'Omset Saya',
                 data: [{
                     x: 'Progres Omset',
-                    y: {{ $commissionTotalMonth }},
+                    y: {{ $affiliateRevenueTotalMonth ?? 0 }},
                     goals: goals
                 }]
             }],

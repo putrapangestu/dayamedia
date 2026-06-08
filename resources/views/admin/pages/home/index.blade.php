@@ -196,7 +196,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <p class="mb-0 fs-3 text-dark">{{ $book->authors->where('user_id', '!=', null)->count() }} / {{ $book->authors->count() }}</p>
+                                    <p class="mb-0 fs-3 text-dark">{{ $book->filled_authors_count }} / {{ $book->total_authors_count }}</p>
                                 </td>
                                 <td>
                                     <p class="mb-0 fs-3 text-dark">{{ $book->created_at->format('d F Y') }}</p>

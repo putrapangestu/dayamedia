@@ -122,26 +122,26 @@
                         <div class="mb-3">
                             <strong>Total Royalty Terbayar:</strong>
                             <span class="float-end text-success">
-                                Rp. {{ number_format(\App\Models\Royalty::where('status', 'paid')->sum('amount'), 0, ',', '.') }}
+                                Rp. {{ number_format($royaltyStats['paid_royalty'], 0, ',', '.') }}
                             </span>
                         </div>
                         <div class="mb-3">
                             <strong>Total Royalty Pending:</strong>
                             <span class="float-end text-warning">
-                                Rp. {{ number_format(\App\Models\Royalty::where('status', 'pending')->sum('amount'), 0, ',', '.') }}
+                                Rp. {{ number_format($royaltyStats['pending_royalty'], 0, ',', '.') }}
                             </span>
                         </div>
                         <hr>
                         <div class="mb-3">
                             <strong>Total Referral Terbayar:</strong>
                             <span class="float-end text-success">
-                                Rp. {{ number_format(\App\Models\Royalty::where('type', 'referral')->where('status', 'paid')->sum('amount'), 0, ',', '.') }}
+                                Rp. {{ number_format($royaltyStats['paid_referral'], 0, ',', '.') }}
                             </span>
                         </div>
                         <div class="mb-3">
                             <strong>Total Referral Pending:</strong>
                             <span class="float-end text-warning">
-                                Rp. {{ number_format(\App\Models\Royalty::where('type', 'referral')->where('status', 'pending')->sum('amount'), 0, ',', '.') }}
+                                Rp. {{ number_format($royaltyStats['pending_referral'], 0, ',', '.') }}
                             </span>
                         </div>
                     </div>

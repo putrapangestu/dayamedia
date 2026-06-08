@@ -32,7 +32,7 @@ class IndividualBookUploadController extends Controller
         $book = $transaction->details->first()?->book?->load('modules', 'authors');
 
         $modules = $book?->modules->first() ?? null;
-        $authors = $book?->authors->count() > 0 ? $book?->authors->where('user_id', null)->toArray() : [];
+        $authors = $book?->authors->count() > 0 ? $book?->authors->where('user_id', null)->sortBy('created_at')->values()->toArray() : [];
 
         return view('landing.pages.individual-books.upload', compact('transaction', 'categories', 'book', 'modules', 'authors'));
     }
@@ -49,11 +49,13 @@ class IndividualBookUploadController extends Controller
 
         $transactionDetail = $transaction->details->first();
 
+        $module = $transactionDetail?->book?->modules()->first();
+
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'category_id' => 'required|exists:categories,id',
-            'full_content' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
+            'full_content' => [$module?->file_path ? 'nullable' : 'required', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
             'turnitin_file' => 'nullable|file|mimes:pdf|max:5120',
             'additional_authors' => 'nullable|array',
             'additional_authors.*' => 'nullable|string|max:255',
@@ -124,6 +126,7 @@ class IndividualBookUploadController extends Controller
                 if ($book) {
                     $book->title = $request->title;
                     $book->description = $request->description;
+                    $book->category_id = $request->category_id;
                     $book->slug = Str::slug($request->title).'-'.Str::random(6);
                     $book->save();
 
@@ -137,17 +140,23 @@ class IndividualBookUploadController extends Controller
                         $module->save();
                     }
 
-                    $author = $book->authors->where('user_id', null)->sortByDesc('created_at');
-                    foreach ($author as $key => $authorItem) {
-                        $authorItem->author = $request->additional_authors[$key - 1] ?? $authorItem->author;
-                        $authorItem->save();
-                    }
+                    $submittedAuthors = collect($request->input('additional_authors', []))
+                        ->map(fn ($authorName) => trim((string) $authorName))
+                        ->filter()
+                        ->values();
 
-                    if ($author->isEmpty() && $request->has('additional_authors')) {
-                        foreach ($request->additional_authors as $authorName) {
-                            if (! $authorName) {
-                                continue;
-                            }
+                    $existingAuthors = $book->authors()
+                        ->whereNull('user_id')
+                        ->orderBy('created_at')
+                        ->get()
+                        ->values();
+
+                    foreach ($submittedAuthors as $key => $authorName) {
+                        $authorItem = $existingAuthors->get($key);
+
+                        if ($authorItem) {
+                            $authorItem->update(['author' => $authorName]);
+                        } else {
                             BookAuthor::create([
                                 'book_id' => $book->id,
                                 'module_id' => $module->id,
@@ -156,6 +165,8 @@ class IndividualBookUploadController extends Controller
                             ]);
                         }
                     }
+
+                    $existingAuthors->slice($submittedAuthors->count())->each->delete();
                 }
             }
 

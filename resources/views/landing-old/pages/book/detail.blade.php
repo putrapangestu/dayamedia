@@ -347,16 +347,7 @@
 
                                 <!-- Action Buttons -->
                                 <div class="d-flex flex-wrap gap-3 mt-2">
-                                  @php
-                                    $hasPurchased = auth()->check() ? \App\Models\Transaction::where('user_id', auth()->id())
-                                        ->where('status', 'paid')
-                                        ->whereHas('details', function ($query) use ($book) {
-                                            $query->where('book_id', $book->id);
-                                        })
-                                        ->exists() : false;
-                                  @endphp
-
-                                  @if($hasPurchased)
+                                  @if($hasPurchased ?? false)
                                     <a href="{{ route('book.read', $book->slug) }}" class="btn btn-success btn-lg px-5 rounded-pill shadow-sm">
                                       <i class="ti ti-book-open me-2 fs-5"></i> Baca E-Book Sekarang
                                     </a>

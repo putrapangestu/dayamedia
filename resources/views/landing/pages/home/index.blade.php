@@ -132,7 +132,7 @@
 
             <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
                 <div class="w-full lg:w-[200px] flex-shrink-0 relative group">
-                    <img src="{{ asset('assets/images/new-release.jpeg') }}" alt="Rekomendasi" class="relative w-full h-full object-cover rounded-3xl shadow-lg border border-white transform group-hover:-translate-y-2 transition-transform duration-500">
+                    <img src="{{ asset('assets/images/recomend.png') }}" alt="Rekomendasi" class="relative w-full h-full object-cover rounded-3xl shadow-lg border border-white transform group-hover:-translate-y-2 transition-transform duration-500">
                 </div>
 
                 <div class="flex-grow grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 xl:grid-cols-6 gap-5">
@@ -161,7 +161,7 @@
 
             <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
                 <div class="w-full lg:w-[200px] flex-shrink-0 relative group">
-                    <img src="{{ asset('assets/images/new-release.jpeg') }}" alt="Populer" class="relative w-full h-full object-cover rounded-3xl shadow-lg border border-white transform group-hover:-translate-y-2 transition-transform duration-500">
+                    <img src="{{ asset('assets/images/most-sold.png') }}" alt="Populer" class="relative w-full h-full object-cover rounded-3xl shadow-lg border border-white transform group-hover:-translate-y-2 transition-transform duration-500">
                 </div>
 
                 <div class="flex-grow grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 xl:grid-cols-6 gap-5">
@@ -191,8 +191,8 @@
 
                 <div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10">
                     <div class="max-w-2xl text-center lg:text-left text-white">
-                        <h2 class="text-3xl md:text-5xl font-black mb-6">Punya Ide Tulisan Hebat? Mari Berkolaborasi!</h2>
-                        <p class="text-white/80 text-lg md:text-xl font-medium leading-relaxed">Jangan biarkan naskah Anda tersimpan rapi di laci. Bergabunglah dengan proyek menulis kami dan terbitkan karya Anda bersama penulis berbakat lainnya.</p>
+                        <h2 class="text-3xl md:text-5xl font-black mb-6">Punya Karya Terbaik? Terbitkan Naskah Anda Segera!</h2>
+                        <p class="text-white/80 text-lg md:text-xl font-medium leading-relaxed">Jangan biarkan naskah anda hanya tersimpan rapi. Terbitkan segera bersama Daya Media Nusantara, dapatkan kesempatan publikasi dengan biaya terjangkat dan jaringan distribusi yang luas.</p>
                     </div>
                     <a href="{{ route('register') }}" class="px-12 py-6 bg-white text-primary font-black rounded-full shadow-2xl flex items-center gap-4 hover:scale-105 transition-all text-lg">
                         Gabung Kolaborasi <i class="ki-filled ki-arrow-right text-2xl"></i>
