@@ -8,6 +8,7 @@ use App\Http\Requests\Master\Member\ImportCsvMemberRequest;
 use App\Http\Requests\Master\Member\UpdateMemberRequest;
 use App\Imports\MemberImport;
 use App\Imports\MemberImportCsv;
+use App\Models\AffiliateLevel;
 use App\Models\CommissionHistory;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -59,6 +60,8 @@ class MemberController extends Controller
     {
         $validated = $request->validated();
 
+        $affiliateLevel = AffiliateLevel::orderBy('percentage','asc')->first();
+
         $user = User::create([
             'full_name' => $validated['full_name'],
             'email' => $validated['email'],
@@ -67,6 +70,7 @@ class MemberController extends Controller
             'degree' => $validated['degree'],
             'phone_number' => $validated['phone_number'],
             'referral_code' => Str::upper(Str::random(4).now()->format('s').Str::random(2)),
+            'affiliate_level_id' => $affiliateLevel?->id ?? null
         ]);
 
         $user->assignRole('member');
