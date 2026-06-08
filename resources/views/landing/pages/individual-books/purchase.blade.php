@@ -198,7 +198,7 @@
         $.ajax({
             url: '{{ route("checkout.apply-promo") }}', // Reuse standard promo logic if compatible
             method: 'POST',
-            data: { promo_code: code, _token: '{{ csrf_token() }}' },
+            data: { promo_code: code, subtotal: subtotal, individual_package: 1, _token: '{{ csrf_token() }}' },
             success: function(res) {
                 if(res.success) {
                     discount = res.discount;

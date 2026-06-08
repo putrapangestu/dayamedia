@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Transaction;
 
+use App\Models\AffiliateLevel;
 use App\Models\Book;
 use App\Models\CommissionHistory;
 use App\Models\Transaction;
@@ -26,6 +27,13 @@ class TransactionHelper
      */
     public static function calculateCommissionAffiliate(User $affiliator, Transaction $transaction)
     {
+        if (CommissionHistory::where('user_id', $affiliator->id)
+            ->where('transaction_id', $transaction->id)
+            ->where('type', 'affiliator')
+            ->exists()) {
+            return;
+        }
+
         $baseCommission = 0;
 
         if ($transaction->individual_book_package_id) {
@@ -60,7 +68,14 @@ class TransactionHelper
             }
         }
 
-        $affiliatorCommission = $baseCommission * $affiliator->affiliateLevel->percentage / 100;
+        $affiliateLevel = $affiliator->affiliateLevel
+            ?: AffiliateLevel::orderBy('percentage', 'asc')->first();
+
+        if (! $affiliateLevel) {
+            return;
+        }
+
+        $affiliatorCommission = $baseCommission * $affiliateLevel->percentage / 100;
 
         $affiliator->balance += $affiliatorCommission;
         $affiliator->save();
@@ -79,6 +94,12 @@ class TransactionHelper
      */
     public static function calculateCommissionRoyalti($commission, Book $books, Transaction $transaction)
     {
+        if (CommissionHistory::where('transaction_id', $transaction->id)
+            ->where('type', 'royalti')
+            ->exists()) {
+            return;
+        }
+
         $countAuthorModule = $books->modules->where('user_id', '!=', null)->count();
         $countAuthor = $books->authors->count();
 

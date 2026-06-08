@@ -284,7 +284,9 @@
 
                 <!-- Step 2 -->
                 <div class="timeline-item
-                    @if ($countActiveModules != $countAuthorUploads &&
+                    @if ($book->status == 'published')
+                        done
+                    @elseif ($countActiveModules != $countAuthorUploads &&
                         $book->status == 'editing')
                         active
                     @elseif ($countActiveModules == $countAuthorUploads &&
@@ -305,7 +307,9 @@
 
                 <!-- Step 3 -->
                 <div class="timeline-item
-                    @if ($countActiveModules == $countAuthorUploads &&
+                    @if ($book->status == 'published')
+                        done
+                    @elseif ($countActiveModules == $countAuthorUploads &&
                         $book->status == 'editing' && !$checkEditing)
                         active
                     @elseif (($book->status == 'published' || $checkEditing) && $countActiveModules == $countAuthorUploads)
@@ -324,7 +328,7 @@
 
                 <!-- Step 4 -->
                 <div class="timeline-item
-                    @if ($book->status == 'published' && $countActiveModules == $countAuthorUploads)
+                    @if ($book->status == 'published')
                         done
                     @elseif ($book->status == 'editing' && $checkEditing && $countActiveModules == $countAuthorUploads)
                         active

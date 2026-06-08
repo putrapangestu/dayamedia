@@ -136,7 +136,7 @@
                                     <x-dropzone
                                         name="full_content"
                                         label="File Naskah"
-                                        accept="application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                        accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                                         :maxSize="10"
                                         :required="!$modules?->file_path"
                                         helperText="Upload file naskah (DOC, DOCX - Max: 10MB)"
@@ -227,4 +227,3 @@
     });
 </script>
 @endpush
-

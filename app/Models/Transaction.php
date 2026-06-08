@@ -99,7 +99,26 @@ class Transaction extends Model
         $boundBookIds = $promo->books()->pluck('books.id')->all();
         if (! empty($boundBookIds)) {
             $cartBookIds = $this->details()->pluck('book_id')->filter()->unique()->values()->all();
-            $hasBoundBookInCart = collect($cartBookIds)->intersect($boundBookIds)->isNotEmpty();
+            $moduleIds = $this->details()->pluck('module_id')->filter()->unique()->values()->all();
+
+            if (! empty($moduleIds)) {
+                $moduleBookIds = \App\Models\Module::whereIn('id', $moduleIds)
+                    ->whereHas('book', function ($query) {
+                        $query->where('status', \App\Models\Book::STATUS_PUBLISHED);
+                    })
+                    ->pluck('book_id')
+                    ->filter()
+                    ->unique()
+                    ->values()
+                    ->all();
+                $cartBookIds = array_values(array_unique(array_merge($cartBookIds, $moduleBookIds)));
+            }
+
+            $eligibleBoundBookIds = $promo->books()
+                ->where('books.status', \App\Models\Book::STATUS_PUBLISHED)
+                ->pluck('books.id')
+                ->all();
+            $hasBoundBookInCart = collect($cartBookIds)->intersect($eligibleBoundBookIds)->isNotEmpty();
             if (! $hasBoundBookInCart) {
                 return false;
             }

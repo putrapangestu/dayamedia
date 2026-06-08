@@ -286,15 +286,27 @@ class TransactionBookController extends Controller
                     $bookIds = $details->pluck('book_id')->filter()->unique()->values()->all();
                     $moduleIds = $details->pluck('module_id')->filter()->unique()->values()->all();
                     if (! empty($moduleIds)) {
-                        $moduleBookIds = Module::whereIn('id', $moduleIds)->pluck('book_id')->filter()->unique()->values()->all();
+                        $moduleBookIds = Module::whereIn('id', $moduleIds)
+                            ->whereHas('book', function ($query) {
+                                $query->where('status', Book::STATUS_PUBLISHED);
+                            })
+                            ->pluck('book_id')
+                            ->filter()
+                            ->unique()
+                            ->values()
+                            ->all();
                         $bookIds = array_values(array_unique(array_merge($bookIds, $moduleBookIds)));
                     }
 
-                    $hasBoundBookInCart = collect($bookIds)->intersect($boundBookIds)->isNotEmpty();
+                    $eligibleBoundBookIds = $promo->books()
+                        ->where('books.status', Book::STATUS_PUBLISHED)
+                        ->pluck('books.id')
+                        ->all();
+                    $hasBoundBookInCart = collect($bookIds)->intersect($eligibleBoundBookIds)->isNotEmpty();
                     if (! $hasBoundBookInCart) {
                         DB::rollBack();
 
-                        return response()->json(['message' => 'Promo ini tidak bisa digunakan pada pembelian ini!'], 422);
+                        return response()->json(['message' => 'Promo ini hanya bisa digunakan untuk buku yang sudah publish.'], 422);
                     }
                 }
 

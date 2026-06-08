@@ -267,18 +267,10 @@ class LandingController extends Controller
 
         $affiliateLevels = AffiliateLevel::all();
 
-        $commissionTotalMonth = Transaction::where(function ($query) use ($user) {
-            $query->whereHas('details.book.modules', function ($q) use ($user) {
-                $q->where('user_id', $user->id);
-            })
-                ->orWhereHas('user', function ($q) use ($user) {
-                    $q->where('id', $user->id)
-                        ->where('use_referral_code', $user->referral_code);
-                });
-        })
-            ->whereMonth('updated_at', $now->month)
-            ->whereYear('updated_at', $now->year)
-            ->sum('total_price');
+        $commissionTotalMonth = CommissionHistory::where('user_id', $user->id)
+            ->whereMonth('created_at', $now->month)
+            ->whereYear('created_at', $now->year)
+            ->sum('amount');
 
         $documents = Document::query()
             ->where(function ($q) use ($user) {
@@ -421,18 +413,44 @@ class LandingController extends Controller
 
         $boundBookIds = $promo->books()->pluck('books.id')->all();
         if (! empty($boundBookIds)) {
+            if ($request->boolean('individual_package')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Promo ini tidak bisa digunakan untuk pembelian paket buku individu.',
+                ]);
+            }
+
             $items = collect(session('checkout_items', []));
             $cartBookIds = $items->pluck('book_id')->filter()->unique()->values()->all();
-            $hasBoundBookInCart = collect($cartBookIds)->intersect($boundBookIds)->isNotEmpty();
+            $moduleIds = $items->pluck('module_id')->filter()->unique()->values()->all();
+
+            if (! empty($moduleIds)) {
+                $moduleBookIds = Module::whereIn('id', $moduleIds)
+                    ->whereHas('book', function ($query) {
+                        $query->where('status', Book::STATUS_PUBLISHED);
+                    })
+                    ->pluck('book_id')
+                    ->filter()
+                    ->unique()
+                    ->values()
+                    ->all();
+                $cartBookIds = array_values(array_unique(array_merge($cartBookIds, $moduleBookIds)));
+            }
+
+            $eligibleBoundBookIds = $promo->books()
+                ->where('books.status', Book::STATUS_PUBLISHED)
+                ->pluck('books.id')
+                ->all();
+            $hasBoundBookInCart = collect($cartBookIds)->intersect($eligibleBoundBookIds)->isNotEmpty();
             if (! $hasBoundBookInCart) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Promo ini tidak bisa digunakan pada pembelian ini!',
+                    'message' => 'Promo ini hanya bisa digunakan untuk buku yang sudah publish.',
                 ]);
             }
         }
 
-        $total = session('checkout_total', 0);
+        $total = (int) $request->input('subtotal', session('checkout_total', 0));
         $discountAmount = (int) round(($total * $promo->percentage) / 100);
 
         // Simpan kode promo yang valid ke session

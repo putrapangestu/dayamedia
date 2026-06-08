@@ -44,13 +44,13 @@ class BookEditorController extends Controller
 
         $bookEditors = Book::with(['bookEditors' => function ($query) {
             $query->where('user_id', auth()->id())
-                ->where('status', BookEditor::STATUS_APPROVED);
+                ->whereIn('status', [BookEditor::STATUS_PENDING, BookEditor::STATUS_APPROVED]);
         }, 'modules', 'category'])
             ->whereHas('bookEditors', function ($query) {
                 $query->where('user_id', auth()->id())
-                    ->where('status', BookEditor::STATUS_APPROVED);
+                    ->whereIn('status', [BookEditor::STATUS_PENDING, BookEditor::STATUS_APPROVED]);
             })
-            ->where('status', Book::STATUS_EDITING)
+            ->whereIn('status', [Book::STATUS_EDITING, Book::STATUS_PUBLISHED])
             ->when($search, function ($query, $search) {
                 return $query->where('title', 'like', "%{$search}%");
             })

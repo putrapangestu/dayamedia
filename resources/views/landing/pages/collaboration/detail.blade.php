@@ -101,22 +101,22 @@
 
                             <!-- Step 2 -->
                             <div class="relative z-10 flex items-start gap-4 group">
-                                <div class="size-8 rounded-full {{ $countAuthorUploads == $book->modules->count() ? 'bg-primary text-white shadow-md' : 'bg-gray-100 text-gray-400' }} flex items-center justify-center ring-4 ring-white shrink-0 mt-0.5 transition-colors">
+                                <div class="size-8 rounded-full {{ $book->status == 'published' || $countAuthorUploads == $book->modules->count() ? 'bg-primary text-white shadow-md' : 'bg-gray-100 text-gray-400' }} flex items-center justify-center ring-4 ring-white shrink-0 mt-0.5 transition-colors">
                                     <i class="ki-filled ki-file-up text-sm"></i>
                                 </div>
                                 <div>
-                                    <h4 class="text-sm font-bold {{ $countAuthorUploads == $book->modules->count() ? 'text-gray-900 group-hover:text-primary' : 'text-gray-500' }} transition-colors">Upload Naskah</h4>
+                                    <h4 class="text-sm font-bold {{ $book->status == 'published' || $countAuthorUploads == $book->modules->count() ? 'text-gray-900 group-hover:text-primary' : 'text-gray-500' }} transition-colors">Upload Naskah</h4>
                                     <p class="text-xs font-medium text-gray-400 mt-1">Selesai: {{ $countAuthorUploads }}/{{ $book->modules->count() }}</p>
                                 </div>
                             </div>
 
                             <!-- Step 3 -->
                             <div class="relative z-10 flex items-start gap-4 group">
-                                <div class="size-8 rounded-full {{ $checkEditing ? 'bg-primary text-white shadow-md' : 'bg-gray-100 text-gray-400' }} flex items-center justify-center ring-4 ring-white shrink-0 mt-0.5 transition-colors">
+                                <div class="size-8 rounded-full {{ $book->status == 'published' || $checkEditing ? 'bg-primary text-white shadow-md' : 'bg-gray-100 text-gray-400' }} flex items-center justify-center ring-4 ring-white shrink-0 mt-0.5 transition-colors">
                                     <i class="ki-filled ki-pencil text-sm"></i>
                                 </div>
                                 <div>
-                                    <h4 class="text-sm font-bold {{ $checkEditing ? 'text-gray-900 group-hover:text-primary' : 'text-gray-500' }} transition-colors">Proses Editing</h4>
+                                    <h4 class="text-sm font-bold {{ $book->status == 'published' || $checkEditing ? 'text-gray-900 group-hover:text-primary' : 'text-gray-500' }} transition-colors">Proses Editing</h4>
                                     <p class="text-xs font-medium text-gray-400 mt-1">Oleh Tim Editor Daya Media</p>
                                 </div>
                             </div>

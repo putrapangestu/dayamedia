@@ -13,6 +13,10 @@
     @if($individualTrx->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             @foreach($individualTrx as $trx)
+                @php
+                    $book = $trx->details?->first()?->book;
+                    $canUpload = $trx->status === 'paid' && $trx->individual_book_status === 'confirmed';
+                @endphp
                 <div class="bg-white border border-gray-100 rounded-[2rem] p-6 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-500 group flex flex-col h-full relative overflow-hidden">
                     <!-- Package Info -->
                     <div class="flex justify-between items-start mb-6">
@@ -58,7 +62,7 @@
                         </div>
 
                         <!-- Published Status Detail -->
-                        @if($trx->book && $trx->book->status == 'published')
+                        @if($book && $book->status == 'published')
                             <div class="p-4 bg-green-50 border border-green-100 rounded-2xl flex items-center gap-3">
                                 <div class="size-10 rounded-xl bg-white flex items-center justify-center text-green-600 shadow-sm border border-green-50 shrink-0">
                                     <i class="ki-filled ki-check-circle text-xl"></i>
@@ -68,7 +72,7 @@
                                     <p class="text-xs font-bold text-green-600">Buku Sudah Terbit</p>
                                 </div>
                             </div>
-                        @elseif($trx->status == 'paid')
+                        @elseif($canUpload)
                             <div class="p-4 bg-blue-50 border border-blue-100 rounded-2xl flex items-center gap-3">
                                 <div class="size-10 rounded-xl bg-white flex items-center justify-center text-blue-600 shadow-sm border border-blue-50 shrink-0">
                                     <i class="ki-filled ki-time text-xl animate-spin-slow"></i>
@@ -82,10 +86,14 @@
                     </div>
 
                     <div class="mt-6 pt-4 border-t border-gray-100 flex gap-3">
-                        @if($trx->status == 'paid')
+                        @if($canUpload)
                             <a href="{{ route('individual-books.upload', $trx) }}" class="flex-grow py-3 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all flex items-center justify-center gap-2">
                                 <i class="ki-filled ki-file-up text-base"></i> Upload Naskah
                             </a>
+                        @elseif($trx->status == 'paid')
+                            <span class="flex-grow py-3 bg-blue-50 text-blue-600 text-[10px] font-black uppercase tracking-widest rounded-xl border border-blue-100 flex items-center justify-center gap-2">
+                                <i class="ki-filled ki-time text-base"></i> Menunggu Konfirmasi Admin
+                            </span>
                         @else
                             <a href="{{ route('checkout.success', $trx->transaction_code) }}" class="flex-grow py-3 bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-black transition-all flex items-center justify-center gap-2">
                                 <i class="ki-filled ki-receipt text-base"></i> Detail Bayar

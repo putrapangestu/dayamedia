@@ -56,6 +56,10 @@ class AccountController extends Controller
         try {
             $module = Module::findOrFail($id);
 
+            if ($module->user_id !== auth()->id()) {
+                abort(403);
+            }
+
             if ($module->file_path) {
                 $this->remove($module->file_path);
             }

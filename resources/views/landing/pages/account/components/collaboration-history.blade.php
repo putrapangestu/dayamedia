@@ -35,9 +35,41 @@
                             </p>
                         </div>
                         
-                        <a href="{{ route('collaborationDetail', $book->slug) }}" class="w-full py-2.5 bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg hover:bg-black transition-all active:scale-95 mt-4 flex items-center justify-center gap-2">
-                            <i class="ki-filled ki-eye text-base"></i> Detail Proyek
-                        </a>
+                        <div class="mt-4 space-y-2">
+                            <a href="{{ route('collaborationDetail', $book->slug) }}" class="w-full py-2.5 bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg hover:bg-black transition-all active:scale-95 flex items-center justify-center gap-2">
+                                <i class="ki-filled ki-eye text-base"></i> Detail Proyek
+                            </a>
+
+                            @if (($module->deadline == null || $module->deadline > $now) && $book->status != "published")
+                                <details class="group/upload">
+                                    <summary class="list-none w-full py-2.5 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
+                                        <i class="ki-filled ki-file-up text-base"></i> Upload Naskah
+                                    </summary>
+                                    <form method="post" action="{{ route('account.collaboration.upload', $module->id) }}" enctype="multipart/form-data" class="mt-3 p-3 bg-gray-50 border border-gray-100 rounded-2xl space-y-3">
+                                        @csrf
+                                        <div class="space-y-1">
+                                            <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">File Naskah</label>
+                                            <input type="file" name="file" required accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="w-full text-[11px] font-bold text-gray-600 file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-3 file:py-2 file:text-[10px] file:font-black file:uppercase file:text-white">
+                                            <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">PDF, DOC, DOCX - maks. 10MB</p>
+                                        </div>
+
+                                        <div class="space-y-1">
+                                            <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Turnitin</label>
+                                            <input type="file" name="turnitin_file" accept=".pdf,application/pdf" class="w-full text-[11px] font-bold text-gray-600 file:mr-3 file:rounded-lg file:border-0 file:bg-gray-900 file:px-3 file:py-2 file:text-[10px] file:font-black file:uppercase file:text-white">
+                                            <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Opsional, PDF - maks. 5MB</p>
+                                        </div>
+
+                                        <button type="submit" class="w-full py-2.5 bg-green-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-green-700 transition-all">
+                                            Simpan Upload
+                                        </button>
+                                    </form>
+                                </details>
+                            @else
+                                <span class="w-full py-2.5 bg-green-50 text-green-600 text-[10px] font-black uppercase tracking-widest rounded-xl border border-green-100 flex items-center justify-center gap-2">
+                                    <i class="ki-filled ki-check-circle text-base"></i> Upload Selesai
+                                </span>
+                            @endif
+                        </div>
                     </div>
                 </div>
                 @endif

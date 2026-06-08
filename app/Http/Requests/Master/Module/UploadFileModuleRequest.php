@@ -22,8 +22,8 @@ class UploadFileModuleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => 'required|file|mimes:docx,doc|max:10240', // max 10MB
-            'turnitin_file' => 'required|file|mimes:pdf|max:5120', // max 5MB
+            'file' => 'required|file|mimes:pdf,docx,doc|max:10240', // max 10MB
+            'turnitin_file' => 'nullable|file|mimes:pdf|max:5120', // max 5MB
         ];
     }
 
@@ -32,10 +32,9 @@ class UploadFileModuleRequest extends FormRequest
         return [
             'file.required' => 'File wajib diunggah.',
             'file.file' => 'Yang diunggah harus berupa file.',
-            'file.mimes' => 'Format file tidak valid. Hanya diperbolehkan: docx, doc.',
+            'file.mimes' => 'Format file tidak valid. Hanya diperbolehkan: pdf, docx, doc.',
             'file.max' => 'Ukuran file maksimal adalah 10MB.',
 
-            'turnitin_file.required' => 'File Turnitin wajib diunggah.',
             'turnitin_file.file' => 'Yang diunggah harus berupa file.',
             'turnitin_file.mimes' => 'Format file tidak valid. Hanya diperbolehkan: pdf.',
             'turnitin_file.max' => 'Ukuran file maksimal adalah 5MB.',

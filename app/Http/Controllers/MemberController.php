@@ -8,6 +8,7 @@ use App\Http\Requests\Master\Member\ImportCsvMemberRequest;
 use App\Http\Requests\Master\Member\UpdateMemberRequest;
 use App\Imports\MemberImport;
 use App\Imports\MemberImportCsv;
+use App\Models\CommissionHistory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -65,7 +66,7 @@ class MemberController extends Controller
             'job' => $validated['job'],
             'degree' => $validated['degree'],
             'phone_number' => $validated['phone_number'],
-            'referral_code' => Str::upper(Str::random(4) . now()->format('s') . Str::random(2)),
+            'referral_code' => Str::upper(Str::random(4).now()->format('s').Str::random(2)),
         ]);
 
         $user->assignRole('member');
@@ -106,18 +107,10 @@ class MemberController extends Controller
             ->paginate(10);
 
         $now = \Carbon\Carbon::now();
-        $commissionTotalMonth = \App\Models\Transaction::where(function ($query) use ($member) {
-            $query->whereHas('details.book.modules', function ($q) use ($member) {
-                $q->where('user_id', $member->id);
-            })
-                ->orWhereHas('user', function ($q) use ($member) {
-                    $q->where('id', $member->id)
-                        ->where('use_referral_code', $member->referral_code);
-                });
-        })
-            ->whereMonth('updated_at', $now->month)
-            ->whereYear('updated_at', $now->year)
-            ->sum('total_price');
+        $commissionTotalMonth = CommissionHistory::where('user_id', $member->id)
+            ->whereMonth('created_at', $now->month)
+            ->whereYear('created_at', $now->year)
+            ->sum('amount');
 
         $affiliateLevels = \App\Models\AffiliateLevel::orderBy('min_earning', 'asc')->get();
 
@@ -328,7 +321,7 @@ class MemberController extends Controller
                         'email' => $email,       // email
                         'phone_number' => $phone_number ?? null, // no_telp
                         'password' => $password,
-                        'referral_code' => $referral_code ?? Str::upper(Str::random(4) . now()->format('s') . Str::random(2)),
+                        'referral_code' => $referral_code ?? Str::upper(Str::random(4).now()->format('s').Str::random(2)),
                         'use_referral_code' => $use_referral_code ?? null,
                         'email_verified_at' => $now,
                         'affiliate_level_id' => $affiliateLevelId,

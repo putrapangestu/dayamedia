@@ -18,6 +18,10 @@ class IndividualBookUploadController extends Controller
 
     public function showUploadForm(Transaction $transaction)
     {
+        if ($transaction->user_id !== auth()->id()) {
+            abort(403);
+        }
+
         if ($transaction->individual_book_status !== 'confirmed') {
             abort(403);
         }
@@ -25,16 +29,20 @@ class IndividualBookUploadController extends Controller
         $categories = Category::orderBy('name')->get();
 
         $transaction->load('details');
-        $book = $transaction->details->first()?->book?->load('modules','authors');
+        $book = $transaction->details->first()?->book?->load('modules', 'authors');
 
         $modules = $book?->modules->first() ?? null;
         $authors = $book?->authors->count() > 0 ? $book?->authors->where('user_id', null)->toArray() : [];
 
-        return view('landing.pages.individual-books.upload', compact('transaction', 'categories', 'book', 'modules','authors'));
+        return view('landing.pages.individual-books.upload', compact('transaction', 'categories', 'book', 'modules', 'authors'));
     }
 
     public function submitUpload(Request $request, Transaction $transaction)
     {
+        if ($transaction->user_id !== auth()->id()) {
+            abort(403);
+        }
+
         if ($transaction->individual_book_status !== 'confirmed') {
             abort(403);
         }
@@ -56,7 +64,7 @@ class IndividualBookUploadController extends Controller
 
         DB::beginTransaction();
         try {
-            if(!$transactionDetail->book_id) {
+            if (! $transactionDetail->book_id) {
                 $book = Book::create([
                     'title' => $request->title,
                     'slug' => Str::slug($request->title).'-'.Str::random(6),
@@ -75,7 +83,7 @@ class IndividualBookUploadController extends Controller
                     'user_id' => auth()->id(),
                     'price' => 0,
                     'file_path' => $fullContentPath,
-                    'file_path_turnitin' => $turnitinPath
+                    'file_path_turnitin' => $turnitinPath,
                 ]);
 
                 BookAuthor::create([
@@ -109,11 +117,11 @@ class IndividualBookUploadController extends Controller
             } else {
                 $book = Book::find($transactionDetail->book_id);
 
-                if($book?->status === Book::STATUS_PUBLISHED) {
+                if ($book?->status === Book::STATUS_PUBLISHED) {
                     throw new \Exception('Buku sudah dipublikasikan, tidak dapat diupload lagi');
                 }
 
-                if($book) {
+                if ($book) {
                     $book->title = $request->title;
                     $book->description = $request->description;
                     $book->slug = Str::slug($request->title).'-'.Str::random(6);
@@ -121,7 +129,7 @@ class IndividualBookUploadController extends Controller
 
                     $module = $book->modules->first();
 
-                    if($module) {
+                    if ($module) {
                         $module->title = $book->title;
                         $module->slug = Str::slug('Module 1 - '.$book->title).'-'.Str::random(6);
                         $module->file_path = $fullContentPath ?? $module->file_path;
@@ -130,12 +138,12 @@ class IndividualBookUploadController extends Controller
                     }
 
                     $author = $book->authors->where('user_id', null)->sortByDesc('created_at');
-                    foreach($author as $key => $authorItem) {
-                        $authorItem->author = $request->additional_authors[$key-1] ?? $authorItem->author;
+                    foreach ($author as $key => $authorItem) {
+                        $authorItem->author = $request->additional_authors[$key - 1] ?? $authorItem->author;
                         $authorItem->save();
                     }
 
-                    if($author->isEmpty() && $request->has('additional_authors')) {
+                    if ($author->isEmpty() && $request->has('additional_authors')) {
                         foreach ($request->additional_authors as $authorName) {
                             if (! $authorName) {
                                 continue;
@@ -152,9 +160,11 @@ class IndividualBookUploadController extends Controller
             }
 
             DB::commit();
+
             return redirect()->route('member')->with('success', 'Buku berhasil diunggah dan masuk proses editorial');
         } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()->back()->with('error', $e->getMessage());
         }
     }

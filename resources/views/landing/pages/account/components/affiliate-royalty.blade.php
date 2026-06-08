@@ -27,7 +27,7 @@
             </div>
             <div class="mt-4 pt-4 border-t border-gray-50 flex items-center justify-between">
                 <span class="text-xs font-bold text-gray-500">Rate Komisi:</span>
-                <span class="text-sm font-black text-primary">{{ $user->affiliateLevel?->commission_percentage ?? 5 }}%</span>
+                <span class="text-sm font-black text-primary">{{ $user->affiliateLevel?->percentage ?? 5 }}%</span>
             </div>
         </div>
 
@@ -94,7 +94,7 @@
                                     <p class="text-[10px] text-gray-400 mt-0.5">{{ $history->created_at->format('H:i') }} WIB</p>
                                 </td>
                                 <td class="px-8 py-6 text-right">
-                                    <span class="text-lg font-black text-primary tracking-tight">+Rp{{ number_format($history->commission_amount, 0, ',', '.') }}</span>
+                                    <span class="text-lg font-black text-primary tracking-tight">+Rp{{ number_format($history->amount, 0, ',', '.') }}</span>
                                 </td>
                             </tr>
                         @endforeach

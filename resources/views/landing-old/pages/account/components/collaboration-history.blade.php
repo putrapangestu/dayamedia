@@ -103,10 +103,10 @@
                                             <x-dropzone
                                                 name="file"
                                                 label="File Naskah"
-                                                accept="application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                                accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                                                 :maxSize="10"
                                                 :required="true"
-                                                helperText="Upload file naskah (DOC, DOCX - Max: 10MB)"
+                                                helperText="Upload file naskah (PDF, DOC, DOCX - Max: 10MB)"
                                             />
                                         </div>
                                         @if($collaborator->file_path_turnitin)
