@@ -17,13 +17,13 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 
 <head>
     <title>
-        Metronic - Tailwind CSS Light Sidebar
+        Daya Media
     </title>
     <meta charset="utf-8" />
     <meta content="follow, index" name="robots" />
     <link href="index.html" rel="canonical" />
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport" />
-    <meta content="Tailwind CSS based HTML and JavaScript toolkit for building modern and scalable web applications"
+    {{-- <meta content="Tailwind CSS based HTML and JavaScript toolkit for building modern and scalable web applications"
         name="description" />
     <meta content="@keenthemes" name="twitter:site" />
     <meta content="@keenthemes" name="twitter:creator" />
@@ -38,15 +38,15 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
     <meta content="@keenthemes" property="og:site_name" />
     <meta content="Metronic - Tailwind CSS Light Sidebar" property="og:title" />
     <meta content="Tailwind CSS based HTML and JavaScript toolkit for building modern and scalable web applications"
-        property="og:description" />
+        property="og:description" /> --}}
     <meta content="/metronic/tailwind/dist/assets/media/app/og-image.png" property="og:image" />
-    <link href="{{ asset('') }}assets/landing/media/app/apple-touch-icon.png" rel="apple-touch-icon"
-        sizes="180x180" />
-    <link href="{{ asset('') }}assets/landing/media/app/favicon-32x32.png" rel="icon" sizes="32x32"
+    {{-- <link href="{{ asset('') }}assets/landing/media/app/apple-touch-icon.png" rel="apple-touch-icon"
+        sizes="180x180" /> --}}
+    <link href="{{ asset('assets/azzia-logo.png') }}" rel="icon" sizes="32x32"
         type="image/png" />
-    <link href="{{ asset('') }}assets/landing/media/app/favicon-16x16.png" rel="icon" sizes="16x16"
+    <link href="{{ asset('assets/azzia-logo.png') }}" rel="icon" sizes="16x16"
         type="image/png" />
-    <link href="https://keenthemes.com/metronic/tailwind/dist/assets/media/app/favicon.ico" rel="shortcut icon" />
+    <link href="{{ asset('assets/azzia-logo.png') }}" rel="shortcut icon" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
         rel="stylesheet" />
     <link href="{{ asset('') }}assets/landing/vendors/apexcharts/apexcharts.css" rel="stylesheet" />
@@ -121,7 +121,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
         <!-- End of Footer -->
     </div>
     <!-- End of Main -->
-    <div class="kt-modal" data-kt-modal="true" id="search_modal">
+    {{-- <div class="kt-modal" data-kt-modal="true" id="search_modal">
         <div class="kt-modal-content max-w-[600px] top-[15%]">
             <div class="kt-modal-header py-4 px-5">
                 <i class="ki-filled ki-magnifier text-muted-foreground text-xl">
@@ -1537,7 +1537,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <!-- End of Page -->
     <!-- Scripts -->
     <script src="{{ asset('') }}assets/landing/js/core.bundle.js"></script>
