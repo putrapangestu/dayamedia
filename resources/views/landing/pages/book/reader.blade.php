@@ -26,9 +26,15 @@
     </style>
 
     <div class="ebook-reader-shell border-b border-gray-200">
-        <div class="kt-container-fixed py-6">
+        <div class="kt-container-fixed py-5">
             <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                <div class="min-w-0">
+                <div class="flex min-w-0 items-center gap-4">
+                    <div class="hidden w-16 shrink-0 overflow-hidden rounded-xl border border-white/80 bg-white shadow-md sm:block">
+                        <img src="{{ $book->cover ? asset('storage/' . $book->cover) : asset('assets/dashboard/images/products/product-1.jpg') }}"
+                             alt="{{ $book->title }}"
+                             class="aspect-[3/4] w-full object-cover">
+                    </div>
+                    <div class="min-w-0">
                     <div class="mb-3 flex flex-wrap items-center gap-2 text-xs font-black uppercase tracking-widest text-gray-500">
                         <a href="{{ route('catalog') }}" class="hover:text-primary">Katalog</a>
                         <i class="ki-filled ki-right text-[10px]"></i>
@@ -44,6 +50,7 @@
                             <span>{{ $book->year_published }}</span>
                         @endif
                     </p>
+                    </div>
                 </div>
                 <div class="flex flex-wrap gap-2">
                     <a href="{{ route('bookDetail', $book->slug) }}" class="inline-flex items-center gap-2 rounded-2xl border border-gray-200 bg-white px-5 py-3 text-xs font-black uppercase tracking-widest text-gray-700 shadow-sm transition hover:border-primary hover:text-primary">
@@ -58,17 +65,22 @@
     </div>
 
     <div class="kt-container-fixed py-8">
-        <div class="grid grid-cols-1 gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
+        <div class="grid grid-cols-1 gap-6 xl:grid-cols-[260px_minmax(0,1fr)]">
             <aside class="space-y-5 xl:sticky xl:top-[90px] xl:self-start">
-                <div class="overflow-hidden rounded-[2rem] border border-gray-100 bg-white shadow-sm">
-                    <div class="aspect-[3/4] bg-gray-100">
-                        <img src="{{ $book->cover ? asset('storage/' . $book->cover) : asset('assets/dashboard/images/products/product-1.jpg') }}"
-                             alt="{{ $book->title }}"
-                             class="h-full w-full object-cover">
+                <div class="rounded-[1.5rem] border border-gray-100 bg-white p-4 shadow-sm">
+                    <div class="flex items-start gap-4">
+                        <div class="w-20 shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-gray-100 shadow-sm">
+                            <img src="{{ $book->cover ? asset('storage/' . $book->cover) : asset('assets/dashboard/images/products/product-1.jpg') }}"
+                                 alt="{{ $book->title }}"
+                                 class="aspect-[3/4] w-full object-cover">
+                        </div>
+                        <div class="min-w-0">
+                            <p class="mb-2 inline-flex rounded-lg bg-primary/10 px-2 py-1 text-[9px] font-black uppercase tracking-widest text-primary">E-Book</p>
+                            <h2 class="line-clamp-3 text-sm font-black leading-snug text-gray-950">{{ $book->title }}</h2>
+                        </div>
                     </div>
-                    <div class="p-5">
-                        <h2 class="line-clamp-2 text-lg font-black text-gray-950">{{ $book->title }}</h2>
-                        <div class="mt-4 grid grid-cols-2 gap-3 text-xs">
+                    <div class="mt-4">
+                        <div class="grid grid-cols-1 gap-3 text-xs">
                             <div class="rounded-2xl bg-gray-50 p-3">
                                 <p class="font-black uppercase tracking-widest text-gray-400">ISBN</p>
                                 <p class="mt-1 font-bold text-gray-800">{{ $book->code_isbn ?? '-' }}</p>

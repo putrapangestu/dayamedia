@@ -235,8 +235,8 @@
         </div>
     </div>
 
-    <!-- Enhanced CTA Footer (Matches the dark bottom in ss-3.jpeg) -->
-    <section class="bg-gray-900 py-20 relative overflow-hidden">
+    <!-- CTA Section -->
+    <section class="bg-gray-900 py-20 relative overflow-hidden border-b border-white/10">
         <div class="absolute top-0 right-0 size-[600px] bg-primary/10 blur-[150px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
         <div class="kt-container-fixed relative z-10 text-center">
             <h3 class="text-3xl md:text-4xl font-black text-white mb-6 italic">Mendukung Perjalanan Literasimu.</h3>

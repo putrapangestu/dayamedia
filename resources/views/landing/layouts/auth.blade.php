@@ -17,6 +17,7 @@
     <div class="flex grow flex-col">
         <main class="grow flex flex-col" id="content" role="content">
             @yield('content')
+            @include('landing.partials.footer')
         </main>
     </div>
 

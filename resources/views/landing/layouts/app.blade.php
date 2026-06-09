@@ -114,11 +114,11 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
             <!-- Container -->
             @yield('content')
             <!-- End of Container -->
+            <!-- Footer -->
+            @include('landing.partials.footer')
+            <!-- End of Footer -->
         </main>
         <!-- End of Content -->
-        <!-- Footer -->
-        @include('landing.partials.footer')
-        <!-- End of Footer -->
     </div>
     <!-- End of Main -->
     {{-- <div class="kt-modal" data-kt-modal="true" id="search_modal">
