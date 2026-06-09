@@ -89,9 +89,9 @@
 
                     <div class="mt-6 pt-4 border-t border-gray-100 flex gap-3">
                         @if($isPublished)
-                            <span class="flex-grow py-3 bg-green-50 text-green-600 text-[10px] font-black uppercase tracking-widest rounded-xl border border-green-100 flex items-center justify-center gap-2 cursor-not-allowed">
-                                <i class="ki-filled ki-check-circle text-base"></i> Sudah Terbit
-                            </span>
+                            <a href="{{ route('bookDetail', $book->slug) }}" class="flex-grow py-3 bg-green-50 text-green-600 text-[10px] font-black uppercase tracking-widest rounded-xl border border-green-100 hover:bg-green-100 transition-all flex items-center justify-center gap-2">
+                                <i class="ki-filled ki-eye text-base"></i> Lihat Buku
+                            </a>
                         @elseif($canUpload)
                             <a href="{{ route('individual-books.upload', $trx) }}" class="flex-grow py-3 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all flex items-center justify-center gap-2">
                                 <i class="ki-filled ki-file-up text-base"></i> Upload Naskah
@@ -105,11 +105,11 @@
                                 <i class="ki-filled ki-receipt text-base"></i> Detail Bayar
                             </a>
                         @endif
-                        @if($module?->file_path)
+                        {{-- @if($module?->file_path && ! $isPublished)
                             <a href="{{ asset('storage/' . $module->file_path) }}" target="_blank" class="px-4 py-3 bg-white border border-gray-200 text-gray-700 text-[10px] font-black uppercase tracking-widest rounded-xl hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2">
                                 <i class="ki-filled ki-eye text-base"></i> File
                             </a>
-                        @endif
+                        @endif --}}
                     </div>
                 </div>
             @endforeach
