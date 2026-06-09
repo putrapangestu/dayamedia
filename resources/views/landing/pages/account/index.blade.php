@@ -110,7 +110,7 @@
                     @include('landing.pages.account.components.account-pane', ['user' => $user])
                 </div>
                 <div id="tab-my-books" class="tab-content hidden transition-all duration-300 w-full min-w-0">
-                    @include('landing.pages.account.components.my-books', ['bookHistories' => $bookHistories])
+                    @include('landing.pages.account.components.my-books', ['bookHistories' => $bookHistories, 'authoredBooks' => $authoredBooks])
                 </div>
                 <div id="tab-collaborator" class="tab-content hidden transition-all duration-300 w-full min-w-0">
                     @include('landing.pages.account.components.collaboration-history', ['collaborators' => $bookColaborators])

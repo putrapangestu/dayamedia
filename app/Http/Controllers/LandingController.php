@@ -307,6 +307,16 @@ class LandingController extends Controller
 
         $bookHistories = BookHistory::with('book.category', 'book.authors.user')->where('user_id', $user->id)
             ->paginate(10);
+        $bookHistoryBookIds = BookHistory::where('user_id', $user->id)
+            ->whereNotNull('book_id')
+            ->pluck('book_id');
+        $authoredBooks = Book::with('category', 'authors.user')
+            ->whereHas('authors', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->whereNotIn('id', $bookHistoryBookIds)
+            ->latest()
+            ->paginate(10, ['*'], 'authored_page');
 
         $affiliateLevels = AffiliateLevel::all();
 
@@ -337,6 +347,7 @@ class LandingController extends Controller
             'withdrawals',
             'now',
             'bookHistories',
+            'authoredBooks',
             'affiliateLevels',
             'commissionTotalMonth',
             'affiliateRevenueTotalMonth',
