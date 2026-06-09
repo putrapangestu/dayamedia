@@ -23,6 +23,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
     <meta content="follow, index" name="robots" />
     <link href="index.html" rel="canonical" />
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport" />
+    @stack('meta')
     {{-- <meta content="Tailwind CSS based HTML and JavaScript toolkit for building modern and scalable web applications"
         name="description" />
     <meta content="@keenthemes" name="twitter:site" />

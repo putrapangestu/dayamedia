@@ -143,7 +143,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const url = '{{ $book->full_content ? asset("storage/" . $book->full_content) : "" }}';
+    const url = '{{ $book->full_content ? route("book.file", [$book->slug, "full"]) : "" }}';
     const pageContainer = document.getElementById('pdf-pages-container');
     const loading = document.getElementById('pdf-loading');
     const status = document.getElementById('reader-status');

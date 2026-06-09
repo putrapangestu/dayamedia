@@ -18,7 +18,9 @@ use App\Models\Withdraw;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class LandingController extends Controller
 {
@@ -161,6 +163,70 @@ class LandingController extends Controller
         })->values();
 
         return view('landing.pages.book.detail', compact('book', 'books', 'authors', 'hasPurchased', 'hasReadAccess'));
+    }
+
+    public function previewBookPdf(Book $book): BinaryFileResponse
+    {
+        abort_unless($book->status === Book::STATUS_PUBLISHED && $book->half_content, 404);
+
+        return $this->streamStoredPdf($book->half_content, $book->slug.'-preview.pdf', false);
+    }
+
+    public function streamBookFile(Book $book, string $type): BinaryFileResponse
+    {
+        if ($type === 'preview') {
+            abort_unless($book->half_content, 404);
+
+            return $this->streamStoredPdf($book->half_content, $book->slug.'-preview.pdf', false);
+        }
+
+        abort_unless($book->full_content, 404);
+        abort_unless($this->userCanReadBook($book), 403);
+
+        return $this->streamStoredPdf($book->full_content, $book->slug.'.pdf', true);
+    }
+
+    private function userCanReadBook(Book $book): bool
+    {
+        $user = auth()->user();
+
+        if (! $user) {
+            return false;
+        }
+
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+
+        $hasPurchased = Transaction::where('user_id', $user->id)
+            ->where('status', 'paid')
+            ->whereHas('details', function ($query) use ($book) {
+                $query->where('book_id', $book->id);
+            })
+            ->exists();
+
+        if ($hasPurchased) {
+            return true;
+        }
+
+        return BookAuthor::where('book_id', $book->id)
+            ->where('user_id', $user->id)
+            ->exists()
+            || Module::where('book_id', $book->id)
+                ->where('user_id', $user->id)
+                ->exists();
+    }
+
+    private function streamStoredPdf(string $path, string $filename, bool $private): BinaryFileResponse
+    {
+        abort_unless(Storage::exists($path), 404);
+
+        return response()->file(Storage::path($path), [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="'.$filename.'"',
+            'Cache-Control' => $private ? 'private, no-store, max-age=0' : 'public, max-age=3600',
+            'X-Robots-Tag' => 'noindex, noarchive, nosnippet',
+        ]);
     }
 
     public function collaboration(Request $request): View

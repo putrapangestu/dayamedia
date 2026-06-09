@@ -1,7 +1,19 @@
 @extends('landing.layouts.app')
 
-@if((config('app.env') ?? config('app.env')) === 'production')
+@php
+    $manualEditor = trim((string) $book->editor);
+    $editorName = $manualEditor !== '' && $manualEditor !== '-' ? $manualEditor : ($book->bookEditors?->user?->full_name ?? null);
+    $abstract = \Illuminate\Support\Str::limit(trim(strip_tags($book->description)), 500);
+    $canonicalUrl = route('bookDetail', $book->slug);
+    $publishedDate = $book->year_published ? $book->year_published . '-01-01' : optional($book->published_at)->toDateString();
+    $scholarPublicationDate = $book->year_published ?: optional($book->published_at)->format('Y/n/j');
+@endphp
+
 @push('meta')
+    <link rel="canonical" href="{{ $canonicalUrl }}">
+    <meta name="robots" content="{{ app()->environment('production') ? 'index, follow, max-image-preview:large' : 'noindex, nofollow' }}">
+
+    {{-- Google Scholar / Highwire Press --}}
     <meta name="citation_title" content="{{ $book->title }}">
     @if(isset($authors) && $authors->count() > 0)
         @foreach($authors as $author)
@@ -10,20 +22,16 @@
             @endif
         @endforeach
     @endif
-    @php
-        $editorName = $book->editor && $book->editor !== '-' ? $book->editor : ($book->bookEditors?->user?->full_name ?? null);
-    @endphp
     @if($editorName)
         <meta name="citation_editor" content="{{ $editorName }}">
     @endif
-    <meta name="robots" content="index, follow">
     @if($book->publisher)
         <meta name="citation_publisher" content="{{ $book->publisher }}">
     @else
         <meta name="citation_publisher" content="{{ config('app.name') }}">
     @endif
-    @if($book->year_published)
-        <meta name="citation_publication_date" content="{{ $book->year_published }}">
+    @if($scholarPublicationDate)
+        <meta name="citation_publication_date" content="{{ $scholarPublicationDate }}">
     @endif
     @if($book->code_isbn)
         <meta name="citation_isbn" content="{{ $book->code_isbn }}">
@@ -31,39 +39,12 @@
     @if($book->language)
         <meta name="citation_language" content="{{ $book->language }}">
     @endif
-    @php
-        $abstract = \Illuminate\Support\Str::limit(trim(strip_tags($book->description)), 500);
-    @endphp
     @if(!empty($abstract))
         <meta name="citation_abstract" content="{{ $abstract }}">
     @endif
-    <meta name="citation_abstract_html_url" content="{{ url()->current() }}">
-    @if($book->half_content)
-        <meta name="citation_pdf_url" content="{{ asset('storage/' . $book->half_content) }}">
-    @endif
-    <link rel="canonical" href="{{ url()->current() }}">
+    <meta name="citation_abstract_html_url" content="{{ $canonicalUrl }}">
+    <meta name="citation_public_url" content="{{ $canonicalUrl }}">
 
-    <meta name="DC.title" content="{{ $book->title }}">
-    @if(isset($authors) && $authors->count() > 0)
-        @foreach($authors as $author)
-            @if(!empty($author['name']))
-                <meta name="DC.creator" content="{{ $author['name'] }}">
-            @endif
-        @endforeach
-    @endif
-    @if($editorName)
-        <meta name="DC.contributor" content="{{ $editorName }}">
-    @endif
-    <meta name="DC.publisher" content="{{ $book->publisher ?? config('app.name') }}">
-    @if($book->year_published)
-        <meta name="DC.date" content="{{ $book->year_published }}">
-    @endif
-    @if($book->code_isbn)
-        <meta name="DC.identifier" content="ISBN:{{ $book->code_isbn }}">
-    @endif
-    @if($book->language)
-        <meta name="DC.language" content="{{ $book->language }}">
-    @endif
     @php
         $authorList = [];
         if(isset($authors)) {
@@ -80,19 +61,20 @@
             'author' => $authorList,
             'editor' => $editorName ? ['@type' => 'Person', 'name' => $editorName] : null,
             'isbn' => $book->code_isbn ?: null,
-            'datePublished' => $book->year_published ?: null,
+            'datePublished' => $publishedDate ?: null,
             'publisher' => $book->publisher ?: config('app.name'),
             'inLanguage' => $book->language ?: null,
             'image' => $book->cover ? asset('storage/' . $book->cover) : null,
-            'url' => url()->current(),
+            'url' => $canonicalUrl,
             'sameAs' => $book->google_scholar_url ?: null,
             'description' => $abstract ?: null,
+            'bookFormat' => 'https://schema.org/EBook',
+            'numberOfPages' => $book->pages ?: null,
         ];
         $bookSchema = array_filter($bookSchema, function ($v) { return $v !== null; });
     @endphp
     <script type="application/ld+json">{!! json_encode($bookSchema, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) !!}</script>
 @endpush
-@endif
 
 @push('meta')
     @php
@@ -536,7 +518,7 @@
         @if($book->half_content)
             if (typeof pdfjsLib !== 'undefined') {
                 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-                const url = '{{ asset("storage/" . $book->half_content) }}';
+                const url = '{{ route("book.preview-pdf", $book->slug) }}';
                 let pdfDoc = null;
                 let currentScale = 1.5;
                 const container = document.getElementById('pdf-pages-container');

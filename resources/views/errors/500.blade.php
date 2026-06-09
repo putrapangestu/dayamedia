@@ -1,20 +1,14 @@
-@extends('landing.layouts.app')
+@extends('landing.layouts.auth')
+
+@section('title', '500 - Terjadi Kesalahan')
 
 @section('content')
-<div class="main-wrapper overflow-hidden my-5">
-    <div class="container">
-        <div class="d-flex flex-column align-items-center text-center">
-            <div class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center mb-4" style="width: 96px; height: 96px;">
-                <span class="fs-3 fw-bolder">500</span>
-            </div>
-            <h1 class="fw-bolder mb-2">Terjadi Kesalahan</h1>
-            <p class="text-muted fs-4 mb-4">Maaf, terjadi kesalahan pada sistem kami. Silakan coba lagi beberapa saat.</p>
-            <div class="d-flex gap-2">
-                <a href="{{ route('home') }}" class="btn btn-primary px-4"><i class="ti ti-home me-1"></i> Kembali ke Beranda</a>
-                <a href="{{ route('catalog') }}" class="btn btn-outline-primary px-4"><i class="ti ti-books me-1"></i> Lihat Katalog Buku</a>
-            </div>
-        </div>
-    </div>
-    </div>
+    @include('errors.partials.page', [
+        'statusCode' => 500,
+        'eyebrow' => 'Gangguan sistem',
+        'title' => 'Sistem belum bisa memproses permintaan',
+        'message' => 'Ada kendala dari sisi server. Silakan coba beberapa saat lagi atau hubungi bantuan jika transaksi Anda sedang berjalan.',
+        'icon' => 'ki-shield-cross',
+        'tone' => 'rose',
+    ])
 @endsection
-

@@ -5,6 +5,7 @@
     <title>@yield('title', 'Daya Media')</title>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport" />
+    @stack('meta')
     
     <link href="{{ asset('') }}assets/landing/media/app/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />

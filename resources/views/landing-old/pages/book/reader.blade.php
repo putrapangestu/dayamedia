@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    const url = '{{ $book->full_content ? asset("storage/" . $book->full_content) : "" }}';
+    const url = '{{ $book->full_content ? route("book.file", [$book->slug, "full"]) : "" }}';
     if (!url) return;
 
     let pdfDoc = null;

@@ -229,7 +229,7 @@
                                     <label class="form-label">File Buku Lengkap</label>
                                     @if($book->full_content)
                                         <div class="mb-2">
-                                            <a href="{{ asset('storage/' . $book->full_content) }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                            <a href="{{ route('book.file', [$book->slug, 'full']) }}" target="_blank" class="btn btn-outline-primary btn-sm">
                                                 <i class="ti ti-file-text"></i> Lihat File Saat Ini
                                             </a>
                                             {{-- <p class="text-muted small mt-1">File saat ini: {{ basename($book->full_content) }}</p> --}}
@@ -249,7 +249,7 @@
                                     <label class="form-label">File Preview Buku</label>
                                     @if($book->half_content)
                                         <div class="mb-2">
-                                            <a href="{{ asset('storage/' . $book->half_content) }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                            <a href="{{ route('book.preview-pdf', $book->slug) }}" target="_blank" class="btn btn-outline-primary btn-sm">
                                                 <i class="ti ti-file-text"></i> Lihat Preview Saat Ini
                                             </a>
                                             {{-- <p class="text-muted small mt-1">File saat ini: {{ basename($book->half_content) }}</p> --}}

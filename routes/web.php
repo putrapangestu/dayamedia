@@ -35,6 +35,7 @@ Route::get('/test', function () {
 
 Route::get('/', [LandingController::class, 'index'])->name('home');
 Route::get('/books', [LandingController::class, 'catalog'])->name('catalog');
+Route::get('/books/{book:slug}/preview-pdf', [LandingController::class, 'previewBookPdf'])->name('book.preview-pdf');
 Route::get('/books/{slug}/read', [LandingController::class, 'readBook'])->name('book.read');
 Route::get('/books/{slug}', [LandingController::class, 'bookDetail'])->name('bookDetail');
 Route::get('/about', [LandingController::class, 'about'])->name('about');
@@ -100,6 +101,9 @@ Route::middleware('auth')->group(function () {
 
     // Account Routes
     Route::get('/account', [LandingController::class, 'member'])->name('member');
+    Route::get('/books/{book:slug}/file/{type}', [LandingController::class, 'streamBookFile'])
+        ->whereIn('type', ['full', 'preview'])
+        ->name('book.file');
     Route::put('/account/profile', [AccountController::class, 'updateProfile'])->name('account.profile.update');
     Route::put('/account/password', [AccountController::class, 'updatePassword'])->name('account.password.update');
     Route::post('/account/collaboration/upload/{id}', [AccountController::class, 'uploadCollaborationFile'])->name('account.collaboration.upload');

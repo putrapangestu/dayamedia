@@ -34,30 +34,8 @@
         <meta name="citation_abstract" content="{{ $abstract }}">
     @endif
     <meta name="citation_abstract_html_url" content="{{ url()->current() }}">
-    @if($book->half_content)
-        <meta name="citation_pdf_url" content="{{ asset('storage/' . $book->half_content) }}">
-    @endif
     <link rel="canonical" href="{{ url()->current() }}">
 
-    <meta name="DC.title" content="{{ $book->title }}">
-    @if($book->authors && $book->authors->count() > 0)
-        @foreach($book->authors as $author)
-            @php $authorName = $author->user->full_name ?? $author->author; @endphp
-            @if(!empty($authorName))
-                <meta name="DC.creator" content="{{ $authorName }}">
-            @endif
-        @endforeach
-    @endif
-    <meta name="DC.publisher" content="{{ $book->publisher ?? config('app.name') }}">
-    @if($book->year_published)
-        <meta name="DC.date" content="{{ $book->year_published }}">
-    @endif
-    @if($book->code_isbn)
-        <meta name="DC.identifier" content="ISBN:{{ $book->code_isbn }}">
-    @endif
-    @if($book->language)
-        <meta name="DC.language" content="{{ $book->language }}">
-    @endif
     @php
         $authorList = [];
         if($book->authors) {
