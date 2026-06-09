@@ -33,6 +33,22 @@
                             <i class="ki-filled ki-sms text-primary/50 shrink-0"></i>
                             <span class="truncate">{{ $user->email }}</span>
                         </p>
+                        @if($user->referral_code)
+                            @php
+                                $referralLink = route('register', ['ref' => $user->referral_code]);
+                            @endphp
+                            <div class="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 max-w-xl mx-auto lg:mx-0">
+                                <div class="flex items-center gap-2 px-4 py-3 bg-white border border-gray-100 rounded-2xl shadow-sm min-w-0">
+                                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest shrink-0">Kode</span>
+                                    <span class="text-sm font-black text-primary truncate">{{ $user->referral_code }}</span>
+                                </div>
+                                <button type="button" class="link-referral px-4 py-3 bg-primary text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+                                        data-referral="{{ $user->referral_code }}"
+                                        data-referral-link="{{ $referralLink }}">
+                                    <i class="ki-filled ki-copy"></i> Salin Link
+                                </button>
+                            </div>
+                        @endif
                     </div>
                 </div>
 
@@ -163,8 +179,7 @@
 
         $('.link-referral').click(function(e) {
             e.preventDefault();
-            const referral = $(this).data('referral');
-            const link = '{{ route("register", ["ref" => ""]) }}' + referral;
+            const link = $(this).data('referral-link') || ('{{ route("register", ["ref" => ""]) }}' + $(this).data('referral'));
             navigator.clipboard.writeText(link).then(() => {
                 Swal.fire({
                     icon: 'success', title: 'Berhasil!', text: 'Link referral berhasil disalin.',

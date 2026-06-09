@@ -7,7 +7,7 @@
         <!-- Logo -->
         <div class="flex items-stretch gap-10 grow">
             <div class="flex items-center gap-2.5">
-                <a href="index.html">
+                <a href="{{ route('home') }}">
                     <img class="dark:hidden min-h-[34px]"
                         src="{{ asset('assets/azzia-logo.png') }}" />
                     <img class="hidden dark:inline-block min-h-[34px]"
@@ -202,8 +202,8 @@
                                 <span class="text-sm text-foreground font-semibold leading-none">
                                     {{ auth()->user()->full_name }}
                                 </span>
-                                <a class="text-xs text-secondary-foreground hover:text-primary font-medium leading-none"
-                                    href="account/home/get-started.html">
+                            <a class="text-xs text-secondary-foreground hover:text-primary font-medium leading-none"
+                                    href="{{ auth()->user()->hasRole('admin') ? route('admin.home') : route('member') }}">
                                     {{ auth()->user()->email }}
                                 </a>
                             </div>
@@ -218,10 +218,10 @@
                             </div>
                         </li>
                         <li>
-                            <a class="kt-dropdown-menu-link" href="{{ route('member') }}">
+                            <a class="kt-dropdown-menu-link" href="{{ auth()->user()->hasRole('admin') ? route('admin.home') : route('member') }}">
                                 <i class="ki-filled ki-profile-circle">
                                 </i>
-                                Profil Saya
+                                {{ auth()->user()->hasRole('admin') ? 'Dashboard Admin' : 'Profil Saya' }}
                             </a>
                         </li>
                         <li>

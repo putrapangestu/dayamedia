@@ -27,7 +27,7 @@ class LandingController extends Controller
         $recommendations = Book::with('authors.user', 'category')
             ->where('status', Book::STATUS_PUBLISHED)
             ->inRandomOrder()
-            ->limit(5)
+            ->limit(6)
             ->get();
 
         $books = Book::query()
@@ -252,7 +252,7 @@ class LandingController extends Controller
     {
         $now = Carbon::now();
         $user = auth()->user();
-        $transactions = Transaction::with('user', 'details.book', 'details.module.book', 'individualBookPackage')
+        $transactions = Transaction::with('user', 'details.book.modules', 'details.module.book', 'individualBookPackage')
             ->where(function ($query) {
                 $query->whereHas('details.module.book')
                     ->orWhereHas('details.book')
@@ -287,7 +287,12 @@ class LandingController extends Controller
             ->sum('total_price');
 
         $commissionHistories = CommissionHistory::where('user_id', $user->id)
-            ->with('transaction.user.affiliateLevel')
+            ->with([
+                'transaction.user.affiliateLevel',
+                'transaction.individualBookPackage',
+                'transactionDetail.book',
+                'transactionDetail.module.book',
+            ])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 

@@ -5,6 +5,9 @@
 @section('content')
 <div class="bg-gray-50/50 min-h-screen pb-20 pt-10">
     <div class="kt-container-fixed">
+        @php
+            $isPublished = $book && $book->status === 'published';
+        @endphp
 
         {{-- ===== BREADCRUMB ===== --}}
         <div class="flex items-center gap-2 text-sm font-medium mb-10">
@@ -41,6 +44,13 @@
 
                 <!-- Form Section -->
                 <div class="p-8 sm:p-12">
+                    @if($isPublished)
+                        <div class="mb-8 rounded-2xl border border-green-100 bg-green-50 p-5 text-sm font-bold text-green-700 flex items-center gap-3">
+                            <i class="ki-filled ki-check-circle text-2xl"></i>
+                            Buku ini sudah terbit. Upload naskah tidak dapat diubah lagi.
+                        </div>
+                    @endif
+
                     <form action="{{ route('individual-books.upload.store', $transaction) }}" method="POST" enctype="multipart/form-data" class="space-y-10">
                         @csrf
 
@@ -61,38 +71,20 @@
                                 </div>
 
                                 <div class="flex flex-col gap-2">
-                                    <label class="text-xs font-bold text-gray-700 uppercase tracking-widest ml-1">
-                                        Kategori Buku <span class="text-red-500">*</span>
-                                    </label>
-
-                                    <div class="relative w-full">
-                                        <select
-                                            name="category_id"
-                                            required
-                                            class="block w-full h-[58px] rounded-2xl border border-gray-200 bg-gray-50 px-5 pr-12 text-sm font-bold text-gray-900 shadow-sm outline-none transition-all appearance-none cursor-pointer focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
-                                            style="display:block !important; visibility:visible !important; opacity:1 !important; color:#111827 !important;"
-                                        >
-                                            <option value="" disabled {{ old('category_id', $book->category_id ?? '') ? '' : 'selected' }}>
-                                                Pilih Kategori...
+                                    <label class="text-xs font-bold text-gray-700 uppercase tracking-widest ml-1">Kategori Buku <span class="text-red-500">*</span></label>
+                                    <select name="category_id" id="" required class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-bold text-gray-900 focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all">
+                                        <option value="">Pilih Kategori</option>
+                                        @foreach($categories as $cat)
+                                            <option
+                                                value="{{ $cat->id }}"
+                                                {{ old('category_id', $book->category_id ?? '') == $cat->id ? 'selected' : '' }}
+                                            >
+                                                {{ $cat->name }}
                                             </option>
-
-                                            @foreach($categories as $cat)
-                                                <option
-                                                    value="{{ $cat->id }}"
-                                                    {{ old('category_id', $book->category_id ?? '') == $cat->id ? 'selected' : '' }}
-                                                >
-                                                    {{ $cat->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-
-                                        <i class="ki-filled ki-down absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-                                    </div>
-
+                                        @endforeach
+                                    </select>
                                     @error('category_id')
-                                        <p class="text-xs font-bold text-red-500 ml-1">
-                                            {{ $message }}
-                                        </p>
+                                        <p class="text-xs font-bold text-red-500 ml-1">{{ $message }}</p>
                                     @enderror
                                 </div>
 
@@ -155,7 +147,7 @@
                                         Naskah Lengkap <span class="text-red-500 text-[10px] normal-case font-medium">(PDF/DOCX)</span>
                                     </label>
                                     <div class="relative group cursor-pointer border-2 border-dashed border-gray-200 rounded-3xl p-8 text-center hover:border-primary/50 hover:bg-primary/[0.02] transition-all duration-300">
-                                        <input type="file" name="full_content" class="absolute inset-0 opacity-0 cursor-pointer z-10 file-input" accept=".pdf,.doc,.docx" {{ isset($modules->file_path) ? '' : 'required' }}>
+                                        <input type="file" name="full_content" class="absolute inset-0 opacity-0 cursor-pointer z-10 file-input" accept=".pdf,.doc,.docx" {{ isset($modules->file_path) ? '' : 'required' }} {{ $isPublished ? 'disabled' : '' }}>
                                         <div class="space-y-3 placeholder-view">
                                             <i class="ki-filled ki-document text-4xl text-gray-300 group-hover:text-primary transition-colors"></i>
                                             <p class="text-sm font-bold text-gray-700">Pilih File Naskah</p>
@@ -169,7 +161,12 @@
                                         <p class="text-xs font-bold text-red-500 ml-1">{{ $message }}</p>
                                     @enderror
                                     @if(isset($modules->file_path))
-                                        <p class="text-[10px] text-green-600 font-bold ml-1 flex items-center gap-1"><i class="ki-filled ki-check-circle"></i> File naskah sudah terupload</p>
+                                        <div class="ml-1 flex flex-wrap items-center gap-3">
+                                            <p class="text-[10px] text-green-600 font-bold flex items-center gap-1"><i class="ki-filled ki-check-circle"></i> File naskah sudah terupload</p>
+                                            <a href="{{ asset('storage/' . $modules->file_path) }}" target="_blank" class="text-[10px] text-primary font-black uppercase tracking-widest hover:underline flex items-center gap-1">
+                                                <i class="ki-filled ki-eye"></i> Lihat File
+                                            </a>
+                                        </div>
                                     @endif
                                 </div>
 
@@ -179,7 +176,7 @@
                                         Hasil Turnitin <span class="text-gray-400 text-[10px] normal-case font-medium">(Opsional)</span>
                                     </label>
                                     <div class="relative group cursor-pointer border-2 border-dashed border-gray-200 rounded-3xl p-8 text-center hover:border-primary/50 hover:bg-primary/[0.02] transition-all duration-300">
-                                        <input type="file" name="turnitin_file" class="absolute inset-0 opacity-0 cursor-pointer z-10 file-input" accept=".pdf">
+                                        <input type="file" name="turnitin_file" class="absolute inset-0 opacity-0 cursor-pointer z-10 file-input" accept=".pdf" {{ $isPublished ? 'disabled' : '' }}>
                                         <div class="space-y-3 placeholder-view">
                                             <i class="ki-filled ki-shield-search text-4xl text-gray-300 group-hover:text-primary transition-colors"></i>
                                             <p class="text-sm font-bold text-gray-700">Laporan Turnitin</p>
@@ -193,7 +190,12 @@
                                         <p class="text-xs font-bold text-red-500 ml-1">{{ $message }}</p>
                                     @enderror
                                     @if(isset($modules->file_path_turnitin))
-                                        <p class="text-[10px] text-green-600 font-bold ml-1 flex items-center gap-1"><i class="ki-filled ki-check-circle"></i> File turnitin sudah terupload</p>
+                                        <div class="ml-1 flex flex-wrap items-center gap-3">
+                                            <p class="text-[10px] text-green-600 font-bold flex items-center gap-1"><i class="ki-filled ki-check-circle"></i> File turnitin sudah terupload</p>
+                                            <a href="{{ asset('storage/' . $modules->file_path_turnitin) }}" target="_blank" class="text-[10px] text-primary font-black uppercase tracking-widest hover:underline flex items-center gap-1">
+                                                <i class="ki-filled ki-eye"></i> Lihat File
+                                            </a>
+                                        </div>
                                     @endif
                                 </div>
                             </div>
@@ -201,7 +203,7 @@
 
                         <!-- Footer Actions -->
                         <div class="pt-10 border-t border-gray-100 flex flex-col sm:flex-row items-center gap-4">
-                            <button type="submit" class="w-full sm:w-auto px-10 py-5 bg-primary text-white font-black rounded-2xl shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 text-lg group">
+                            <button type="submit" {{ $isPublished ? 'disabled' : '' }} class="w-full sm:w-auto px-10 py-5 {{ $isPublished ? 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none' : 'bg-primary text-white shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95' }} font-black rounded-2xl transition-all flex items-center justify-center gap-3 text-lg group">
                                 <span>Simpan & Ajukan Editorial</span>
                                 <i class="ki-filled ki-send text-2xl group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
                             </button>

@@ -30,7 +30,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             if (Auth::user()->hasRole('admin')) {
-                return redirect()->intended('/admin');
+                return redirect()->route('admin.home');
             } elseif (Auth::user()->hasRole('editor')) {
                 return redirect()->intended('/editor/book');
             }

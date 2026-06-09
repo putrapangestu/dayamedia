@@ -15,7 +15,9 @@
             @foreach($individualTrx as $trx)
                 @php
                     $book = $trx->details?->first()?->book;
-                    $canUpload = $trx->status === 'paid' && $trx->individual_book_status === 'confirmed';
+                    $module = $book?->modules?->first();
+                    $isPublished = $book && $book->status === 'published';
+                    $canUpload = $trx->status === 'paid' && $trx->individual_book_status === 'confirmed' && ! $isPublished;
                 @endphp
                 <div class="bg-white border border-gray-100 rounded-[2rem] p-6 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-500 group flex flex-col h-full relative overflow-hidden">
                     <!-- Package Info -->
@@ -86,7 +88,11 @@
                     </div>
 
                     <div class="mt-6 pt-4 border-t border-gray-100 flex gap-3">
-                        @if($canUpload)
+                        @if($isPublished)
+                            <span class="flex-grow py-3 bg-green-50 text-green-600 text-[10px] font-black uppercase tracking-widest rounded-xl border border-green-100 flex items-center justify-center gap-2 cursor-not-allowed">
+                                <i class="ki-filled ki-check-circle text-base"></i> Sudah Terbit
+                            </span>
+                        @elseif($canUpload)
                             <a href="{{ route('individual-books.upload', $trx) }}" class="flex-grow py-3 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all flex items-center justify-center gap-2">
                                 <i class="ki-filled ki-file-up text-base"></i> Upload Naskah
                             </a>
@@ -97,6 +103,11 @@
                         @else
                             <a href="{{ route('checkout.success', $trx->transaction_code) }}" class="flex-grow py-3 bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-black transition-all flex items-center justify-center gap-2">
                                 <i class="ki-filled ki-receipt text-base"></i> Detail Bayar
+                            </a>
+                        @endif
+                        @if($module?->file_path)
+                            <a href="{{ asset('storage/' . $module->file_path) }}" target="_blank" class="px-4 py-3 bg-white border border-gray-200 text-gray-700 text-[10px] font-black uppercase tracking-widest rounded-xl hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2">
+                                <i class="ki-filled ki-eye text-base"></i> File
                             </a>
                         @endif
                     </div>

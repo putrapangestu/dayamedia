@@ -195,7 +195,7 @@
                         <p class="text-white/80 text-lg md:text-xl font-medium leading-relaxed">Jangan biarkan naskah anda hanya tersimpan rapi. Terbitkan segera bersama Daya Media Nusantara, dapatkan kesempatan publikasi dengan biaya terjangkat dan jaringan distribusi yang luas.</p>
                     </div>
                     <a href="{{ route('register') }}" class="px-12 py-6 bg-white text-primary font-black rounded-full shadow-2xl flex items-center gap-4 hover:scale-105 transition-all text-lg">
-                        Gabung Kolaborasi <i class="ki-filled ki-arrow-right text-2xl"></i>
+                        Terbitkan Sekarang <i class="ki-filled ki-arrow-right text-2xl"></i>
                     </a>
                 </div>
             </div>

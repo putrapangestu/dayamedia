@@ -77,12 +77,21 @@
                     <thead>
                         <tr class="bg-gray-100/50">
                             <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Detail Sumber</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Dari</th>
                             <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Waktu</th>
                             <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Nominal Komisi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
                         @foreach($commissionHistories as $history)
+                            @php
+                                $sourceType = $history->type === 'royalti' ? 'Royalti' : 'Komisi Referral';
+                                $sourceBook = $history->transactionDetail?->book?->title
+                                    ?? $history->transactionDetail?->module?->book?->title
+                                    ?? $history->transaction?->individualBookPackage?->name
+                                    ?? '-';
+                                $sourceModule = $history->transactionDetail?->module?->title;
+                            @endphp
                             <tr class="hover:bg-primary/[0.02] transition-colors group">
                                 <td class="px-8 py-6">
                                     <div class="flex items-center gap-4">
@@ -94,6 +103,13 @@
                                             <p class="text-[10px] text-gray-500 font-medium mt-0.5">Pembeli: <span class="font-bold text-gray-700">{{ $history->transaction?->user?->full_name ?? 'User' }}</span></p>
                                         </div>
                                     </div>
+                                </td>
+                                <td class="px-8 py-6">
+                                    <span class="inline-flex rounded-lg bg-primary/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-primary">{{ $sourceType }}</span>
+                                    <p class="text-xs font-bold text-gray-700 mt-2">{{ $sourceBook }}</p>
+                                    @if($sourceModule)
+                                        <p class="text-[10px] text-gray-400 mt-0.5">{{ $sourceModule }}</p>
+                                    @endif
                                 </td>
                                 <td class="px-8 py-6">
                                     <p class="text-sm font-bold text-gray-600">{{ $history->created_at->format('d/m/Y') }}</p>
