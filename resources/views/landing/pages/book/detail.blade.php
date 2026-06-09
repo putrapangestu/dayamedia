@@ -85,6 +85,7 @@
             'inLanguage' => $book->language ?: null,
             'image' => $book->cover ? asset('storage/' . $book->cover) : null,
             'url' => url()->current(),
+            'sameAs' => $book->google_scholar_url ?: null,
             'description' => $abstract ?: null,
         ];
         $bookSchema = array_filter($bookSchema, function ($v) { return $v !== null; });
@@ -179,6 +180,13 @@
                             {{ $book->title }}
                         </h1>
                         <p class="text-gray-500 font-medium">ISBN: <span class="font-bold text-gray-900">{{ $book->code_isbn ?? "-" }}</span></p>
+                        @if($book->google_scholar_url)
+                            <a href="{{ $book->google_scholar_url }}" target="_blank" rel="noopener"
+                               class="mt-4 inline-flex items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-2 text-xs font-black uppercase tracking-widest text-blue-700 hover:border-blue-300 hover:bg-white transition-all">
+                                <i class="ki-filled ki-teacher text-base"></i>
+                                Google Scholar
+                            </a>
+                        @endif
                     </div>
 
                     {{-- Spesifikasi Grid --}}
@@ -219,6 +227,17 @@
                                 <div>
                                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Website</p>
                                     <a href="{{ $book->website }}" target="_blank" class="text-sm font-bold text-primary hover:underline mt-1 break-all">{{ $book->website }}</a>
+                                </div>
+                            </div>
+                            @endif
+                            @if($book->google_scholar_url)
+                            <div class="flex items-start gap-3 p-4 sm:col-span-2">
+                                <div class="size-8 rounded-lg bg-white flex items-center justify-center border border-gray-100 text-blue-500 shrink-0">
+                                    <i class="ki-filled ki-teacher"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Google Scholar</p>
+                                    <a href="{{ $book->google_scholar_url }}" target="_blank" rel="noopener" class="text-sm font-black text-blue-700 hover:underline mt-1 break-all">Lihat profil Scholar</a>
                                 </div>
                             </div>
                             @endif
@@ -292,9 +311,9 @@
                                 </div>
                             </div>
 
-                            @if($hasPurchased)
+                            @if($hasReadAccess ?? $hasPurchased)
                                 <a href="{{ route('book.read', $book->slug) }}" class="w-full py-4 bg-green-500 text-white font-black rounded-2xl shadow-xl shadow-green-500/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 text-base">
-                                    <i class="ki-filled ki-book-open text-xl"></i> Baca E-Book Sekarang
+                                    <i class="ki-filled ki-book-open text-xl"></i> {{ $hasPurchased ? 'Baca E-Book Sekarang' : 'Baca Sebagai Penulis' }}
                                 </a>
                             @endif
                             <div class="flex flex-col gap-3">

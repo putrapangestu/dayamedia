@@ -135,6 +135,12 @@ class LandingController extends Controller
                 })
                 ->exists()
             : false;
+        $isBookAuthor = auth()->check()
+            ? BookAuthor::where('book_id', $book->id)
+                ->where('user_id', auth()->id())
+                ->exists()
+            : false;
+        $hasReadAccess = $hasPurchased || $isBookAuthor;
 
         $authors = [];
         $loop = 0;
@@ -154,7 +160,7 @@ class LandingController extends Controller
             return strtotime($a['created_at']) <=> strtotime($b['created_at']);
         })->values();
 
-        return view('landing.pages.book.detail', compact('book', 'books', 'authors', 'hasPurchased'));
+        return view('landing.pages.book.detail', compact('book', 'books', 'authors', 'hasPurchased', 'hasReadAccess'));
     }
 
     public function collaboration(Request $request): View

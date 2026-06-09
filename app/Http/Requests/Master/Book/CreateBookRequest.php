@@ -49,6 +49,7 @@ class CreateBookRequest extends FormRequest
 
             'editor' => 'nullable|string',
             'website' => 'nullable|string|max:255',
+            'google_scholar_url' => 'nullable|url|max:2048',
         ];
     }
 
@@ -127,6 +128,8 @@ class CreateBookRequest extends FormRequest
 
             'website.string' => 'Website buku harus berupa string.',
             'website.max' => 'Website buku maksimal 255 karakter.',
+            'google_scholar_url.url' => 'Link Google Scholar harus berupa URL yang valid.',
+            'google_scholar_url.max' => 'Link Google Scholar maksimal 2048 karakter.',
         ];
     }
 

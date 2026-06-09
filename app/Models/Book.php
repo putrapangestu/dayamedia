@@ -39,6 +39,7 @@ class Book extends Model
         'slug',
         'editor',
         'website',
+        'google_scholar_url',
         'is_individual',
     ];
 

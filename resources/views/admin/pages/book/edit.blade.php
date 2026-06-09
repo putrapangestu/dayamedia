@@ -190,6 +190,15 @@
                                         @enderror
                                     </div>
                                 </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="form-group">
+                                        <label for="google_scholar_url">Google Scholar</label>
+                                        <input type="url" class="form-control" id="google_scholar_url" name="google_scholar_url" placeholder="https://scholar.google.com/..." value="{{ old('google_scholar_url', $book->google_scholar_url) }}">
+                                        @error('google_scholar_url')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
                                 <div class="col-md-12 mb-3">
                                     <div class="form-group">
                                         <label for="description">Deskripsi <span class="text-danger">*</span></label>

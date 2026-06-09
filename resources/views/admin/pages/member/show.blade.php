@@ -30,6 +30,16 @@
                                 <span class="badge {{ $member->email_verified_at ? 'bg-success' : 'bg-danger' }}">
                                     {{ $member->email_verified_at ? 'Aktif' : 'Tidak Aktif' }}
                                 </span>
+                                <div class="mt-3 d-flex flex-wrap gap-2">
+                                    <span class="badge {{ $member->email_verified_at ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }}">
+                                        Status Aktivasi: {{ $member->email_verified_at ? 'Terverifikasi' : 'Belum Terverifikasi' }}
+                                    </span>
+                                    @if($member->email_verified_at)
+                                        <span class="badge bg-light text-dark">
+                                            Aktif sejak {{ $member->email_verified_at->format('d F Y H:i') }}
+                                        </span>
+                                    @endif
+                                </div>
                             </div>
                             <div class="text-end">
                                 <div class="mb-2">

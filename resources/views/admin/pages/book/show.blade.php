@@ -41,7 +41,14 @@
                         </div>
                         <div class="col-lg-8 d-flex flex-column align-items-stretch">
                             <h3 class="fw-bolder">{{ $book->title }}</h3>
-                            <p class="text-muted">Kategori: {{ $book->category?->name }}</p>
+                            <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                <p class="text-muted mb-0">Kategori: {{ $book->category?->name }}</p>
+                                @if($book->google_scholar_url)
+                                    <a href="{{ $book->google_scholar_url }}" target="_blank" rel="noopener" class="badge bg-info-subtle text-info border border-info-subtle d-inline-flex align-items-center gap-1">
+                                        <i class="ti ti-brand-google"></i> Google Scholar
+                                    </a>
+                                @endif
+                            </div>
                             <div class="d-flex">
                                 <h5 class="fw-bolder">Penulis</h5>
                                 <a href="" class="ms-auto" data-bs-toggle="modal" data-bs-target="#bs-modal-author">Selengkapnya</a>
@@ -110,6 +117,14 @@
                                 <div class="col-6 col-md-4">
                                     <p class="p-0 mb-1">Editor</p>
                                     <h6 class="fw-bolder">{{ $book->editor && $book->editor !== '-' ? $book->editor : ($book->bookEditors?->user?->full_name ?? '-') }}</h6>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <p class="p-0 mb-1">Google Scholar</p>
+                                    @if($book->google_scholar_url)
+                                        <a href="{{ $book->google_scholar_url }}" target="_blank" rel="noopener" class="fw-bolder text-info text-decoration-underline">Lihat Profil</a>
+                                    @else
+                                        <h6 class="fw-bolder">-</h6>
+                                    @endif
                                 </div>
                             </div>
                             <hr>
