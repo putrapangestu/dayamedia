@@ -8,7 +8,7 @@
     $contactEmail = function_exists('getSetting')
         ? (getSetting('payment_confirmation_email', null) ?: config('mail.from.address', 'penerbit@azzia.id'))
         : config('mail.from.address', 'penerbit@azzia.id');
-    $address = 'Perumahan Griya Anak Air Permai Blok B19, Batipuh Panjang, Koto Tangah, Kota Padang, Sumatera Barat';
+    $address = 'Jl Bulutangkis No 16, Kel Pasar Merah Barat, Kec Medan Kota, Kota Medan 20217';
     $services = [
         ['label' => 'Penerbitan Buku Individu', 'url' => route('individual-books.packages')],
         ['label' => 'Buku Kolaborasi', 'url' => route('collaboration')],
