@@ -136,28 +136,30 @@
                     </div>
 
                     <!-- 2. Countdown & Instructions -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                        <!-- Countdown (Primary Theme) -->
-                        <div class="bg-primary/5 rounded-[2.5rem] p-8 border border-primary/10 text-center relative overflow-hidden group h-full flex flex-col justify-center">
-                            <h3 class="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-4">Waktu Tersisa</h3>
-                            <div class="flex items-center justify-center gap-4 sm:gap-6" id="countdown-timer">
-                                <div class="flex flex-col items-center">
-                                    <span class="text-3xl sm:text-4xl font-black text-primary tracking-tighter" id="days">00</span>
-                                    <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Hari</span>
+                    <div class="grid grid-cols-1 {{ $transaction->status === 'pending' && $transaction->expired_at ? 'md:grid-cols-2' : '' }} gap-10">
+                        @if($transaction->status === 'pending' && $transaction->expired_at)
+                            <!-- Countdown (Primary Theme) -->
+                            <div class="bg-primary/5 rounded-[2.5rem] p-8 border border-primary/10 text-center relative overflow-hidden group h-full flex flex-col justify-center">
+                                <h3 class="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-4">Waktu Tersisa</h3>
+                                <div class="flex items-center justify-center gap-4 sm:gap-6" id="countdown-timer">
+                                    <div class="flex flex-col items-center">
+                                        <span class="text-3xl sm:text-4xl font-black text-primary tracking-tighter" id="days">00</span>
+                                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Hari</span>
+                                    </div>
+                                    <span class="text-2xl font-black text-primary/20 mb-6">:</span>
+                                    <div class="flex flex-col items-center">
+                                        <span class="text-3xl sm:text-4xl font-black text-primary tracking-tighter" id="hours">00</span>
+                                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Jam</span>
+                                    </div>
+                                    <span class="text-2xl font-black text-primary/20 mb-6">:</span>
+                                    <div class="flex flex-col items-center">
+                                        <span class="text-3xl sm:text-4xl font-black text-primary tracking-tighter" id="minutes">00</span>
+                                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Menit</span>
+                                    </div>
                                 </div>
-                                <span class="text-2xl font-black text-primary/20 mb-6">:</span>
-                                <div class="flex flex-col items-center">
-                                    <span class="text-3xl sm:text-4xl font-black text-primary tracking-tighter" id="hours">00</span>
-                                    <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Jam</span>
-                                </div>
-                                <span class="text-2xl font-black text-primary/20 mb-6">:</span>
-                                <div class="flex flex-col items-center">
-                                    <span class="text-3xl sm:text-4xl font-black text-primary tracking-tighter" id="minutes">00</span>
-                                    <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Menit</span>
-                                </div>
+                                <p class="mt-6 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Bayar sebelum pesanan hangus.</p>
                             </div>
-                            <p class="mt-6 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Bayar sebelum pesanan hangus.</p>
-                        </div>
+                        @endif
 
                         <!-- Instructions -->
                         <div class="bg-gray-50 rounded-[2.5rem] p-8 border border-gray-100 shadow-inner group">
@@ -284,7 +286,7 @@
             window.location.href = "{{ route('member') }}";
         });
 
-        @if($transaction->expired_at)
+        @if($transaction->status === 'pending' && $transaction->expired_at)
             const expiredAt = new Date("{{ $transaction->expired_at }}").getTime();
             const countdown = setInterval(function() {
                 const now = new Date().getTime();

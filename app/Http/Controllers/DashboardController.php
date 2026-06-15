@@ -36,16 +36,6 @@ class DashboardController extends Controller
         $selectedYear = $request->input('year', date('Y'));
         $selectedMonth = $request->input('month', date('n'));
 
-        // Total Omset mengikuti filter
-        $transactionSummary = Transaction::where('status', 'paid')
-            ->when($filterType === 'monthly', function ($q) use ($selectedYear, $selectedMonth) {
-                $q->whereYear('created_at', $selectedYear)
-                    ->whereMonth('created_at', $selectedMonth);
-            }, function ($q) use ($selectedYear) {
-                $q->whereYear('created_at', $selectedYear);
-            })
-            ->sum('total_price');
-
         $now = Carbon::create($selectedYear, $selectedMonth, 1);
         $detailBaseQuery = TransactionDetail::query()
             ->whereHas('transaction', function ($q) use ($filterType, $selectedYear, $selectedMonth) {
@@ -58,8 +48,15 @@ class DashboardController extends Controller
                 }
             });
 
-        $revenueIndividualMonth = Transaction::whereNotNull('individual_book_confirmed_at')
-            ->selectRaw('COALESCE(SUM((total_price - COALESCE(admin_fee, 0)) - COALESCE(discount_amount, 0)), 0) as total')
+        $revenueIndividualMonth = Transaction::where('status', 'paid')
+            ->whereNotNull('individual_book_confirmed_at')
+            ->when($filterType === 'monthly', function ($q) use ($selectedYear, $selectedMonth) {
+                $q->whereYear('created_at', $selectedYear)
+                    ->whereMonth('created_at', $selectedMonth);
+            }, function ($q) use ($selectedYear) {
+                $q->whereYear('created_at', $selectedYear);
+            })
+            ->selectRaw('COALESCE(SUM(total_price - COALESCE(admin_fee, 0)), 0) as total')
             ->value('total');
 
         $revenueCollaborationMonth = (clone $detailBaseQuery)
@@ -80,6 +77,12 @@ class DashboardController extends Controller
             ->selectRaw('COALESCE(SUM((price_book - COALESCE(price_discount, 0)) * quantity), 0) as total')
             ->value('total');
 
+        // Total Omset mengikuti rincian kategori, tanpa biaya admin.
+        $transactionSummary = $revenueIndividualMonth
+            + $revenueCollaborationMonth
+            + $revenueEbookMonth
+            + $revenuePhysicalMonth;
+
         $salaryData = [];
         $salaryLabels = [];
 
@@ -88,7 +91,7 @@ class DashboardController extends Controller
             // $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $selectedMonth, $selectedYear);
             $daysInMonth = Carbon::create($selectedYear, $selectedMonth, 1)->daysInMonth();
 
-            $dailyTransactions = Transaction::selectRaw('DAY(created_at) as day, SUM(total_price) as total')
+            $dailyTransactions = Transaction::selectRaw('DAY(created_at) as day, SUM(total_price - COALESCE(admin_fee, 0)) as total')
                 ->where('status', 'paid')
                 ->whereYear('created_at', $selectedYear)
                 ->whereMonth('created_at', $selectedMonth)
@@ -102,7 +105,7 @@ class DashboardController extends Controller
             }
         } else {
             // Data per bulan dalam tahun yang dipilih (Default)
-            $monthlyTransactions = Transaction::selectRaw('MONTH(created_at) as month, SUM(total_price) as total')
+            $monthlyTransactions = Transaction::selectRaw('MONTH(created_at) as month, SUM(total_price - COALESCE(admin_fee, 0)) as total')
                 ->where('status', 'paid')
                 ->whereYear('created_at', $selectedYear)
                 ->groupBy('month')

@@ -113,7 +113,12 @@ class TransactionBookController extends Controller
 
         DB::beginTransaction();
         try {
-            $transaction->update($request->validated());
+            $payload = $request->validated();
+            if ($payload['status'] === 'paid') {
+                $payload['expired_at'] = null;
+            }
+
+            $transaction->update($payload);
 
             // logic commission to royalti and affiliator
             if ($request->status == 'paid') {

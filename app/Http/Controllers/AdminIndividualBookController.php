@@ -41,6 +41,7 @@ class AdminIndividualBookController extends Controller
 
             $transaction->update([
                 'status' => 'paid',
+                'expired_at' => null,
                 'individual_book_status' => 'confirmed',
                 'individual_book_confirmed_at' => now(),
             ]);

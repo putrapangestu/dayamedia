@@ -114,7 +114,12 @@ class TransactionModuleController extends Controller
         DB::beginTransaction();
         try {
             $transaction = Transaction::with('details.module', 'user')->findOrFail($id);
-            $transaction->update($request->validated());
+            $payload = $request->validated();
+            if ($payload['status'] === 'paid') {
+                $payload['expired_at'] = null;
+            }
+
+            $transaction->update($payload);
             $startDeadline = false;
 
             if ($request->status == 'paid') {
