@@ -97,13 +97,13 @@
                             @endif
                         </span>
                     </a>
-                    <a href="mailto:{{ $contactEmail }}" class="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition-all hover:bg-white/[0.07]">
+                    <a href="mailto:info@dayamedia.com" class="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition-all hover:bg-white/[0.07]">
                         <span class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sky-400/15 text-sky-300">
                             <i class="ki-filled ki-sms text-lg"></i>
                         </span>
                         <span>
                             <span class="block text-sm font-black">Email</span>
-                            <span class="block break-all text-xs font-medium text-white/55">{{ $contactEmail }}</span>
+                            <span class="block break-all text-xs font-medium text-white/55">info@dayamedia.com</span>
                         </span>
                     </a>
                     <div class="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
