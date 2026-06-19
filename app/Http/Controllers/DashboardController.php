@@ -56,7 +56,7 @@ class DashboardController extends Controller
             }, function ($q) use ($selectedYear) {
                 $q->whereYear('created_at', $selectedYear);
             })
-            ->selectRaw('COALESCE(SUM(total_price - COALESCE(admin_fee, 0)), 0) as total')
+            ->selectRaw('COALESCE(SUM(total_price), 0) as total')
             ->value('total');
 
         $revenueCollaborationMonth = (clone $detailBaseQuery)
@@ -91,7 +91,7 @@ class DashboardController extends Controller
             // $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $selectedMonth, $selectedYear);
             $daysInMonth = Carbon::create($selectedYear, $selectedMonth, 1)->daysInMonth();
 
-            $dailyTransactions = Transaction::selectRaw('DAY(created_at) as day, SUM(total_price - COALESCE(admin_fee, 0)) as total')
+            $dailyTransactions = Transaction::selectRaw('DAY(created_at) as day, SUM(total_price) as total')
                 ->where('status', 'paid')
                 ->whereYear('created_at', $selectedYear)
                 ->whereMonth('created_at', $selectedMonth)
@@ -105,7 +105,7 @@ class DashboardController extends Controller
             }
         } else {
             // Data per bulan dalam tahun yang dipilih (Default)
-            $monthlyTransactions = Transaction::selectRaw('MONTH(created_at) as month, SUM(total_price - COALESCE(admin_fee, 0)) as total')
+            $monthlyTransactions = Transaction::selectRaw('MONTH(created_at) as month, SUM(total_price) as total')
                 ->where('status', 'paid')
                 ->whereYear('created_at', $selectedYear)
                 ->groupBy('month')
