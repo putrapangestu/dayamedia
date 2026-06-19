@@ -25,7 +25,7 @@
                         <div class="row mb-4">
                             <div class="col-md-6">
                                 <h6 class="fw-bold mb-3">Informasi Transaksi</h6>
-                                <table class="table table-sm">
+                                <table class="table table-borderless">
                                     <tr>
                                         <td width="30%">Kode Transaksi</td>
                                         <td width="5%">:</td>
@@ -155,14 +155,20 @@
                                         <th>Rp {{ number_format($transaction->total_price + ($transaction->discount_amount ?? 0), 0, ',', '.') }}</th>
                                     </tr>
                                     @if($transaction->discount_amount > 0)
-                                    <tr>
-                                        <th colspan="5" class="text-end">Diskon:</th>
-                                        <th class="text-success">- Rp {{ number_format($transaction->discount_amount, 0, ',', '.') }}</th>
-                                    </tr>
+                                        <tr>
+                                            <th colspan="5" class="text-end">Diskon:</th>
+                                            <th class="text-success">- Rp {{ number_format($transaction->discount_amount, 0, ',', '.') }}</th>
+                                        </tr>
+                                    @endif
+                                    @if($transaction->admin_fee > 0)
+                                        <tr>
+                                            <th colspan="5" class="text-end">Diskon:</th>
+                                            <th class="text-success">- Rp {{ number_format($transaction->admin_fee, 0, ',', '.') }}</th>
+                                        </tr>
                                     @endif
                                     <tr>
                                         <th colspan="5" class="text-end">Total Akhir:</th>
-                                        <th>Rp {{ number_format($transaction->total_price, 0, ',', '.') }}</th>
+                                        <th>Rp {{ number_format($transaction->total_price + $transaction->admin_fee, 0, ',', '.') }}</th>
                                     </tr>
                                 </tfoot>
                             </table>

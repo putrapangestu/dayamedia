@@ -56,11 +56,28 @@
                                             </span>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    {{-- <tr>
                                         <td>Total Harga</td>
                                         <td>:</td>
-                                        <td><strong>Rp {{ number_format($transaction->total_price, 0, ',', '.') }}</strong></td>
+                                        <td><strong>Rp {{ number_format($transaction->total_price + $transaction->admin_fee, 0, ',', '.') }}</strong></td>
+                                    </tr> --}}
+                                    <tr>
+                                        <td>Metode Pembayaran</td>
+                                        <td>:</td>
+                                        <td>{{ ucfirst($transaction->payment_method ?? '-') }}</td>
                                     </tr>
+                                    @if($transaction->promo_code)
+                                        <tr>
+                                            <td>Kode Promo</td>
+                                            <td>:</td>
+                                            <td><span class="badge bg-info">{{ $transaction->promo_code }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Diskon</td>
+                                            <td>:</td>
+                                            <td>Rp {{ number_format($transaction->discount_amount, 0, ',', '.') }}</td>
+                                        </tr>
+                                    @endif
                                 </table>
                             </div>
                             <div class="col-md-6">
@@ -122,8 +139,24 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th colspan="4" class="text-end">Total</th>
-                                        <th>Rp {{ number_format($transaction->total_price, 0, ',', '.') }}</th>
+                                        <th colspan="4" class="text-end">Subtotal:</th>
+                                        <th>Rp {{ number_format($transaction->total_price + ($transaction->discount_amount ?? 0), 0, ',', '.') }}</th>
+                                    </tr>
+                                    @if($transaction->discount_amount > 0)
+                                        <tr>
+                                            <th colspan="4" class="text-end">Diskon:</th>
+                                            <th class="text-success">- Rp {{ number_format($transaction->discount_amount, 0, ',', '.') }}</th>
+                                        </tr>
+                                    @endif
+                                    @if($transaction->admin_fee > 0)
+                                        <tr>
+                                            <th colspan="4" class="text-end">Diskon:</th>
+                                            <th class="text-success">- Rp {{ number_format($transaction->admin_fee, 0, ',', '.') }}</th>
+                                        </tr>
+                                    @endif
+                                    <tr>
+                                        <th colspan="4" class="text-end">Total Akhir:</th>
+                                        <th>Rp {{ number_format($transaction->total_price + $transaction->admin_fee, 0, ',', '.') }}</th>
                                     </tr>
                                 </tfoot>
                             </table>

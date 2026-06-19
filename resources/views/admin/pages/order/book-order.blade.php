@@ -157,7 +157,7 @@ function checkStatus ($transaction) {
                                             @endforeach
                                         </td>
                                         <td class="text-center">
-                                            <h6 class="fw-bolder">Rp. {{ number_format(($transaction->total_price - $transaction->discount_amount ?? 0 - $transaction->admin_fee ?? 0), 0, ',', '.') }}</h6>
+                                            <h6 class="fw-bolder">Rp. {{ number_format(($transaction->total_price - ($transaction->discount_amount ?? 0) - ($transaction->admin_fee ?? 0)), 0, ',', '.') }}</h6>
                                         </td>
                                         <td>
                                             <span class="mb-1 badge fs-2 {{ checkStatus($transaction)['color'] }}">
