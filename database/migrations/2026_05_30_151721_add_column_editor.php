@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('books', function (Blueprint $table) {
-            $table->string('editor')->after('author')->nullable();
-        });
+        if (!Schema::hasColumn('books', 'editor')) {
+            Schema::table('books', function (Blueprint $table) {
+                $table->string('editor')->after('author')->nullable();
+            });
+        }
     }
 
     /**

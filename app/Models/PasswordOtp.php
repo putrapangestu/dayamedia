@@ -23,6 +23,7 @@ class PasswordOtp extends Model
         'user_id',
         'phone_number',
         'code',
+        'type',
         'expires_at',
         'used_at',
     ];

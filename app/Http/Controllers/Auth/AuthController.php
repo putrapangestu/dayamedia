@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\VerifyEmailOtpRequest;
 use App\Models\AffiliateLevel;
 use App\Models\PasswordOtp;
 use App\Models\User;
@@ -19,6 +20,7 @@ class AuthController extends Controller
 {
     public function showLoginForm()
     {
+        session()->put('url_previous', url()->previous());
         return view('auth.login');
     }
 
@@ -29,9 +31,26 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
+            // Check if user email is verified
+            if (!Auth::user()->email_verified_at) {
+                $user = Auth::user();
+                Auth::logout();
+                return redirect()->route('auth.verify-email-otp', ['user' => $user])
+                    ->with('success', 'Email Anda belum diverifikasi. Silahkan masukkan kode OTP yang telah dikirim ke email/WhatsApp Anda.');
+            }
+
             if (Auth::user()->hasRole('admin')) {
-                return redirect()->route('admin.home');
-            } elseif (Auth::user()->hasRole('editor')) {
+                return redirect()->intended('/admin');
+            }
+
+            // Cek apakah ada intended URL yang disimpan oleh middleware
+            $intendedUrl = session('url_previous');
+            if ($intendedUrl && $this->isValidIntendedUrl($intendedUrl)) {
+                session()->forget('url_previous');
+                return redirect($intendedUrl);
+            }
+
+            if (Auth::user()->hasRole('editor')) {
                 return redirect()->intended('/editor/book');
             }
 
@@ -39,6 +58,19 @@ class AuthController extends Controller
         }
 
         return redirect()->back()->withErrors(['email' => 'Email atau password salah.'])->onlyInput('email');
+    }
+
+    /**
+     * Validasi apakah intended URL aman untuk redirect
+     */
+    private function isValidIntendedUrl(string $url): bool
+    {
+        $parsedUrl = parse_url($url);
+        $appHost = parse_url(config('app.url'), PHP_URL_HOST);
+        $urlHost = $parsedUrl['host'] ?? null;
+
+        // Hanya allow redirect ke URL yang sama host-nya
+        return $urlHost === $appHost || $urlHost === null;
     }
 
     public function showRegistrationForm(Request $request)
@@ -50,7 +82,7 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $validator = $request->validated();
+        $validated = $request->validated();
 
         $affiliateLevel = AffiliateLevel::orderby('percentage', 'asc')->first();
 
@@ -66,7 +98,127 @@ class AuthController extends Controller
 
         $user->assignRole('member');
 
-        return redirect('/login')->with('success', 'Registrasi berhasil. Silahkan login.');
+        // Generate dan kirim OTP untuk email verification
+        $code = (string) random_int(100000, 999999);
+        PasswordOtp::create([
+            'user_id' => $user->id,
+            'phone_number' => $user->phone_number ? whatsapp_sanitize_number($user->phone_number) : '',
+            'code' => $code,
+            'type' => 'email_verification',
+            'expires_at' => now()->addMinutes(10),
+        ]);
+
+        $message = "Kode OTP verifikasi email Daya Media: {$code}. Berlaku 10 menit. Jaga kerahasiaan kode ini.";
+        try {
+            whatsapp_send(whatsapp_sanitize_number($user->phone_number), $message, 2);
+        } catch (\Exception $e) {
+            Log::error('WhatsApp send failed', [
+                'to' => whatsapp_sanitize_number($user->phone_number),
+                'message' => $message,
+                'error' => $e->getMessage(),
+            ]);
+        }
+        try {
+            if ($user->email) {
+                Mail::raw($message, function ($m) use ($user) {
+                    $m->to($user->email)->subject('Kode OTP Verifikasi Email');
+                });
+            }
+        } catch (\Exception $e) {
+            Log::error('Email send failed', [
+                'to' => $user->email,
+                'subject' => 'Kode OTP Verifikasi Email',
+                'content' => $message,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        return redirect()->route('auth.verify-email-otp', ['user' => $user])
+            ->with('success', 'Registrasi berhasil! Kode OTP sudah dikirim ke email/WhatsApp Anda. Silahkan cek dan masukkan kode OTP.');
+    }
+
+    public function showVerifyEmailOtp(User $user)
+    {
+        return view('auth.verify-email-otp', compact('user'));
+    }
+
+    public function verifyEmailOtp(VerifyEmailOtpRequest $request, User $user)
+    {
+        // Jika sudah terverifikasi, redirect ke login
+        if ($user->email_verified_at) {
+            return redirect()->route('login')->with('success', 'Email Anda sudah diverifikasi. Silahkan login.');
+        }
+
+        $otp = PasswordOtp::where('user_id', $user->id)
+            ->where('type', 'email_verification')
+            ->whereNull('used_at')
+            ->where('code', $request->code)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (!$otp) {
+            return redirect()->back()->withErrors(['code' => 'Kode OTP tidak valid.'])->withInput();
+        }
+
+        if ($otp->expires_at->isPast()) {
+            return redirect()->back()->withErrors(['code' => 'Kode OTP sudah kadaluarsa.'])->withInput();
+        }
+
+        // Mark user as verified
+        $user->update(['email_verified_at' => now()]);
+        $otp->update(['used_at' => now()]);
+
+        return redirect()->route('login')->with('success', 'Email berhasil diverifikasi! Silahkan login.');
+    }
+
+    public function resendEmailOtp(User $user)
+    {
+        // Check if last OTP was sent less than 5 minutes ago
+        $lastOtp = PasswordOtp::where('user_id', $user->id)
+            ->where('type', 'email_verification')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if ($lastOtp && $lastOtp->created_at->diffInMinutes(now()) < 5) {
+            return redirect()->back()->with('error', 'Kode OTP dapat dikirim ulang maksimal sekali dalam 5 menit.');
+        }
+
+        // Generate new OTP
+        $code = (string) random_int(100000, 999999);
+        PasswordOtp::create([
+            'user_id' => $user->id,
+            'phone_number' => $user->phone_number ? whatsapp_sanitize_number($user->phone_number) : '',
+            'code' => $code,
+            'type' => 'email_verification',
+            'expires_at' => now()->addMinutes(10),
+        ]);
+
+        $message = "Kode OTP verifikasi email Daya Media: {$code}. Berlaku 10 menit. Jaga kerahasiaan kode ini.";
+        try {
+            whatsapp_send(whatsapp_sanitize_number($user->phone_number), $message, 2);
+        } catch (\Exception $e) {
+            Log::error('WhatsApp send failed', [
+                'to' => whatsapp_sanitize_number($user->phone_number),
+                'message' => $message,
+                'error' => $e->getMessage(),
+            ]);
+        }
+        try {
+            if ($user->email) {
+                Mail::raw($message, function ($m) use ($user) {
+                    $m->to($user->email)->subject('Kode OTP Verifikasi Email');
+                });
+            }
+        } catch (\Exception $e) {
+            Log::error('Email send failed', [
+                'to' => $user->email,
+                'subject' => 'Kode OTP Verifikasi Email',
+                'content' => $message,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Kode OTP telah dikirim ulang ke email/WhatsApp Anda.');
     }
 
     public function logout(Request $request)
@@ -124,14 +276,11 @@ class AuthController extends Controller
         if (! $user) {
             return redirect()->back()->withErrors(['identifier' => 'Akun tidak ditemukan berdasarkan email/nomor.'])->withInput();
         }
-        // if (! $user->phone_number) {
-        //     return redirect()->back()->withErrors(['identifier' => 'Nomor WhatsApp tidak tersedia pada akun ini.'])->withInput();
-        // }
 
         $code = (string) random_int(100000, 999999);
         PasswordOtp::create([
             'user_id' => $user->id,
-            'phone_number' => whatsapp_sanitize_number($user->phone_number),
+            'phone_number' => $user->phone_number ? whatsapp_sanitize_number($user->phone_number) : '',
             'code' => $code,
             'expires_at' => now()->addMinutes(10),
         ]);
@@ -198,6 +347,7 @@ class AuthController extends Controller
         $otp = PasswordOtp::where('user_id', $user->id)
             ->whereNull('used_at')
             ->where('code', $request->code)
+            ->whereIn('type', ['password_reset', null])
             ->orderBy('created_at', 'desc')
             ->first();
 
@@ -263,9 +413,6 @@ class AuthController extends Controller
         if (! $user) {
             return redirect()->back()->withErrors(['identifier' => 'Akun tidak ditemukan berdasarkan email/nomor.'])->withInput();
         }
-        // if (! $user->phone_number) {
-        //     return redirect()->back()->withErrors(['identifier' => 'Nomor WhatsApp tidak tersedia pada akun ini.'])->withInput();
-        // }
 
         $cooldown = (int) env('OTP_RESEND_COOLDOWN', 60);
         $key = 'otp:resend:'.$user->id;
@@ -280,7 +427,7 @@ class AuthController extends Controller
         $code = (string) random_int(100000, 999999);
         PasswordOtp::create([
             'user_id' => $user->id,
-            'phone_number' => whatsapp_sanitize_number($user->phone_number),
+            'phone_number' => $user->phone_number ? whatsapp_sanitize_number($user->phone_number) : '',
             'code' => $code,
             'expires_at' => now()->addMinutes(10),
         ]);
