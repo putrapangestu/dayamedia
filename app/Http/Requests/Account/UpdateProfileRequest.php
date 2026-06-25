@@ -23,7 +23,7 @@ class UpdateProfileRequest extends FormRequest
     {
         return [
             'full_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,'.auth()->id(),
+            'email' => 'required|email|max:255|unique:users,email,'.auth()->id().',id,deleted_at,NULL',
             'phone_number' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',

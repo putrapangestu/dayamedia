@@ -23,10 +23,10 @@ class RegisterRequest extends FormRequest
     {
         return [
             'full_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,NULL,id,deleted_at,NULL'],
             'referral_code' => ['nullable', 'string', 'max:255'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'phone_number' => ['required', 'max:15', 'unique:users,phone_number'],
+            'phone_number' => ['required', 'max:15', 'unique:users,phone_number,NULL,id,deleted_at,NULL'],
         ];
     }
 

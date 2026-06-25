@@ -23,8 +23,8 @@ class CreateEditorRequest extends FormRequest
     {
         return [
             'full_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,NULL,id',
-            'phone_number' => 'nullable|min:10|max:15|unique:users,phone_number,NULL,id',
+            'email' => 'required|string|email|max:255|unique:users,email,NULL,id,deleted_at,NULL',
+            'phone_number' => 'nullable|min:10|max:15|unique:users,phone_number,NULL,id,deleted_at,NULL',
         ];
     }
 
