@@ -59,6 +59,7 @@ class EditorController extends Controller
             'password' => bcrypt('password'),
             'phone_number' => $validated['phone_number'] ?? null,
             'referral_code' => Str::random(10),
+            'email_verified_at' => now()
         ]);
 
         $user->assignRole('editor');

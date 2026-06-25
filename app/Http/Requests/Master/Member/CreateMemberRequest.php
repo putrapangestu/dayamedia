@@ -27,6 +27,7 @@ class CreateMemberRequest extends FormRequest
             'job' => 'nullable|string|max:255',
             'degree' => 'nullable|string|max:255',
             'phone_number' => 'nullable|min:10|max:15|unique:users,phone_number,NULL,id,deleted_at,NULL',
+            'status' => 'required|in:active,inactive',
         ];
     }
 

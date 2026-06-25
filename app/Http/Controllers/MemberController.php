@@ -72,6 +72,7 @@ class MemberController extends Controller
             'phone_number' => $validated['phone_number'],
             'referral_code' => Str::upper(Str::random(4).now()->format('s').Str::random(2)),
             'affiliate_level_id' => $affiliateLevel?->id ?? null,
+            'email_verified_at' => $validated['status'] == 'active' ? now() : null,
         ]);
 
         $user->assignRole('member');
@@ -174,6 +175,7 @@ class MemberController extends Controller
             'job' => $validated['job'],
             'degree' => $validated['degree'],
             'phone_number' => $validated['phone_number'],
+            'email_verified_at' => $validated['status'] == 'active' ? now() : null,
         ]);
 
         return redirect()->route('admin.member.index')->with('success', 'Member berhasil diupdate.');

@@ -73,6 +73,18 @@
                                         @enderror
                                     </div>
                                 </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-group">
+                                        <label for="status">Status</label>
+                                        <select class="form-control" id="status" name="status">
+                                            <option value="active" {{ $member->email_verified_at ? 'selected' : '' }}>Aktif</option>
+                                            <option value="inactive" {{ !$member->email_verified_at ? 'selected' : '' }}>Tidak Aktif</option>
+                                        </select>
+                                        @error('status')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </form>
