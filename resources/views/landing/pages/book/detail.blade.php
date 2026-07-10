@@ -399,12 +399,13 @@
     </div>
 </div>
 
-{{-- ===== MODAL DAFTAR PENULIS ===== --}}
-<div id="author-modal" class="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center is-closed" style="background:rgba(0,0,0,0);">
+{{-- ===== MODAL DAFTAR PENULIS (Responsive + Scrollable) ===== --}}
+<div id="author-modal" class="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center opacity-0 pointer-events-none transition-all duration-300" style="background: rgba(0,0,0,0);">
     <div class="absolute inset-0" onclick="closeAuthorModal()"></div>
-    <div class="relative bg-white w-full sm:max-w-lg sm:mx-4 max-h-[90vh] sm:max-h-[85vh] overflow-y-auto sm:rounded-[2rem] rounded-t-[2rem] shadow-2xl border border-gray-100" id="author-modal-content">
-        {{-- Header --}}
-        <div class="sticky top-0 z-10 flex items-center justify-between p-4 sm:p-6 bg-white border-b border-gray-100 rounded-t-[2rem]">
+    {{-- Content wrapper — overflow-y-auto untuk scroll, max-h biar ga full screen --}}
+    <div class="relative bg-white w-full sm:max-w-lg sm:mx-4 max-h-[90vh] sm:max-h-[85vh] overflow-y-auto sm:rounded-[2rem] rounded-t-[2rem] shadow-2xl border border-gray-100 transform translate-y-8 sm:scale-95 transition-all duration-300" id="author-modal-content">
+        {{-- Header sticky di atas --}}
+        <div class="sticky top-0 z-10 flex items-center justify-between p-4 sm:p-6 bg-white border-b border-gray-100">
             <h3 class="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2">
                 <i class="ki-filled ki-user-edit text-primary"></i> Daftar Penulis
             </h3>
@@ -448,37 +449,6 @@
     @media (max-width: 480px) {
         #pdf-container iframe, #pdf-container canvas { max-width: 100% !important; }
     }
-    /* Author Modal — default: hidden (is-closed) */
-    #author-modal.is-closed {
-        pointer-events: none;
-        opacity: 0;
-        background: rgba(0,0,0,0) !important;
-        transition: opacity 0.25s ease, background 0.25s ease;
-    }
-    #author-modal:not(.is-closed) {
-        pointer-events: auto;
-        opacity: 1;
-        background: rgba(0,0,0,0.5) !important;
-        transition: opacity 0.25s ease, background 0.25s ease;
-    }
-    /* Content animation: slide-up on mobile, scale on desktop */
-    #author-modal-content {
-        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    #author-modal.is-closed #author-modal-content {
-        transform: translateY(16px);
-    }
-    #author-modal:not(.is-closed) #author-modal-content {
-        transform: translateY(0);
-    }
-    @media (min-width: 640px) {
-        #author-modal.is-closed #author-modal-content {
-            transform: translateY(0) scale(0.93);
-        }
-        #author-modal:not(.is-closed) #author-modal-content {
-            transform: translateY(0) scale(1);
-        }
-    }
 </style>
 @endsection
 
@@ -490,14 +460,27 @@
     // AUTHOR MODAL
     function openAuthorModal() {
         const modal = document.getElementById('author-modal');
-        modal.classList.remove('is-closed');
+        const content = document.getElementById('author-modal-content');
+        // Open overlay
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.style.background = 'rgba(0,0,0,0.5)';
+        // Animate content: remove translate-y-8 (mobile) / scale-95 (desktop)
+        content.classList.remove('translate-y-8', 'sm:scale-95');
+        content.classList.add('translate-y-0', 'sm:scale-100');
         document.body.style.overflow = 'hidden';
     }
     function closeAuthorModal() {
         const modal = document.getElementById('author-modal');
-        modal.classList.add('is-closed');
+        const content = document.getElementById('author-modal-content');
+        // Close overlay
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        modal.style.background = 'rgba(0,0,0,0)';
+        // Animate content back
+        content.classList.remove('translate-y-0', 'sm:scale-100');
+        content.classList.add('translate-y-8', 'sm:scale-95');
         document.body.style.overflow = '';
     }
+    // Close on Escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeAuthorModal();
     });
