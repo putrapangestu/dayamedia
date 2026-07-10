@@ -507,32 +507,7 @@
 @endsection
 
 @push('js')
-    <script>
-        function openAuthorModal() {
-            const modal = document.getElementById('author-modal');
-            if (modal) {
-                modal.classList.remove('hidden');
-                document.body.classList.add('overflow-hidden');
-            }
-        }
-
-        function closeAuthorModal() {
-            const modal = document.getElementById('author-modal');
-            if (modal) {
-                modal.classList.add('hidden');
-                document.body.classList.remove('overflow-hidden');
-            }
-        }
-
-        // Close modal on escape key press
-        document.addEventListener('keydown', function (event) {
-            if (event.key === "Escape") {
-                closeAuthorModal();
-            }
-        });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
 <script>
