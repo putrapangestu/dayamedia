@@ -413,7 +413,7 @@
                 <i class="ki-filled ki-cross text-base"></i>
             </button>
         </div>
-        {{!-- Body --}}
+        {{-- Body --}}
         <div class="p-4 sm:p-6">
             <div class="space-y-3">
                 @foreach($authors as $idx => $author)
@@ -431,7 +431,7 @@
                 @endforeach
             </div>
         </div>
-        {{!-- Footer --}}
+        {{-- Footer --}}
         <div class="p-4 sm:p-6 border-t border-gray-100 bg-gray-50/50">
             <p class="text-xs text-gray-400 font-medium text-center">Total <span class="font-black text-gray-600">{{ $authors->count() }}</span> penulis</p>
         </div>
