@@ -29,6 +29,7 @@ class UpdateMemberRequest extends FormRequest
             'degree' => 'nullable|string|max:255',
             'phone_number' => 'nullable|min:10|max:15|unique:users,phone_number,'.$this->member->id.',id,deleted_at,NULL',
             'status' => 'required|in:active,inactive',
+            'password' => 'nullable|string|min:8|confirmed',
         ];
     }
 
@@ -53,6 +54,9 @@ class UpdateMemberRequest extends FormRequest
             'phone_number.min' => 'Nomor telepon minimal 10 digit.',
             'phone_number.max' => 'Nomor telepon maksimal 15 digit.',
             'phone_number.unique' => 'Nomor telepon ini sudah terdaftar.',
+
+            'password.min' => 'Password minimal 8 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
         ];
     }
 }

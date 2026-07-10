@@ -159,6 +159,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
     // Member Routes
     Route::resource('member', MemberController::class);
+    Route::put('member/{member}/reset-password', [MemberController::class, 'resetPassword'])->name('member.reset-password');
     // Import Routes
     Route::post('member/import', [MemberController::class, 'import'])->name('member.import');
     Route::post('member/import-csv', [MemberController::class, 'importFast'])->name('member.import.csv');

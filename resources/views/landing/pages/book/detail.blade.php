@@ -123,12 +123,12 @@
         </div>
 
         {{-- ===== MAIN DETAIL SECTION ===== --}}
-        <div class="bg-white rounded-[2.5rem] p-6 lg:p-10 border border-gray-100 shadow-sm mb-10">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div class="bg-white rounded-[2.5rem] p-4 sm:p-6 lg:p-10 border border-gray-100 shadow-sm mb-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
                 
                 {{-- Kiri: Cover Image --}}
                 <div class="lg:col-span-3 flex flex-col items-center lg:items-start">
-                    <div class="w-full max-w-[280px] lg:max-w-full">
+                    <div class="w-full max-w-[200px] sm:max-w-[240px] lg:max-w-full">
                         <div class="relative bg-gray-50 rounded-2xl overflow-hidden aspect-[3/4] shadow-xl border border-gray-100">
                             <img src="{{ $book->cover ? asset('storage/' . $book->cover) : 'https://placehold.co/400x600?text=No+Cover' }}" 
                                  alt="{{ $book->title }}" 
@@ -154,11 +154,11 @@
 
                 {{-- Tengah: Info Buku --}}
                 <div class="lg:col-span-5 flex flex-col">
-                    <div class="mb-6">
-                        <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary rounded-lg text-xs font-bold uppercase tracking-wider mb-4">
+                    <div class="mb-4 sm:mb-6">
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary rounded-lg text-xs font-bold uppercase tracking-wider mb-3 sm:mb-4">
                             <i class="ki-filled ki-category"></i> {{ $book->category?->name ?? 'Uncategorized' }}
                         </div>
-                        <h1 class="text-3xl sm:text-4xl font-black text-gray-900 leading-tight mb-2 tracking-tight">
+                        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 leading-tight mb-2 tracking-tight">
                             {{ $book->title }}
                         </h1>
                         <p class="text-gray-500 font-medium">ISBN: <span class="font-bold text-gray-900">{{ $book->code_isbn ?? "-" }}</span></p>
@@ -177,10 +177,12 @@
                             <i class="ki-filled ki-information-2 text-primary text-lg"></i>
                             <span class="text-sm font-black text-gray-900 uppercase tracking-widest">Informasi Buku</span>
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 text-sm sm:text-base">
                             @php
+                            $authorLimit = 2;
+                            $displayAuthors = $authors->take($authorLimit);
+                            $remainingCount = $authors->count() - $authorLimit;
                             $info = [
-                                ['icon' => 'ki-user-edit', 'label' => 'Penulis', 'value' => $authors->take(3)->map(fn($a) => $a['name'])->implode(', ') . ($authors->count() > 3 ? '...' : '')],
                                 ['icon' => 'ki-pencil', 'label' => 'Editor', 'value' => $editorName ?? '-'],
                                 ['icon' => 'ki-world', 'label' => 'Bahasa', 'value' => $book->language ?? '-'],
                                 ['icon' => 'ki-calendar', 'label' => 'Tahun Terbit', 'value' => $book->year_published ?? '-'],
@@ -189,6 +191,26 @@
                                 ['icon' => 'ki-book-open', 'label' => 'Halaman', 'value' => number_format($book->pages ?? 0, 0, ',', '.') . ' Hal'],
                             ];
                             @endphp
+
+                            {{-- Penulis Row Khusus --}}
+                            <div class="flex items-start gap-3 p-4 border-b border-gray-100 sm:col-span-2">
+                                <div class="size-8 rounded-lg bg-white flex items-center justify-center border border-gray-100 text-gray-400 shrink-0">
+                                    <i class="ki-filled ki-user-edit"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Penulis</p>
+                                    <div class="flex flex-wrap items-center gap-x-1 gap-y-1 mt-1">
+                                        @foreach($displayAuthors as $idx => $author)
+                                            <span class="text-sm font-bold text-gray-900">{{ $author['name'] }}@if(!$loop->last)<span class="text-gray-400">,</span>@endif</span>
+                                        @endforeach
+                                        @if($remainingCount > 0)
+                                            <button type="button" onclick="openAuthorModal()" class="text-xs font-black text-primary hover:text-primary-dark underline ml-1 transition-colors">
+                                                +{{ $remainingCount }} lainnya
+                                            </button>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
 
                             @foreach($info as $i => $item)
                             <div class="flex items-start gap-3 p-4 border-b border-gray-100 {{ $loop->last && $loop->iteration % 2 != 0 ? 'sm:col-span-2' : '' }}">
@@ -229,7 +251,7 @@
 
                 {{-- Kanan: Transaksi --}}
                 <div class="lg:col-span-4">
-                    <div class="bg-white border-2 border-gray-100 rounded-3xl p-6 shadow-xl shadow-gray-200/50 sticky top-[100px]">
+                    <div class="bg-white border-2 border-gray-100 rounded-3xl p-4 sm:p-6 shadow-xl shadow-gray-200/50 sticky top-[100px]">
                         <h3 class="text-lg font-black text-gray-900 mb-5 flex items-center gap-2">
                             <i class="ki-filled ki-shop text-primary"></i> Pilih Edisi
                         </h3>
@@ -315,15 +337,15 @@
         {{-- ===== TABS: ABSTRAK & PREVIEW ===== --}}
         <div class="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm mb-16">
             <div class="flex border-b border-gray-100 bg-gray-50/50 p-2 gap-2 overflow-x-auto custom-scrollbar">
-                <button onclick="switchTab('tab-description')" id="btn-tab-description" class="px-6 py-3.5 text-sm font-black uppercase tracking-widest rounded-2xl bg-white shadow-sm border border-gray-100 text-primary transition-all whitespace-nowrap">
-                    <i class="ki-filled ki-file-text mr-2"></i> Abstrak / Deskripsi
+                <button onclick="switchTab('tab-description')" id="btn-tab-description" class="px-4 sm:px-6 py-3 text-sm font-black uppercase tracking-widest rounded-2xl bg-white shadow-sm border border-gray-100 text-primary transition-all whitespace-nowrap">
+                    <i class="ki-filled ki-file-text mr-1 sm:mr-2"></i> <span class="hidden xs:inline">Abstrak / </span>Deskripsi
                 </button>
-                <button onclick="switchTab('tab-preview')" id="btn-tab-preview" class="px-6 py-3.5 text-sm font-bold uppercase tracking-widest rounded-2xl text-gray-500 hover:text-gray-900 transition-all whitespace-nowrap">
-                    <i class="ki-filled ki-eye mr-2"></i> Preview PDF
+                <button onclick="switchTab('tab-preview')" id="btn-tab-preview" class="px-4 sm:px-6 py-3 text-sm font-bold uppercase tracking-widest rounded-2xl text-gray-500 hover:text-gray-900 transition-all whitespace-nowrap">
+                    <i class="ki-filled ki-eye mr-1 sm:mr-2"></i> Preview PDF
                 </button>
             </div>
 
-            <div class="p-6 lg:p-10">
+            <div class="p-4 sm:p-6 lg:p-10">
                 <!-- Deskripsi Tab -->
                 <div id="tab-description" class="prose prose-sm sm:prose-base max-w-none text-gray-600">
                     {!! $book->description !!}
@@ -363,7 +385,7 @@
             <div class="flex items-end justify-between border-b border-gray-100 pb-5 mb-6">
                 <h3 class="text-2xl font-black text-gray-900 tracking-tight">Produk Serupa</h3>
             </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-5">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-5">
                 @forelse($books as $item)
                     @include('landing.pages.home.partials.book-card', ['book' => $item])
                 @empty
@@ -377,11 +399,52 @@
     </div>
 </div>
 
+{{-- ===== MODAL DAFTAR PENULIS ===== --}}
+<div id="author-modal" class="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-all duration-300" style="background: rgba(0,0,0,0);">
+    <div class="absolute inset-0" onclick="closeAuthorModal()"></div>
+    <div class="relative bg-white rounded-[2rem] shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto border border-gray-100 transform scale-95 transition-all duration-300" id="author-modal-content">
+        <div class="sticky top-0 bg-white z-10 flex items-center justify-between p-5 sm:p-6 border-b border-gray-100 rounded-t-[2rem]">
+            <h3 class="text-lg font-black text-gray-900 flex items-center gap-2">
+                <i class="ki-filled ki-user-edit text-primary"></i> Daftar Penulis
+            </h3>
+            <button onclick="closeAuthorModal()" class="size-9 flex items-center justify-center rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors">
+                <i class="ki-filled ki-cross text-base"></i>
+            </button>
+        </div>
+        <div class="p-5 sm:p-6">
+            <div class="space-y-3">
+                @foreach($authors as $idx => $author)
+                    <div class="flex items-center gap-3 p-3 rounded-2xl {{ $idx % 2 == 0 ? 'bg-gray-50' : 'bg-white' }} border border-gray-100">
+                        <div class="size-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 font-black text-sm">
+                            {{ strtoupper(substr($author['name'], 0, 1)) }}
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-gray-900">{{ $author['name'] }}</p>
+                            @if($author['chapter'])
+                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">BAB {{ $author['chapter'] }}</p>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        <div class="p-5 sm:p-6 border-t border-gray-100 bg-gray-50/50 rounded-b-[2rem]">
+            <p class="text-xs text-gray-400 font-medium text-center">Total <span class="font-black text-gray-600">{{ $authors->count() }}</span> penulis</p>
+        </div>
+    </div>
+</div>
+
 <style>
     .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: #94a3b8; }
+    /* Extra small screen: hide xs:inline is display:none by default, show on >360px */
+    @media (min-width: 360px) { .xs\:inline { display: inline !important; } }
+    /* Zoom controls on mobile should be more compact */
+    @media (max-width: 480px) {
+        #pdf-container iframe, #pdf-container canvas { max-width: 100% !important; }
+    }
 </style>
 @endsection
 
@@ -390,6 +453,30 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
 <script>
+    // AUTHOR MODAL
+    function openAuthorModal() {
+        const modal = document.getElementById('author-modal');
+        const content = document.getElementById('author-modal-content');
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.style.background = 'rgba(0,0,0,0.5)';
+        content.classList.remove('scale-95');
+        content.classList.add('scale-100');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeAuthorModal() {
+        const modal = document.getElementById('author-modal');
+        const content = document.getElementById('author-modal-content');
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        modal.style.background = 'rgba(0,0,0,0)';
+        content.classList.add('scale-95');
+        content.classList.remove('scale-100');
+        document.body.style.overflow = '';
+    }
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeAuthorModal();
+    });
+
     // TABS LOGIC
     function switchTab(tabId) {
         // Hide all

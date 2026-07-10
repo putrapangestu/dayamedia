@@ -16,6 +16,9 @@
                 <a href="{{ route('admin.member.edit', $member->id) }}" class="btn btn-primary">
                     <i class="ti ti-edit"></i> Edit Member
                 </a>
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">
+                    <i class="ti ti-lock"></i> Reset Password
+                </button>
             </x-slot:actions>
         </x-header-page>
 
@@ -292,6 +295,42 @@
         </div>
     </div>
 </div>
+
+{{-- Modal Reset Password --}}
+<div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('admin.member.reset-password', $member->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resetPasswordModalLabel">
+                        <i class="ti ti-lock me-2"></i> Reset Password Member
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted mb-3">Masukkan password baru untuk <strong>{{ $member->full_name }}</strong></p>
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">Password Baru <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="new_password" name="password" placeholder="Minimal 8 karakter" required minlength="8" autocomplete="new-password">
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password_confirmation" class="form-label">Konfirmasi Password <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="new_password_confirmation" name="password_confirmation" placeholder="Ketik ulang password" required minlength="8" autocomplete="new-password">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="ti ti-lock"></i> Reset Password
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @push('js')
 <script>
     $(document).ready(function() {

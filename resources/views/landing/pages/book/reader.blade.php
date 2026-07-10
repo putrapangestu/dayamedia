@@ -23,9 +23,38 @@
             box-shadow: 0 24px 60px rgba(15, 23, 42, .32);
             background: #fff;
         }
+        /* Trap scroll di container PDF, bukan di halaman */
+        .ebook-pdf-stage {
+            overscroll-behavior: contain;
+            scroll-behavior: smooth;
+        }
+        .ebook-pdf-stage::-webkit-scrollbar {
+            width: 8px;
+        }
+        .ebook-pdf-stage::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+        }
+        .ebook-pdf-stage::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+        }
+        .ebook-pdf-stage::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.35);
+        }
+        /* Pastikan body tidak ikut scroll saat sentuh/scroll di area PDF */
+        body.pdf-scroll-lock {
+            overflow: hidden;
+        }
+        @media (max-width: 767px) {
+            #pdf-container {
+                max-height: calc(100vh - 250px) !important;
+                min-height: 400px !important;
+            }
+        }
     </style>
 
-    <div class="ebook-reader-shell border-b border-gray-200">
+    <div class="ebook-reader-shell border-b border-gray-200" id="reader-shell">
         <div class="kt-container-fixed py-5">
             <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div class="flex min-w-0 items-center gap-4">
@@ -126,7 +155,7 @@
                     </div>
                 </div>
 
-                <div id="pdf-container" class="ebook-pdf-stage max-h-[calc(100vh-170px)] min-h-[620px] overflow-y-auto p-4 sm:p-8">
+                <div id="pdf-container" class="ebook-pdf-stage max-h-[calc(100vh-170px)] min-h-[620px] overflow-y-auto p-4 sm:p-8 touch-pan-y" style="-webkit-overflow-scrolling: touch;">
                     <div id="pdf-loading" class="flex min-h-[520px] flex-col items-center justify-center text-center text-white/80">
                         <div class="mb-5 size-14 animate-spin rounded-full border-4 border-white/20 border-t-white"></div>
                         <p class="text-sm font-black uppercase tracking-widest">Memuat E-Book</p>
@@ -166,6 +195,21 @@ document.addEventListener('DOMContentLoaded', function () {
     let pdfDoc = null;
     let currentScale = 1.2;
     let renderToken = 0;
+
+    // Lock body scroll saat sentuh PDF container (mobile)
+    const pdfContainer = document.getElementById('pdf-container');
+    pdfContainer.addEventListener('touchstart', function() {
+        document.body.classList.add('pdf-scroll-lock');
+    }, { passive: true });
+    pdfContainer.addEventListener('touchend', function() {
+        document.body.classList.remove('pdf-scroll-lock');
+    }, { passive: true });
+    // Fallback: lepas lock jika scroll keluar container
+    document.addEventListener('touchmove', function(e) {
+        if (!pdfContainer.contains(e.target)) {
+            document.body.classList.remove('pdf-scroll-lock');
+        }
+    }, { passive: true });
 
     function setZoomLabel() {
         zoomLabel.textContent = Math.round(currentScale * 100) + '%';

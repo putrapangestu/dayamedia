@@ -85,6 +85,21 @@
                                         @enderror
                                     </div>
                                 </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-group">
+                                        <label for="password">Password Baru <span class="text-muted fs-2">(isi hanya jika ingin mengganti)</span></label>
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="Minimal 8 karakter" autocomplete="new-password">
+                                        @error('password')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-group">
+                                        <label for="password_confirmation">Konfirmasi Password Baru</label>
+                                        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Ketik ulang password" autocomplete="new-password">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </form>

@@ -91,18 +91,16 @@ class LandingController extends Controller
             ->when($request->sort, function ($query) use ($request) {
                 switch ($request->sort) {
                     case 'latest':
-                        // $query->orderBy('created_at', 'desc');
-                        $query->orderBy('year_published', 'desc');
+                        $query->orderByRaw('COALESCE(year_published, 0) desc, created_at desc');
                         break;
                     case 'oldest':
-                        // $query->orderBy('created_at', 'asc');
-                        $query->orderBy('year_published', 'asc');
+                        $query->orderByRaw('COALESCE(year_published, 9999) asc, created_at asc');
                         break;
                     case 'published_latest':
-                        $query->orderBy('year_published', 'desc');
+                        $query->orderByRaw('COALESCE(year_published, 0) desc, created_at desc');
                         break;
                     case 'published_oldest':
-                        $query->orderBy('year_published', 'asc');
+                        $query->orderByRaw('COALESCE(year_published, 9999) asc, created_at asc');
                         break;
                     case 'price_low':
                         $query->orderBy('price_digital', 'asc');
@@ -114,9 +112,9 @@ class LandingController extends Controller
                         $query->orderBy('created_at', 'desc');
                 }
             }, function ($query) {
-                $query->orderBy('year_published', 'desc');
+                $query->orderByRaw('COALESCE(year_published, 0) desc, created_at desc');
             })
-            ->paginate(10)
+            ->paginate(12)
             ->withQueryString();
 
         $categories = Category::orderBy('name', 'asc')->get();

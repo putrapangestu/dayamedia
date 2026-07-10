@@ -13,6 +13,7 @@ use App\Models\CommissionHistory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Validators\ValidationException;
@@ -169,14 +170,21 @@ class MemberController extends Controller
     {
         $validated = $request->validated();
 
-        $member->update([
+        $data = [
             'full_name' => $validated['full_name'],
             'email' => $validated['email'],
             'job' => $validated['job'],
             'degree' => $validated['degree'],
             'phone_number' => $validated['phone_number'],
             'email_verified_at' => $validated['status'] == 'active' ? now() : null,
-        ]);
+        ];
+
+        // Update password jika diisi
+        if (!empty($validated['password'])) {
+            $data['password'] = bcrypt($validated['password']);
+        }
+
+        $member->update($data);
 
         return redirect()->route('admin.member.index')->with('success', 'Member berhasil diupdate.');
     }
@@ -189,6 +197,22 @@ class MemberController extends Controller
         $member->delete();
 
         return redirect()->route('admin.member.index')->with('success', 'Member berhasil dihapus.');
+    }
+
+    /**
+     * Reset password member dari halaman detail.
+     */
+    public function resetPassword(Request $request, User $member)
+    {
+        $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $member->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()->route('admin.member.show', $member->id)->with('success', 'Password member berhasil direset.');
     }
 
     /**
