@@ -112,31 +112,7 @@
 @section('content')
 <div class="bg-gray-50/30 min-h-screen pb-20 pt-10">
     <div class="kt-container-fixed">
-        {{-- ===== AUTHOR MODAL ===== --}}
-        <div id="author-modal" class="hidden fixed inset-0 z-50 bg-gray-900/50 backdrop-blur-sm" onclick="closeAuthorModal()">
-            <div class="w-full h-full flex items-center justify-center p-4 sm:p-6">
-                <div class="bg-white rounded-3xl w-full max-w-2xl max-h-full overflow-y-auto" onclick="event.stopPropagation()">
-                    <div class="flex items-center justify-between p-5 sm:p-6 border-b border-gray-100 sticky top-0 bg-white z-10">
-                        <h3 class="text-lg sm:text-xl font-black text-gray-900 tracking-tight">Penulis Lainnya</h3>
-                        <button type="button" onclick="closeAuthorModal()" class="size-9 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-900 transition-colors">
-                            <i class="ki-filled ki-cross text-xl"></i>
-                        </button>
-                    </div>
-                    <div class="p-5 sm:p-6 space-y-3">
-                        @foreach($authors as $author)
-                            <div class="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 border border-gray-100">
-                                <div class="size-12 rounded-full bg-primary/10 text-primary flex items-center justify-center font-black text-xl">
-                                    {{ strtoupper(substr($author['name'], 0, 1)) }}
-                                </div>
-                                <span class="font-bold text-gray-900">{{ $author['name'] }}</span>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
+        
         {{-- ===== BREADCRUMB ===== --}}
         <div class="flex items-center gap-2 text-sm font-medium mb-8">
             <a href="{{ route('home') }}" class="text-gray-500 hover:text-primary transition-colors">Beranda</a>
@@ -149,13 +125,13 @@
         {{-- ===== MAIN DETAIL SECTION ===== --}}
         <div class="bg-white rounded-[2.5rem] p-4 sm:p-6 lg:p-10 border border-gray-100 shadow-sm mb-10">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
-
+                
                 {{-- Kiri: Cover Image --}}
                 <div class="lg:col-span-3 flex flex-col items-center lg:items-start">
                     <div class="w-full max-w-[200px] sm:max-w-[240px] lg:max-w-full">
                         <div class="relative bg-gray-50 rounded-2xl overflow-hidden aspect-[3/4] shadow-xl border border-gray-100">
-                            <img src="{{ $book->cover ? asset('storage/' . $book->cover) : 'https://placehold.co/400x600?text=No+Cover' }}"
-                                 alt="{{ $book->title }}"
+                            <img src="{{ $book->cover ? asset('storage/' . $book->cover) : 'https://placehold.co/400x600?text=No+Cover' }}" 
+                                 alt="{{ $book->title }}" 
                                  class="w-full h-full object-cover">
                         </div>
                         <div class="flex flex-wrap gap-2 mt-4 justify-center lg:justify-start">
@@ -511,32 +487,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
 <script>
-    function openAuthorModal() {
-        const modal = document.getElementById('author-modal');
-        if (modal) {
-            modal.classList.remove('hidden');
-            document.body.classList.add('overflow-hidden');
-        }
-    }
-
-    function closeAuthorModal() {
-        const modal = document.getElementById('author-modal');
-        if (modal) {
-            modal.classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
-        }
-    }
-
-    // Close modal on escape key press
-    document.addEventListener('keydown', function (event) {
-        if (event.key === "Escape") {
-            closeAuthorModal();
-        }
-    });
-</script>
-
-
-<script>
     // AUTHOR MODAL
     function openAuthorModal() {
         const modal = document.getElementById('author-modal');
@@ -557,7 +507,7 @@
         // Hide all
         $('#tab-description, #tab-preview').addClass('hidden');
         $('#btn-tab-description, #btn-tab-preview').removeClass('bg-white shadow-sm border-gray-100 text-primary font-black').addClass('text-gray-500 font-bold border-transparent');
-
+        
         // Show active
         $('#' + tabId).removeClass('hidden');
         $('#btn-' + tabId).addClass('bg-white shadow-sm border-gray-100 text-primary font-black').removeClass('text-gray-500 font-bold border-transparent');
@@ -692,7 +642,7 @@
                         const canvas = document.createElement('canvas');
                         canvas.className = 'rounded-xl shadow-lg border border-gray-200 bg-white max-w-full';
                         container.appendChild(canvas);
-
+                        
                         pdfDoc.getPage(pageNum).then(page => {
                             const viewport = page.getViewport({ scale: currentScale });
                             canvas.height = viewport.height;
