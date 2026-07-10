@@ -399,30 +399,27 @@
     </div>
 </div>
 
-{{-- ===== MODAL DAFTAR PENULIS (Responsive + Scrollable) ===== --}}
-<div id="author-modal" class="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center opacity-0 pointer-events-none transition-all duration-300" style="background: rgba(0,0,0,0);">
+{{-- ===== MODAL DAFTAR PENULIS ===== --}}
+<div id="author-modal" class="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-all duration-300" style="background: rgba(0,0,0,0);">
     <div class="absolute inset-0" onclick="closeAuthorModal()"></div>
-    {{-- Content wrapper — overflow-y-auto untuk scroll, max-h biar ga full screen --}}
-    <div class="relative bg-white w-full sm:max-w-lg sm:mx-4 max-h-[90vh] sm:max-h-[85vh] overflow-y-auto sm:rounded-[2rem] rounded-t-[2rem] shadow-2xl border border-gray-100 transform translate-y-8 sm:scale-95 transition-all duration-300" id="author-modal-content">
-        {{-- Header sticky di atas --}}
-        <div class="sticky top-0 z-10 flex items-center justify-between p-4 sm:p-6 bg-white border-b border-gray-100">
-            <h3 class="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2">
+    <div class="relative bg-white rounded-[2rem] shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto border border-gray-100 transform scale-95 transition-all duration-300" id="author-modal-content">
+        <div class="sticky top-0 bg-white z-10 flex items-center justify-between p-5 sm:p-6 border-b border-gray-100 rounded-t-[2rem]">
+            <h3 class="text-lg font-black text-gray-900 flex items-center gap-2">
                 <i class="ki-filled ki-user-edit text-primary"></i> Daftar Penulis
             </h3>
-            <button onclick="closeAuthorModal()" class="size-9 flex items-center justify-center rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors shrink-0">
+            <button onclick="closeAuthorModal()" class="size-9 flex items-center justify-center rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors">
                 <i class="ki-filled ki-cross text-base"></i>
             </button>
         </div>
-        {{!-- Body --}}
-        <div class="p-4 sm:p-6">
+        <div class="p-5 sm:p-6">
             <div class="space-y-3">
                 @foreach($authors as $idx => $author)
                     <div class="flex items-center gap-3 p-3 rounded-2xl {{ $idx % 2 == 0 ? 'bg-gray-50' : 'bg-white' }} border border-gray-100">
                         <div class="size-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 font-black text-sm">
                             {{ strtoupper(substr($author['name'], 0, 1)) }}
                         </div>
-                        <div class="min-w-0 flex-1">
-                            <p class="text-sm font-bold text-gray-900 break-words">{{ $author['name'] }}</p>
+                        <div>
+                            <p class="text-sm font-bold text-gray-900">{{ $author['name'] }}</p>
                             @if($author['chapter'])
                                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">BAB {{ $author['chapter'] }}</p>
                             @endif
@@ -431,8 +428,7 @@
                 @endforeach
             </div>
         </div>
-        {{!-- Footer --}}
-        <div class="p-4 sm:p-6 border-t border-gray-100 bg-gray-50/50">
+        <div class="p-5 sm:p-6 border-t border-gray-100 bg-gray-50/50 rounded-b-[2rem]">
             <p class="text-xs text-gray-400 font-medium text-center">Total <span class="font-black text-gray-600">{{ $authors->count() }}</span> penulis</p>
         </div>
     </div>
@@ -461,23 +457,19 @@
     function openAuthorModal() {
         const modal = document.getElementById('author-modal');
         const content = document.getElementById('author-modal-content');
-        // Open overlay
         modal.classList.remove('opacity-0', 'pointer-events-none');
         modal.style.background = 'rgba(0,0,0,0.5)';
-        // Animate content: remove translate-y-8 (mobile) / scale-95 (desktop)
-        content.classList.remove('translate-y-8', 'sm:scale-95');
-        content.classList.add('translate-y-0', 'sm:scale-100');
+        content.classList.remove('scale-95');
+        content.classList.add('scale-100');
         document.body.style.overflow = 'hidden';
     }
     function closeAuthorModal() {
         const modal = document.getElementById('author-modal');
         const content = document.getElementById('author-modal-content');
-        // Close overlay
         modal.classList.add('opacity-0', 'pointer-events-none');
         modal.style.background = 'rgba(0,0,0,0)';
-        // Animate content back
-        content.classList.remove('translate-y-0', 'sm:scale-100');
-        content.classList.add('translate-y-8', 'sm:scale-95');
+        content.classList.add('scale-95');
+        content.classList.remove('scale-100');
         document.body.style.overflow = '';
     }
     // Close on Escape key
