@@ -129,6 +129,28 @@ class Module extends Model
         return 'available';
     }
 
+    public function getBuyerNameAttribute(): ?string
+    {
+        // Direct assignment (user_id on the module)
+        if ($this->user_id && $this->relationLoaded('user') && $this->user) {
+            return $this->user->full_name;
+        }
+
+        // Via transaction (paid or active pending)
+        if ($this->relationLoaded('transactionDetails')) {
+            foreach ($this->transactionDetails as $detail) {
+                if ($detail->transaction && $detail->transaction->relationLoaded('user') && $detail->transaction->user) {
+                    $t = $detail->transaction;
+                    if ($t->status === 'paid' || ($t->status === 'pending' && $t->expired_at && Carbon::parse($t->expired_at)->isFuture())) {
+                        return $t->user->full_name;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
     public function getIsLockedForOrderAttribute(): bool
     {
         return $this->order_lock_status !== 'available';

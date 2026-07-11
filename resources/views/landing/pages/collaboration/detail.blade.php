@@ -177,28 +177,10 @@
                                         <span class="text-xs font-bold text-green-500 flex items-center gap-1"><i class="ki-filled ki-check-circle"></i> Tersedia</span>
                                     @endif
 
-                                    @if($lockStatus !== 'available' && $lockStatus !== 'inactive')
-                                        @php
-                                            $buyerName = null;
-                                            if ($module->user_id && $module->user) {
-                                                $buyerName = $module->user->full_name;
-                                            } elseif ($module->relationLoaded('transactionDetails')) {
-                                                foreach ($module->transactionDetails as $detail) {
-                                                    if ($detail->transaction) {
-                                                        $t = $detail->transaction;
-                                                        if ($t->status === 'paid' || ($t->status === 'pending' && $t->expired_at && \Carbon\Carbon::parse($t->expired_at)->isFuture())) {
-                                                            $buyerName = $t->user?->full_name;
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        @endphp
-                                        @if($buyerName)
-                                            <div class="text-[11px] text-gray-500 mt-1 leading-tight">
-                                                <i class="ki-filled ki-user text-[10px]"></i> {{ $buyerName }}
-                                            </div>
-                                        @endif
+                                    @if($lockStatus !== 'available' && $lockStatus !== 'inactive' && $module->buyer_name)
+                                        <div class="text-[11px] text-gray-500 mt-1 leading-tight">
+                                            <i class="ki-filled ki-user text-[10px]"></i> {{ $module->buyer_name }}
+                                        </div>
                                     @endif
                                 </div>
                             </div>
