@@ -164,17 +164,43 @@
                     @php($lockStatus = $module->order_lock_status)
                     <div class="bg-white border {{ $lockStatus !== 'available' ? 'border-gray-200 opacity-75' : 'border-primary/20 hover:border-primary hover:shadow-lg hover:-translate-y-1' }} rounded-2xl p-5 transition-all duration-300 flex flex-col justify-between h-full">
                         <div>
-                            <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-start justify-between mb-3">
                                 <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-100 px-2 py-1 rounded-md">Bab {{ $module->chapter }}</span>
-                                @if($lockStatus === 'bought')
-                                    <span class="text-xs font-bold text-red-500 flex items-center gap-1"><i class="ki-filled ki-cross-circle"></i> Sudah dibeli</span>
-                                @elseif($lockStatus === 'pending')
-                                    <span class="text-xs font-bold text-yellow-500 flex items-center gap-1"><i class="ki-filled ki-time"></i> Lagi dipesan</span>
-                                @elseif($lockStatus === 'inactive')
-                                    <span class="text-xs font-bold text-gray-400 flex items-center gap-1"><i class="ki-filled ki-cross-circle"></i> Tidak aktif</span>
-                                @else
-                                    <span class="text-xs font-bold text-green-500 flex items-center gap-1"><i class="ki-filled ki-check-circle"></i> Tersedia</span>
-                                @endif
+                                <div class="text-right">
+                                    @if($lockStatus === 'bought')
+                                        <span class="text-xs font-bold text-red-500 flex items-center gap-1"><i class="ki-filled ki-cross-circle"></i> Sudah dibeli</span>
+                                    @elseif($lockStatus === 'pending')
+                                        <span class="text-xs font-bold text-yellow-500 flex items-center gap-1"><i class="ki-filled ki-time"></i> Lagi dipesan</span>
+                                    @elseif($lockStatus === 'inactive')
+                                        <span class="text-xs font-bold text-gray-400 flex items-center gap-1"><i class="ki-filled ki-cross-circle"></i> Tidak aktif</span>
+                                    @else
+                                        <span class="text-xs font-bold text-green-500 flex items-center gap-1"><i class="ki-filled ki-check-circle"></i> Tersedia</span>
+                                    @endif
+
+                                    @if($lockStatus !== 'available' && $lockStatus !== 'inactive')
+                                        @php
+                                            $buyerName = null;
+                                            if ($module->user_id && $module->user) {
+                                                $buyerName = $module->user->full_name;
+                                            } elseif ($module->relationLoaded('transactionDetails')) {
+                                                foreach ($module->transactionDetails as $detail) {
+                                                    if ($detail->transaction) {
+                                                        $t = $detail->transaction;
+                                                        if ($t->status === 'paid' || ($t->status === 'pending' && $t->expired_at && \Carbon\Carbon::parse($t->expired_at)->isFuture())) {
+                                                            $buyerName = $t->user?->full_name;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        @endphp
+                                        @if($buyerName)
+                                            <div class="text-[11px] text-gray-500 mt-1 leading-tight">
+                                                <i class="ki-filled ki-user text-[10px]"></i> {{ $buyerName }}
+                                            </div>
+                                        @endif
+                                    @endif
+                                </div>
                             </div>
                             <h4 class="text-base font-bold text-gray-900 leading-snug mb-2">{{ $module->title }}</h4>
                         </div>

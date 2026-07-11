@@ -283,7 +283,7 @@ class LandingController extends Controller
     public function collaborationDetail(string $slug): View
     {
         session()->forget(['checkout_items', 'checkout_total']);
-        $book = Book::with('authors.user', 'category', 'modules.user', 'modules.transactionDetails.transaction', 'bookEditors')
+        $book = Book::with('authors.user', 'category', 'modules.user', 'modules.transactionDetails.transaction.user', 'bookEditors')
             ->where('slug', $slug)
             ->where('is_individual', false)
             ->whereIn('status', [Book::STATUS_OPEN, Book::STATUS_EDITING, Book::STATUS_PUBLISHED])

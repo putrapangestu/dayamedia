@@ -88,7 +88,12 @@
                                 <div class="col-md-6 mb-3">
                                     <div class="form-group">
                                         <label for="password">Password Baru <span class="text-muted fs-2">(isi hanya jika ingin mengganti)</span></label>
-                                        <input type="password" class="form-control" id="password" name="password" placeholder="Minimal 8 karakter" autocomplete="new-password">
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="password" name="password" placeholder="Minimal 8 karakter" autocomplete="new-password">
+                                            <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('password', this)" tabindex="-1">
+                                                <i class="ti ti-eye"></i>
+                                            </button>
+                                        </div>
                                         @error('password')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -97,9 +102,31 @@
                                 <div class="col-md-6 mb-3">
                                     <div class="form-group">
                                         <label for="password_confirmation">Konfirmasi Password Baru</label>
-                                        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Ketik ulang password" autocomplete="new-password">
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Ketik ulang password" autocomplete="new-password">
+                                            <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('password_confirmation', this)" tabindex="-1">
+                                                <i class="ti ti-eye"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
+                                @push('js')
+                                <script>
+                                function togglePassword(inputId, btn) {
+                                    const input = document.getElementById(inputId);
+                                    const icon = btn.querySelector('i');
+                                    if (input.type === 'password') {
+                                        input.type = 'text';
+                                        icon.classList.remove('ti-eye');
+                                        icon.classList.add('ti-eye-off');
+                                    } else {
+                                        input.type = 'password';
+                                        icon.classList.remove('ti-eye-off');
+                                        icon.classList.add('ti-eye');
+                                    }
+                                }
+                                </script>
+                                @endpush
                             </div>
                         </div>
                     </form>
