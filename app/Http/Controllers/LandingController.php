@@ -19,6 +19,7 @@ use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -170,7 +171,7 @@ class LandingController extends Controller
         return $this->streamStoredPdf($book->half_content, $book->slug.'-preview.pdf', false);
     }
 
-    public function streamBookFile(Book $book, string $type): BinaryFileResponse
+    public function streamBookFile(Book $book, string $type, Request $request): BinaryFileResponse
     {
         if ($type === 'preview') {
             abort_unless($book->half_content, 404);
@@ -180,6 +181,13 @@ class LandingController extends Controller
 
         abort_unless($book->full_content, 404);
         abort_unless($this->userCanReadBook($book), 403);
+
+        // Verifikasi read token untuk proteksi link
+        $token = $request->query('token');
+        $expectedToken = session("read_token_{$book->id}");
+        if (! $token || ! $expectedToken || ! hash_equals($expectedToken, $token)) {
+            abort(403, 'Akses tidak valid.');
+        }
 
         return $this->streamStoredPdf($book->full_content, $book->slug.'.pdf', true);
     }
@@ -495,9 +503,11 @@ class LandingController extends Controller
             }
         }
 
-        $activeModules = $book->modules->filter(fn ($module) => $module->is_active)->sortBy('chapter')->values();
+        // Generate read token untuk proteksi file PDF
+        $readToken = Str::random(64);
+        session(["read_token_{$book->id}" => $readToken]);
 
-        return view('landing.pages.book.reader', compact('book', 'activeModules'));
+        return view('landing.pages.book.reader', compact('book', 'readToken'));
     }
 
     public function applyPromo(Request $request)

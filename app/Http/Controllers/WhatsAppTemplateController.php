@@ -138,22 +138,10 @@ class WhatsAppTemplateController extends Controller
     }
 
     /**
-     * Simulate WhatsApp message sending.
-     * In production, integrate with actual WhatsApp API.
+     * Send WhatsApp message via the real WhatsApp gateway.
      */
     private function sendWhatsAppMessage(string $phoneNumber, string $message)
     {
-        // This is a simulation. Replace with actual WhatsApp API integration.
-        // Example integration with WhatsApp Business API or third-party services
-        // like Twilio, MessageBird, etc.
-
-        // Log the message for testing
-        \Log::info('WhatsApp message sent', [
-            'phone' => $phoneNumber,
-            'message' => $message,
-            'timestamp' => now(),
-        ]);
-
-        return true;
+        whatsapp_send($phoneNumber, $message, 1);
     }
 }

@@ -20,10 +20,14 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
         Daya Media
     </title>
     <meta charset="utf-8" />
-    <meta content="follow, index" name="robots" />
-    <link href="index.html" rel="canonical" />
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport" />
     @stack('meta')
+    @if((config('app.env') ?? config('app.env')) === 'production')
+    <meta content="index, follow, max-image-preview:large" name="robots" />
+    <link href="{{ url()->current() }}" rel="canonical" />
+    @else
+    <meta content="noindex, nofollow" name="robots" />
+    @endif
     {{-- <meta content="Tailwind CSS based HTML and JavaScript toolkit for building modern and scalable web applications"
         name="description" />
     <meta content="@keenthemes" name="twitter:site" />
@@ -40,7 +44,9 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
     <meta content="Metronic - Tailwind CSS Light Sidebar" property="og:title" />
     <meta content="Tailwind CSS based HTML and JavaScript toolkit for building modern and scalable web applications"
         property="og:description" /> --}}
-    <meta content="/metronic/tailwind/dist/assets/media/app/og-image.png" property="og:image" />
+    @if(app()->environment('production'))
+    <meta content="{{ asset('assets/azzia-logo.png') }}" property="og:image" />
+    @endif
     {{-- <link href="{{ asset('') }}assets/landing/media/app/apple-touch-icon.png" rel="apple-touch-icon"
         sizes="180x180" /> --}}
     <link href="{{ asset('assets/azzia-logo.png') }}" rel="icon" sizes="32x32"

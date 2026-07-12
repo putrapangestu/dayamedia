@@ -2,268 +2,341 @@
 
 @section('title', 'Baca ' . $book->title . ' - Daya Media')
 
-@section('content')
-<div class="min-h-screen bg-[#f5f7fb]">
-    <style>
-        .ebook-reader-shell {
-            background:
-                linear-gradient(135deg, rgba(238, 18, 140, .08), transparent 28%),
-                linear-gradient(315deg, rgba(16, 185, 129, .10), transparent 32%),
-                #f5f7fb;
-        }
-        .ebook-pdf-stage {
-            background: radial-gradient(circle at top, #475569 0, #1f2937 46%, #111827 100%);
-        }
-        .ebook-pdf-stage canvas {
-            display: block;
-            max-width: 100%;
-            height: auto !important;
-            margin: 0 auto 24px;
-            border-radius: 12px;
-            box-shadow: 0 24px 60px rgba(15, 23, 42, .32);
-            background: #fff;
-        }
-        /* Trap scroll di container PDF, bukan di halaman */
-        .ebook-pdf-stage {
-            overscroll-behavior: contain;
-            scroll-behavior: smooth;
-        }
-        .ebook-pdf-stage::-webkit-scrollbar {
-            width: 8px;
-        }
-        .ebook-pdf-stage::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
-        }
-        .ebook-pdf-stage::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.2);
-            border-radius: 10px;
-        }
-        .ebook-pdf-stage::-webkit-scrollbar-thumb:hover {
-            background: rgba(255,255,255,0.35);
-        }
-        /* Pastikan body tidak ikut scroll saat sentuh/scroll di area PDF */
-        body.pdf-scroll-lock {
-            overflow: hidden;
-        }
-        @media (max-width: 767px) {
-            #pdf-container {
-                max-height: calc(100vh - 250px) !important;
-                min-height: 400px !important;
-            }
-        }
-    </style>
+@push('meta')
+<meta name="robots" content="noindex, nofollow">
+@endpush
 
-    <div class="ebook-reader-shell border-b border-gray-200" id="reader-shell">
-        <div class="kt-container-fixed py-5">
-            <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                <div class="flex min-w-0 items-center gap-4">
-                    <div class="hidden w-16 shrink-0 overflow-hidden rounded-xl border border-white/80 bg-white shadow-md sm:block">
-                        <img src="{{ $book->cover ? asset('storage/' . $book->cover) : asset('assets/dashboard/images/products/product-1.jpg') }}"
-                             alt="{{ $book->title }}"
-                             class="aspect-[3/4] w-full object-cover">
-                    </div>
-                    <div class="min-w-0">
-                    <div class="mb-3 flex flex-wrap items-center gap-2 text-xs font-black uppercase tracking-widest text-gray-500">
-                        <a href="{{ route('catalog') }}" class="hover:text-primary">Katalog</a>
-                        <i class="ki-filled ki-right text-[10px]"></i>
-                        <span>Baca E-Book</span>
-                    </div>
-                    <h1 class="text-2xl font-black leading-tight tracking-tight text-gray-950 lg:text-4xl">{{ $book->title }}</h1>
-                    <p class="mt-2 flex flex-wrap items-center gap-2 text-sm font-bold text-gray-500">
-                        <span>{{ $book->category?->name ?? 'Tanpa Kategori' }}</span>
-                        <span class="text-gray-300">/</span>
-                        <span>{{ $book->publisher ?? config('app.name') }}</span>
-                        @if($book->year_published)
-                            <span class="text-gray-300">/</span>
-                            <span>{{ $book->year_published }}</span>
-                        @endif
-                    </p>
-                    </div>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <a href="{{ route('bookDetail', $book->slug) }}" class="inline-flex items-center gap-2 rounded-2xl border border-gray-200 bg-white px-5 py-3 text-xs font-black uppercase tracking-widest text-gray-700 shadow-sm transition hover:border-primary hover:text-primary">
-                        <i class="ki-filled ki-left"></i> Detail Buku
-                    </a>
-                    <a href="{{ route('member') }}" class="inline-flex items-center gap-2 rounded-2xl bg-gray-950 px-5 py-3 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-gray-900/10 transition hover:bg-black">
-                        <i class="ki-filled ki-user"></i> Akun Saya
-                    </a>
-                </div>
-            </div>
+@section('content')
+<style>
+    /* Sembunyikan header & footer bawaan layout */
+    body > div.flex.grow.flex-col > [role="content"] > #contentContainer,
+    body > div.flex.grow.flex-col > div.kt-container-fixed,
+    body [role="content"] > div.kt-container-fixed,
+    body .kt-container-fixed:first-of-type {
+        display: none !important;
+    }
+    body > div.flex.grow.flex-col > header,
+    body header#header,
+    body .kt-header,
+    body [data-kt-header],
+    body .footer,
+    body footer {
+        display: none !important;
+    }
+
+    /* Full screen reader */
+    .ebook-reader-full {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        background: #111827;
+        overflow: hidden;
+    }
+
+    /* Toolbar minimal */
+    .reader-toolbar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 16px;
+        background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, transparent 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .ebook-reader-full:hover .reader-toolbar,
+    .reader-toolbar:focus-within {
+        opacity: 1;
+    }
+    .reader-toolbar button,
+    .reader-toolbar a {
+        color: rgba(255,255,255,0.8);
+        background: rgba(255,255,255,0.1);
+        border: none;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        backdrop-filter: blur(4px);
+    }
+    .reader-toolbar button:hover,
+    .reader-toolbar a:hover {
+        background: rgba(255,255,255,0.2);
+        color: #fff;
+    }
+    .reader-toolbar .zoom-group {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .reader-toolbar .zoom-group span {
+        min-width: 60px;
+        text-align: center;
+        color: rgba(255,255,255,0.9);
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    /* PDF container full */
+    .pdf-viewport {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+    }
+    .pdf-viewport::-webkit-scrollbar {
+        width: 6px;
+    }
+    .pdf-viewport::-webkit-scrollbar-track {
+        background: rgba(255,255,255,0.05);
+    }
+    .pdf-viewport::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.2);
+        border-radius: 10px;
+    }
+    .pdf-viewport::-webkit-scrollbar-thumb:hover {
+        background: rgba(255,255,255,0.35);
+    }
+
+    .pdf-viewport canvas {
+        display: block;
+        max-width: 100%;
+        height: auto !important;
+        margin: 0 auto 16px;
+        border-radius: 4px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        background: #fff;
+    }
+
+    .pdf-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100%;
+        color: rgba(255,255,255,0.6);
+        gap: 16px;
+    }
+    .pdf-loading .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(255,255,255,0.15);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .pdf-loading p {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+    }
+
+    /* Anti-select & anti-context menu */
+    .pdf-viewport {
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    }
+    .pdf-viewport canvas {
+        pointer-events: none;
+        -webkit-touch-callout: none;
+    }
+
+    /* Responsive: di HP toolbar lebih kecil */
+    @media (max-width: 640px) {
+        .reader-toolbar {
+            padding: 6px 10px;
+        }
+        .reader-toolbar button,
+        .reader-toolbar a {
+            padding: 4px 8px;
+            font-size: 10px;
+        }
+        .reader-toolbar .zoom-group span {
+            min-width: 44px;
+            font-size: 11px;
+        }
+    }
+</style>
+
+<div class="ebook-reader-full" id="ebookReader">
+    {{-- Toolbar minimal --}}
+    <div class="reader-toolbar" id="readerToolbar">
+        <div class="flex items-center gap-2">
+            <a href="{{ route('bookDetail', $book->slug) }}" title="Kembali">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
+                Keluar
+            </a>
+        </div>
+        <div class="zoom-group">
+            <button id="zoom-out" title="Perkecil">−</button>
+            <span id="zoom-percent">120%</span>
+            <button id="zoom-in" title="Perbesar">+</button>
+            <button id="reset-zoom" style="background:rgba(255,255,255,0.2);padding:4px 10px;">Reset</button>
         </div>
     </div>
 
-    <div class="kt-container-fixed py-8">
-        <div class="grid grid-cols-1 gap-6 xl:grid-cols-[260px_minmax(0,1fr)]">
-            <aside class="space-y-5 xl:sticky xl:top-[90px] xl:self-start">
-                <div class="rounded-[1.5rem] border border-gray-100 bg-white p-4 shadow-sm">
-                    <div class="flex items-start gap-4">
-                        <div class="w-20 shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-gray-100 shadow-sm">
-                            <img src="{{ $book->cover ? asset('storage/' . $book->cover) : asset('assets/dashboard/images/products/product-1.jpg') }}"
-                                 alt="{{ $book->title }}"
-                                 class="aspect-[3/4] w-full object-cover">
-                        </div>
-                        <div class="min-w-0">
-                            <p class="mb-2 inline-flex rounded-lg bg-primary/10 px-2 py-1 text-[9px] font-black uppercase tracking-widest text-primary">E-Book</p>
-                            <h2 class="line-clamp-3 text-sm font-black leading-snug text-gray-950">{{ $book->title }}</h2>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <div class="grid grid-cols-1 gap-3 text-xs">
-                            <div class="rounded-2xl bg-gray-50 p-3">
-                                <p class="font-black uppercase tracking-widest text-gray-400">ISBN</p>
-                                <p class="mt-1 font-bold text-gray-800">{{ $book->code_isbn ?? '-' }}</p>
-                            </div>
-                            <div class="rounded-2xl bg-gray-50 p-3">
-                                <p class="font-black uppercase tracking-widest text-gray-400">Halaman</p>
-                                <p class="mt-1 font-bold text-gray-800">{{ number_format($book->pages ?? 0, 0, ',', '.') }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                @if($activeModules->count() > 0)
-                    <div class="rounded-[2rem] border border-gray-100 bg-white p-5 shadow-sm">
-                        <h3 class="mb-4 text-xs font-black uppercase tracking-[0.22em] text-gray-400">Daftar Bab</h3>
-                        <div class="space-y-2">
-                            @foreach($activeModules as $module)
-                                <div class="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                                    <p class="text-[10px] font-black uppercase tracking-widest text-primary">BAB {{ $module->chapter }}</p>
-                                    <p class="mt-1 text-sm font-black text-gray-900">{{ $module->title }}</p>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
-            </aside>
-
-            <section class="min-w-0 overflow-hidden rounded-[2rem] border border-gray-200 bg-white shadow-xl shadow-gray-200/60">
-                <div class="sticky top-[70px] z-10 flex flex-col gap-3 border-b border-gray-100 bg-white/95 p-4 backdrop-blur md:flex-row md:items-center md:justify-between">
-                    <div>
-                        <p class="text-[10px] font-black uppercase tracking-[0.24em] text-gray-400">Mode Baca</p>
-                        <p id="reader-status" class="mt-1 text-sm font-bold text-gray-700">Menyiapkan dokumen...</p>
-                    </div>
-                    <div class="flex flex-wrap items-center gap-2">
-                        <button id="zoom-out" type="button" class="size-10 rounded-xl border border-gray-200 bg-white text-gray-700 transition hover:bg-gray-50" title="Zoom Out">
-                            <i class="ki-filled ki-minus"></i>
-                        </button>
-                        <span id="zoom-percent" class="min-w-20 rounded-xl bg-primary/10 px-4 py-2 text-center text-xs font-black text-primary">120%</span>
-                        <button id="zoom-in" type="button" class="size-10 rounded-xl border border-gray-200 bg-white text-gray-700 transition hover:bg-gray-50" title="Zoom In">
-                            <i class="ki-filled ki-plus"></i>
-                        </button>
-                        <button id="reset-zoom" type="button" class="rounded-xl bg-gray-950 px-4 py-2 text-xs font-black uppercase tracking-widest text-white transition hover:bg-black">Reset</button>
-                    </div>
-                </div>
-
-                <div id="pdf-container" class="ebook-pdf-stage max-h-[calc(100vh-170px)] min-h-[620px] overflow-y-auto p-4 sm:p-8 touch-pan-y" style="-webkit-overflow-scrolling: touch;">
-                    <div id="pdf-loading" class="flex min-h-[520px] flex-col items-center justify-center text-center text-white/80">
-                        <div class="mb-5 size-14 animate-spin rounded-full border-4 border-white/20 border-t-white"></div>
-                        <p class="text-sm font-black uppercase tracking-widest">Memuat E-Book</p>
-                    </div>
-                    <div id="pdf-pages-container" class="mx-auto max-w-full"></div>
-                </div>
-            </section>
+    {{-- PDF viewport full --}}
+    <div class="pdf-viewport" id="pdfViewport">
+        <div class="pdf-loading" id="pdfLoading">
+            <div class="spinner"></div>
+            <p>Memuat E-Book</p>
         </div>
+        <div id="pdfPagesContainer" class="mx-auto" style="max-width:100%;padding:16px 8px;"></div>
     </div>
 </div>
 @endsection
 
 @push('js')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const url = '{{ $book->full_content ? route("book.file", [$book->slug, "full"]) : "" }}';
-    const pageContainer = document.getElementById('pdf-pages-container');
-    const loading = document.getElementById('pdf-loading');
-    const status = document.getElementById('reader-status');
-    const zoomLabel = document.getElementById('zoom-percent');
+(function() {
+    'use strict';
 
-    if (!url) {
-        loading.innerHTML = '<p class="text-sm font-black uppercase tracking-widest">File e-book belum tersedia.</p>';
-        status.textContent = 'File e-book belum tersedia.';
-        return;
-    }
+    // ─── Proteksi: disable context menu ───
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+    });
 
-    if (typeof pdfjsLib === 'undefined') {
-        loading.innerHTML = '<p class="text-sm font-black uppercase tracking-widest">PDF viewer gagal dimuat.</p>';
-        status.textContent = 'PDF viewer gagal dimuat.';
-        return;
-    }
-
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-    let pdfDoc = null;
-    let currentScale = 1.2;
-    let renderToken = 0;
-
-    // Lock body scroll saat sentuh PDF container (mobile)
-    const pdfContainer = document.getElementById('pdf-container');
-    pdfContainer.addEventListener('touchstart', function() {
-        document.body.classList.add('pdf-scroll-lock');
-    }, { passive: true });
-    pdfContainer.addEventListener('touchend', function() {
-        document.body.classList.remove('pdf-scroll-lock');
-    }, { passive: true });
-    // Fallback: lepas lock jika scroll keluar container
-    document.addEventListener('touchmove', function(e) {
-        if (!pdfContainer.contains(e.target)) {
-            document.body.classList.remove('pdf-scroll-lock');
+    // ─── Proteksi: disable devtools shortcuts ───
+    document.addEventListener('keydown', function(e) {
+        // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+        if (e.key === 'F12' ||
+            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
+            (e.ctrlKey && e.key === 'U')) {
+            e.preventDefault();
+            return false;
         }
-    }, { passive: true });
+    });
 
-    function setZoomLabel() {
-        zoomLabel.textContent = Math.round(currentScale * 100) + '%';
-    }
+    // ─── Proteksi: deteksi DevTools via window size ───
+    (function detectDevTools() {
+        const threshold = 160;
+        function check() {
+            const w = window.outerWidth - window.innerWidth;
+            const h = window.outerHeight - window.innerHeight;
+            if (w > threshold || h > threshold) {
+                document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#111;color:#fff;font-family:sans-serif;text-align:center;padding:20px;"><div><h1 style="font-size:24px;margin-bottom:12px;">Akses Dibatasi</h1><p style="color:#999;">Alat pengembang terdeteksi. Silahkan tutup DevTools dan muat ulang halaman.</p></div></div>';
+            }
+        }
+        setInterval(check, 1000);
+    })();
 
-    function renderAllPages() {
-        if (!pdfDoc) return;
-        const token = ++renderToken;
+    // ─── Proteksi: cegah drag & drop ───
+    document.addEventListener('dragstart', function(e) { e.preventDefault(); });
+    document.addEventListener('drop', function(e) { e.preventDefault(); });
+
+    // ─── Inisialisasi PDF.js ───
+    var script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    script.onload = function() {
+        initReader();
+    };
+    script.onerror = function() {
+        document.getElementById('pdfLoading').innerHTML = '<p>Gagal memuat PDF viewer.</p>';
+    };
+    document.head.appendChild(script);
+
+    function initReader() {
+        var pdfjsLib = window.pdfjsLib;
+        if (!pdfjsLib) {
+            document.getElementById('pdfLoading').innerHTML = '<p>PDF viewer gagal dimuat.</p>';
+            return;
+        }
+
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        var url = '{{ $book->full_content ? route("book.file", [$book->slug, "full"]) . "?token=" . $readToken : "" }}';
+        var container = document.getElementById('pdfPagesContainer');
+        var loading = document.getElementById('pdfLoading');
+        var zoomLabel = document.getElementById('zoom-percent');
+
+        if (!url) {
+            loading.innerHTML = '<p>File e-book belum tersedia.</p>';
+            return;
+        }
+
+        var pdfDoc = null;
+        var currentScale = 1.2;
+        var renderToken = 0;
+
+        function setZoomLabel() {
+            zoomLabel.textContent = Math.round(currentScale * 100) + '%';
+        }
+
+        function renderAllPages() {
+            if (!pdfDoc) return;
+            var token = ++renderToken;
+            setZoomLabel();
+            container.innerHTML = '';
+
+            for (var i = 1; i <= pdfDoc.numPages; i++) {
+                (function(pageNum) {
+                    var canvas = document.createElement('canvas');
+                    container.appendChild(canvas);
+
+                    pdfDoc.getPage(pageNum).then(function(page) {
+                        if (token !== renderToken) return;
+                        var viewport = page.getViewport({ scale: currentScale });
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        page.render({
+                            canvasContext: canvas.getContext('2d'),
+                            viewport: viewport
+                        });
+                    });
+                })(i);
+            }
+        }
+
+        document.getElementById('zoom-in').addEventListener('click', function() {
+            if (currentScale >= 2.5) return;
+            currentScale = Math.round((currentScale + 0.2) * 100) / 100;
+            renderAllPages();
+        });
+
+        document.getElementById('zoom-out').addEventListener('click', function() {
+            if (currentScale <= 0.6) return;
+            currentScale = Math.round((currentScale - 0.2) * 100) / 100;
+            renderAllPages();
+        });
+
+        document.getElementById('reset-zoom').addEventListener('click', function() {
+            currentScale = 1.2;
+            renderAllPages();
+        });
+
         setZoomLabel();
-        status.textContent = pdfDoc.numPages + ' halaman / zoom ' + Math.round(currentScale * 100) + '%';
-        pageContainer.innerHTML = '';
-
-        for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
-            const canvas = document.createElement('canvas');
-            canvas.setAttribute('aria-label', 'Halaman ' + pageNum);
-            pageContainer.appendChild(canvas);
-
-            pdfDoc.getPage(pageNum).then(function(page) {
-                if (token !== renderToken) return;
-                const viewport = page.getViewport({ scale: currentScale });
-                const context = canvas.getContext('2d');
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-                page.render({ canvasContext: context, viewport: viewport });
-            });
-        }
+        pdfjsLib.getDocument({
+            url: url,
+            withCredentials: true
+        }).promise.then(function(pdf) {
+            pdfDoc = pdf;
+            loading.remove();
+            renderAllPages();
+        }).catch(function() {
+            loading.innerHTML = '<p>Gagal memuat file PDF.</p>';
+        });
     }
-
-    document.getElementById('zoom-in').addEventListener('click', function() {
-        if (currentScale >= 2.5) return;
-        currentScale += 0.2;
-        renderAllPages();
-    });
-
-    document.getElementById('zoom-out').addEventListener('click', function() {
-        if (currentScale <= 0.6) return;
-        currentScale -= 0.2;
-        renderAllPages();
-    });
-
-    document.getElementById('reset-zoom').addEventListener('click', function() {
-        currentScale = 1.2;
-        renderAllPages();
-    });
-
-    setZoomLabel();
-    pdfjsLib.getDocument(url).promise.then(function(pdf) {
-        pdfDoc = pdf;
-        loading.remove();
-        renderAllPages();
-    }).catch(function() {
-        loading.innerHTML = '<p class="text-sm font-black uppercase tracking-widest">Gagal memuat file PDF.</p>';
-        status.textContent = 'Gagal memuat file PDF.';
-    });
-});
+})();
 </script>
 @endpush

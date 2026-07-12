@@ -32,6 +32,11 @@ class SendWhatsAppMessage implements ShouldQueue
         $sender = config('whatsapp.sender');
 
         if (! $apiKey || ! $sender) {
+            Log::warning('WhatsApp config tidak lengkap', [
+                'api_key_exists' => ! is_null($apiKey),
+                'sender' => $sender,
+                'number' => $this->number,
+            ]);
             return;
         }
 
@@ -63,24 +68,25 @@ class SendWhatsAppMessage implements ShouldQueue
 
         try {
             $response = $client->request('GET', $baseUrl, ['query' => $query]);
+            $body = (string) $response->getBody();
             if ($response->getStatusCode() === 200) {
                 Log::info('WhatsApp message sent', [
                     'phone' => $this->number,
-                    'message' => $this->message,
                     'status_code' => $response->getStatusCode(),
-                    'timestamp' => now(),
+                    'response' => substr($body, 0, 500),
                 ]);
             } else {
-                Log::error('Error whatsapp meessages sent', [
+                Log::error('WhatsApp send failed', [
                     'phone' => $this->number,
-                    'message' => $this->message,
                     'status_code' => $response->getStatusCode(),
-                    'timestamp' => now(),
+                    'response' => substr($body, 0, 500),
                 ]);
             }
         } catch (RequestException $e) {
-            // ignore errors to avoid breaking the flow
-            Log::error($e->getMessage());
+            Log::error('WhatsApp send exception', [
+                'phone' => $this->number,
+                'error' => $e->getMessage(),
+            ]);
         } finally {
             Cache::put($gapKey, now()->getTimestamp(), $minGap);
         }

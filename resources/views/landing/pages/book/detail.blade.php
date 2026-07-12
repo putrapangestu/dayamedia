@@ -9,9 +9,10 @@
     $scholarPublicationDate = $book->year_published ?: optional($book->published_at)->format('Y/n/j');
 @endphp
 
+@if((config('app.env') && config('app.env')) === 'production')
 @push('meta')
     <link rel="canonical" href="{{ $canonicalUrl }}">
-    <meta name="robots" content="{{ app()->environment('production') ? 'index, follow, max-image-preview:large' : 'noindex, nofollow' }}">
+    <meta name="robots" content="index, follow, max-image-preview:large">
 
     {{-- Google Scholar / Highwire Press --}}
     <meta name="citation_title" content="{{ $book->title }}">
@@ -108,11 +109,12 @@
     <meta name="twitter:description" content="{{ $ogDescription }}">
     <meta name="twitter:image" content="{{ $ogImage }}">
 @endpush
+@endif
 
 @section('content')
 <div class="bg-gray-50/30 min-h-screen pb-20 pt-10">
     <div class="kt-container-fixed">
-        
+
         {{-- ===== BREADCRUMB ===== --}}
         <div class="flex items-center gap-2 text-sm font-medium mb-8">
             <a href="{{ route('home') }}" class="text-gray-500 hover:text-primary transition-colors">Beranda</a>
@@ -125,13 +127,13 @@
         {{-- ===== MAIN DETAIL SECTION ===== --}}
         <div class="bg-white rounded-[2.5rem] p-4 sm:p-6 lg:p-10 border border-gray-100 shadow-sm mb-10">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
-                
+
                 {{-- Kiri: Cover Image --}}
                 <div class="lg:col-span-3 flex flex-col items-center lg:items-start">
                     <div class="w-full max-w-[200px] sm:max-w-[240px] lg:max-w-full">
                         <div class="relative bg-gray-50 rounded-2xl overflow-hidden aspect-[3/4] shadow-xl border border-gray-100">
-                            <img src="{{ $book->cover ? asset('storage/' . $book->cover) : 'https://placehold.co/400x600?text=No+Cover' }}" 
-                                 alt="{{ $book->title }}" 
+                            <img src="{{ $book->cover ? asset('storage/' . $book->cover) : 'https://placehold.co/400x600?text=No+Cover' }}"
+                                 alt="{{ $book->title }}"
                                  class="w-full h-full object-cover">
                         </div>
                         <div class="flex flex-wrap gap-2 mt-4 justify-center lg:justify-start">
@@ -482,7 +484,7 @@
         // Hide all
         $('#tab-description, #tab-preview').addClass('hidden');
         $('#btn-tab-description, #btn-tab-preview').removeClass('bg-white shadow-sm border-gray-100 text-primary font-black').addClass('text-gray-500 font-bold border-transparent');
-        
+
         // Show active
         $('#' + tabId).removeClass('hidden');
         $('#btn-' + tabId).addClass('bg-white shadow-sm border-gray-100 text-primary font-black').removeClass('text-gray-500 font-bold border-transparent');
@@ -617,7 +619,7 @@
                         const canvas = document.createElement('canvas');
                         canvas.className = 'rounded-xl shadow-lg border border-gray-200 bg-white max-w-full';
                         container.appendChild(canvas);
-                        
+
                         pdfDoc.getPage(pageNum).then(page => {
                             const viewport = page.getViewport({ scale: currentScale });
                             canvas.height = viewport.height;

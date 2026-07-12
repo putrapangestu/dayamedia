@@ -65,6 +65,7 @@
 @endpush
 @endif
 
+@if((config('app.env') && config('app.env')) === 'production')
 @push('meta')
     @php
         $ogTitle = $book->title;
@@ -98,6 +99,7 @@
     <meta name="twitter:description" content="{{ $ogDescription }}">
     <meta name="twitter:image" content="{{ $ogImage }}">
 @endpush
+@endif
 @push('css')
 @include('components.timeline-style')
     <style>
