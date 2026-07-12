@@ -1,5 +1,22 @@
 @extends('admin.layouts.app')
 
+@php
+function checkIndividualStatus ($transaction) {
+    $data = [];
+    switch ($transaction->individual_book_status) {
+        case 'pending':   $data = ['color' => 'bg-primary-subtle text-primary', 'text' => 'Menunggu Pembayaran']; break;
+        case 'confirmed': $data = ['color' => 'bg-success-subtle text-success', 'text' => 'Pembayaran Berhasil']; break;
+        case 'paid':      $data = ['color' => 'bg-info-subtle text-info', 'text' => 'Sudah Dibayar']; break;
+        case 'rejected':  $data = ['color' => 'bg-danger-subtle text-danger', 'text' => 'Pembayaran Ditolak']; break;
+        default:          $data = ['color' => 'bg-secondary-subtle text-secondary', 'text' => 'Status Tidak Diketahui']; break;
+    }
+    if($transaction->individual_book_status == "pending" && $transaction->payment_proof) {
+        $data = ['color' => 'bg-warning-subtle text-warning', 'text' => 'Menunggu Konfirmasi'];
+    }
+    return $data;
+}
+@endphp
+
 @section('content')
 <div class="body-wrapper">
     <div class="container-fluid">
@@ -12,12 +29,53 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
+                    <div class="px-4 py-3 border-bottom">
+                        <form method="GET" class="row g-2 align-items-end">
+                            <div class="col-md-3">
+                                <label class="form-label">Kode Transaksi</label>
+                                <input type="text" name="transaction_code" class="form-control"
+                                    placeholder="cari kode transaksi.." value="{{ request('transaction_code') }}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Nama Member</label>
+                                <input type="text" name="user_name" class="form-control"
+                                    placeholder="cari nama member.." value="{{ request('user_name') }}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Status</label>
+                                <select class="form-control" name="status">
+                                    <option value="">Semua Status</option>
+                                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Menunggu Pembayaran</option>
+                                    <option value="waiting" {{ request('status') == 'waiting' ? 'selected' : '' }}>Menunggu Konfirmasi</option>
+                                    <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Pembayaran Berhasil</option>
+                                    <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>Sudah Dibayar</option>
+                                    <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Pembayaran Ditolak</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Tanggal</label>
+                                <input type="date" name="date" class="form-control" value="{{ request('date') }}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Tanggal Mulai</label>
+                                <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Tanggal Selesai</label>
+                                <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
+                            </div>
+                            <div class="col-12 d-flex gap-2 mt-2">
+                                <button class="btn btn-primary"><i class="ti ti-search"></i> Filter</button>
+                                <a href="{{ url()->current() }}" class="btn btn-outline-secondary"><i class="ti ti-refresh"></i> Reset</a>
+                            </div>
+                        </form>
+                    </div>
                     <div class="card-body">
-                        <h4 class="card-title">List Transaksi</h4>
                         <div class="table-responsive">
                             <table id="default_order" class="table table-bordered display text-nowrap align-middle">
                                 <thead>
                                     <tr>
+                                        <th>No</th>
                                         <th>Transaksi</th>
                                         <th>User</th>
                                         <th>Paket</th>
@@ -29,6 +87,7 @@
                                 <tbody>
                                     @forelse($transactions as $trx)
                                         <tr>
+                                            <td>{{ \App\Helpers\PaginateHelper::generateItemNumber($loop, $transactions->perPage(), $transactions->currentPage()) }}</td>
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="ms-0">
@@ -55,21 +114,12 @@
                                                 <h6 class="fs-4 fw-semibold mb-0">Rp {{ number_format($trx->total_price, 0, ',', '.') }}</h6>
                                             </td>
                                             <td>
-                                                @php
-                                                    $statusData = [
-                                                        'pending' => ['color' => 'bg-warning-subtle text-warning', 'text' => 'Menunggu Pembayaran'],
-                                                        'confirmed' => ['color' => 'bg-success-subtle text-success', 'text' => 'Pembayaran Berhasil'],
-                                                        'rejected' => ['color' => 'bg-danger-subtle text-danger', 'text' => 'Pembayaran Ditolak'],
-                                                        'paid' => ['color' => 'bg-info-subtle text-info', 'text' => 'Sudah Dibayar'],
-                                                    ][$trx->individual_book_status] ?? ['color' => 'bg-secondary-subtle text-secondary', 'text' => 'Status Tidak Diketahui'];
-
-                                                    if($trx->individual_book_status == "pending" && $trx->payment_proof) {
-                                                        $statusData = ['color' => 'bg-warning-subtle text-warning', 'text' => 'Menunggu Konfirmasi'];
-                                                    }
-                                                @endphp
-                                                <span class="badge {{ $statusData['color'] }} fw-semibold fs-2">
-                                                    {{ $statusData['text'] }}
+                                                <span class="mb-1 badge fs-2 {{ checkIndividualStatus($trx)['color'] }}">
+                                                    {{ checkIndividualStatus($trx)['text'] }}
                                                 </span>
+                                                @if($trx->payment_proof)
+                                                    <br><span class="mb-1 badge fs-2 bg-success-subtle text-success mt-1">Bukti Bayar Tersedia</span>
+                                                @endif
                                             </td>
                                             <td>
                                                 <div class="d-flex justify-content-end gap-2">
@@ -77,19 +127,6 @@
                                                         Detail
                                                     </a>
                                                     @if($trx->individual_book_status === 'pending')
-                                                        {{-- <form action="{{ route('admin.individual-books.confirm', $trx) }}" method="POST" id="confirmForm-{{ $trx->id }}">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <button type="button" class="btn btn-sm btn-success px-3 shadow-none" onclick="confirmTransaction('{{ $trx->id }}')">
-                                                                Konfirmasi
-                                                            </button>
-                                                        </form>
-                                                        <button type="button" class="btn btn-sm btn-danger px-3 shadow-none"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#rejectModal{{ $trx->id }}">
-                                                            Tolak
-                                                        </button> --}}
-
                                                         <!-- Reject Modal -->
                                                         <div class="modal fade" id="rejectModal{{ $trx->id }}" tabindex="-1" aria-hidden="true">
                                                             <div class="modal-dialog modal-dialog-centered">
@@ -121,7 +158,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="6" class="text-center py-4">
+                                            <td colspan="7" class="text-center py-4">
                                                 <p class="mb-0 text-muted">Tidak ada transaksi yang ditemukan</p>
                                             </td>
                                         </tr>
@@ -141,25 +178,4 @@
     </div>
 </div>
 @endsection
-
-@push('js')
-<script>
-    function confirmTransaction(id) {
-        Swal.fire({
-            title: 'Konfirmasi Pembayaran?',
-            text: "Apakah Anda yakin ingin memverifikasi transaksi ini?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#13deb9',
-            cancelButtonColor: '#fa896b',
-            confirmButtonText: 'Ya, Konfirmasi!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('confirmForm-' + id).submit();
-            }
-        });
-    }
-</script>
-@endpush
 
