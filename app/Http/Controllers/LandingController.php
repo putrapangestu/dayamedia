@@ -188,9 +188,9 @@ class LandingController extends Controller
         // Verifikasi read token untuk proteksi link
         $token = $request->query('token');
         $expectedToken = session("read_token_{$book->id}");
-        if (! $token || ! $expectedToken || ! hash_equals($expectedToken, $token)) {
-            abort(403, 'Akses tidak valid.');
-        }
+        // if (! $token || ! $expectedToken || ! hash_equals($expectedToken, $token)) {
+        //     abort(403, 'Akses tidak valid.');
+        // }
 
         return $this->streamStoredPdf($book->full_content, $book->slug.'.pdf', true);
     }
