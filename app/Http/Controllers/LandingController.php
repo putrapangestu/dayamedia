@@ -18,6 +18,7 @@ use App\Models\Withdraw;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -197,10 +198,12 @@ class LandingController extends Controller
         $user = auth()->user();
 
         if (! $user) {
+            Log::info("Check user can read book, doesnt have user");
             return false;
         }
 
         if ($user->hasRole('admin')) {
+            Log::info("Check user can read book, user admin");
             return true;
         }
 

@@ -1,11 +1,11 @@
 <div class="bg-white border border-gray-100 rounded-2xl p-3 shadow-sm hover:shadow-xl hover:border-primary/30 transition-all duration-300 flex flex-col h-full relative overflow-hidden group">
     <div class="absolute top-0 right-0 bg-yellow-400 text-yellow-950 text-[10px] font-black px-3 py-1 rounded-bl-xl z-10 shadow-sm flex items-center gap-1">
-        <i class="ki-filled ki-users text-xs"></i> {{ $book->authors->count() }}/{{ $book->modules->count() }}
+        <i class="ki-filled ki-users text-xs"></i> {{ $book->modules->filter(fn ($module) => $module->order_lock_status !== 'available')->count() }}/{{ $book->modules->count() }}
     </div>
     <div class="relative bg-gray-50 rounded-xl overflow-hidden mb-4 aspect-[1/1.41] shadow-inner mt-2">
         <a href="{{ route('collaborationDetail', $book->slug) }}" class="block w-full h-full">
-            <img src="{{ $book->cover ? asset('storage/' . $book->cover) : 'https://placehold.co/400x600?text=No+Cover' }}" 
-                 alt="{{ $book->title }}" 
+            <img src="{{ $book->cover ? asset('storage/' . $book->cover) : 'https://placehold.co/400x600?text=No+Cover' }}"
+                 alt="{{ $book->title }}"
                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
         </a>
     </div>
