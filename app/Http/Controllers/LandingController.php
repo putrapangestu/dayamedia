@@ -197,6 +197,8 @@ class LandingController extends Controller
     {
         $user = auth()->user();
 
+        Log::info("check user", [$user, $user->hasRole('admin')]);
+
         if (! $user) {
             Log::info("Check user can read book, doesnt have user");
             return false;
