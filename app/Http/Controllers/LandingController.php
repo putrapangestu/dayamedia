@@ -181,7 +181,9 @@ class LandingController extends Controller
         }
 
         abort_unless($book->full_content, 404);
-        abort_unless($this->userCanReadBook($book), 403);
+        $canRead = $this->userCanReadBook($book);
+        Log::info("check akses read ", [$canRead]);
+        abort_unless($canRead, 403);
 
         // Verifikasi read token untuk proteksi link
         $token = $request->query('token');
