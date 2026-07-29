@@ -1,107 +1,149 @@
 
 @extends('landing.layouts.app')
 
-@if((config('app.env') ?? config('app.env')) === 'production')
+@if(app()->environment('production'))
 @push('meta')
-    <meta name="citation_title" content="{{ $book->title }}">
-    @if(isset($authors) && $authors->count() > 0)
-        @foreach($authors as $author)
-            @if(!empty($author['name']))
-                <meta name="citation_author" content="{{ $author['name'] }}">
-            @endif
-        @endforeach
-    @endif
-    @php
-        $editorName = $book->editor && $book->editor !== '-' ? $book->editor : ($book->bookEditors?->user?->full_name ?? null);
-    @endphp
-    @if($editorName)
-        <meta name="citation_editor" content="{{ $editorName }}">
-    @endif
-    <meta name="robots" content="index, follow">
-    @if($book->publisher)
-        <meta name="citation_publisher" content="{{ $book->publisher }}">
-    @else
-        <meta name="citation_publisher" content="{{ config('app.name') }}">
-    @endif
-    @if($book->year_published)
-        <meta name="citation_publication_date" content="{{ $book->year_published }}">
-    @endif
-    @if($book->code_isbn)
-        <meta name="citation_isbn" content="{{ $book->code_isbn }}">
-    @endif
-    @if($book->language)
-        <meta name="citation_language" content="{{ $book->language }}">
-    @endif
-    @php
-        $abstract = \Illuminate\Support\Str::limit(trim(strip_tags($book->description)), 500);
-    @endphp
-    @if(!empty($abstract))
-        <meta name="citation_abstract" content="{{ $abstract }}">
-    @endif
-    <meta name="citation_abstract_html_url" content="{{ url()->current() }}">
-    <link rel="canonical" href="{{ url()->current() }}">
-
-    @php
-        $authorList = [];
-        if(isset($authors)) {
-            foreach ($authors as $a) {
-                if (!empty($a['name'])) {
-                    $authorList[] = ['@type' => 'Person', 'name' => $a['name']];
-                }
-            }
+@php
+    // URL Halaman Landing Page Saat Ini
+    $currentUrl = url()->current();
+    // Pembersihan Teks HTML & Whitespace
+    $rawDescription = trim(preg_replace('/\s+/', ' ', strip_tags($book->description ?? '')));
+    // Abstrak Panjang (Maks 500 karakter, diakhiri kalimat utuh)
+    $abstract = \Illuminate\Support\Str::limit($rawDescription, 500);
+    if (str_ends_with($abstract, '...')) {
+        $trimmed = substr($abstract, 0, -3);
+        $lastPeriod = strrpos($trimmed, '.');
+        if ($lastPeriod !== false && $lastPeriod > 200) {
+            $abstract = substr($trimmed, 0, $lastPeriod + 1);
+        } else {
+            $abstract = preg_replace('/[^\w]+$/u', '', $trimmed) . '.';
         }
-        $bookSchema = [
-            '@context' => 'https://schema.org',
-            '@type' => 'Book',
-            'name' => $book->title,
-            'author' => $authorList,
-            'editor' => $editorName ? ['@type' => 'Person', 'name' => $editorName] : null,
-            'isbn' => $book->code_isbn ?: null,
-            'datePublished' => $book->year_published ?: null,
-            'publisher' => $book->publisher ?: config('app.name'),
-            'inLanguage' => $book->language ?: null,
-            'image' => $book->cover ? asset('storage/' . $book->cover) : null,
-            'url' => url()->current(),
-            'description' => $abstract ?: null,
-        ];
-        $bookSchema = array_filter($bookSchema, function ($v) { return $v !== null; });
-    @endphp
-    <script type="application/ld+json">{!! json_encode($bookSchema, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) !!}</script>
-@endpush
+    }
+    // Deskripsi Ringkas Meta / OG (Maks 180 karakter, diakhiri kalimat utuh)
+    $cleanDescription = \Illuminate\Support\Str::limit($rawDescription, 180);
+    if (str_ends_with($cleanDescription, '...')) {
+        $trimmed = substr($cleanDescription, 0, -3);
+        $lastPeriod = strrpos($trimmed, '.');
+        if ($lastPeriod !== false && $lastPeriod > 80) {
+            $cleanDescription = substr($trimmed, 0, $lastPeriod + 1);
+        } else {
+            $cleanDescription = preg_replace('/[^\w]+$/u', '', $trimmed) . '.';
+        }
+    }
+    $editorName = $book->editor && $book->editor !== '-' ? $book->editor : ($book->bookEditors?->user?->full_name ?? null);
+    $publisherName = $book->publisher ?: config('app.name', 'Penerbit Azzia');
+    $isoLanguage = 'id';
+    $ogImage = $book->cover ? asset('storage/' . $book->cover) : asset('assets/azzia-logo.png');
+@endphp
+
+<!-- 1. Title & Standard Meta Tags -->
+<title>{{ $book->title }} - {{ $publisherName }}</title>
+<meta name="robots" content="index, follow">
+<meta name="description" content="{{ $cleanDescription }}">
+<link rel="canonical" href="{{ $currentUrl }}">
+
+<!-- 2. Google Scholar / Citation Metadata (Optimized for BOOK indexing to HTML) -->
+<meta name="citation_title" content="{{ $book->title }}">
+@if(isset($authors) && count($authors) > 0)
+    @foreach($authors as $author)
+        @if(!empty($author['name']))
+            <meta name="citation_author" content="{{ $author['name'] }}">
+        @endif
+    @endforeach
+@endif
+@if($editorName)
+    <meta name="citation_editor" content="{{ $editorName }}">
+@endif
+<meta name="citation_publisher" content="{{ $publisherName }}">
+@if($book->year_published)
+    <meta name="citation_publication_date" content="{{ $book->year_published }}">
+@endif
+@if($book->code_isbn)
+    <meta name="citation_isbn" content="{{ $book->code_isbn }}">
+@endif
+<meta name="citation_language" content="{{ $isoLanguage }}">
+@if(!empty($abstract))
+    <meta name="citation_abstract" content="{{ $abstract }}">
+@endif
+<!-- URL Pengarah Google Scholar ke Halaman HTML Full-Text/Landing Page -->
+<meta name="citation_abstract_html_url" content="{{ $currentUrl }}">
+<meta name="citation_fulltext_html_url" content="{{ $currentUrl }}">
+
+<!-- 3. Dublin Core Metadata -->
+<meta name="DC.title" content="{{ $book->title }}">
+@if(isset($authors) && count($authors) > 0)
+    @foreach($authors as $author)
+        @if(!empty($author['name']))
+            <meta name="DC.creator" content="{{ $author['name'] }}">
+        @endif
+    @endforeach
+@endif
+@if($editorName)
+    <meta name="DC.contributor" content="{{ $editorName }}">
+@endif
+<meta name="DC.publisher" content="{{ $publisherName }}">
+@if($book->year_published)
+    <meta name="DC.date" content="{{ $book->year_published }}">
+@endif
+@if($book->code_isbn)
+    <meta name="DC.identifier" content="ISBN:{{ $book->code_isbn }}">
+@endif
+<meta name="DC.language" content="{{ $isoLanguage }}">
+
+<!-- 4. Open Graph / Social Media -->
+<meta property="og:title" content="{{ $book->title }}">
+<meta property="og:description" content="{{ $cleanDescription }}">
+<meta property="og:image" content="{{ $ogImage }}">
+<meta property="og:url" content="{{ $currentUrl }}">
+<meta property="og:type" content="book">
+<meta property="og:site_name" content="{{ $publisherName }}">
+@if(isset($authors) && count($authors) > 0)
+    @foreach($authors as $author)
+        @if(!empty($author['name']))
+            <meta property="book:author" content="{{ $author['name'] }}">
+        @endif
+    @endforeach
+@endif
+@if($book->code_isbn)
+    <meta property="book:isbn" content="{{ $book->code_isbn }}">
+@endif
+@if($book->year_published)
+    <meta property="book:release_date" content="{{ $book->year_published }}-01-01">
 @endif
 
-@if((config('app.env') ?? config('app.env')) === 'production')
-@push('meta')
-    @php
-        $ogTitle = $book->title;
-        $ogDescription = \Illuminate\Support\Str::limit(strip_tags($book->description), 180);
-        $ogImage = $book->cover ? asset('storage/' . $book->cover) : asset('assets/azzia-logo.png');
-        $ogUrl = url()->current();
-    @endphp
-    <meta name="description" content="{{ $ogDescription }}">
-    <meta property="og:title" content="{{ $ogTitle }}">
-    <meta property="og:description" content="{{ $ogDescription }}">
-    <meta property="og:image" content="{{ $ogImage }}">
-    <meta property="og:url" content="{{ $ogUrl }}">
-    <meta property="og:type" content="book">
-    <meta property="og:site_name" content="{{ config('app.name') }}">
-    @if(isset($authors) && $authors->count() > 0)
-        @foreach($authors as $author)
-            @if(!empty($author['name']))
-                <meta property="book:author" content="{{ $author['name'] }}">
-            @endif
-        @endforeach
-    @endif
-    @if($book->code_isbn)
-        <meta property="book:isbn" content="{{ $book->code_isbn }}">
-    @endif
-    @if($book->year_published)
-        <meta property="book:release_date" content="{{ $book->year_published }}-01-01">
-    @endif
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ $ogTitle }}">
-    <meta name="twitter:description" content="{{ $ogDescription }}">
-    <meta name="twitter:image" content="{{ $ogImage }}">
+<!-- 5. Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ $book->title }}">
+<meta name="twitter:description" content="{{ $cleanDescription }}">
+<meta name="twitter:image" content="{{ $ogImage }}">
+
+<!-- 6. Structured Data Schema.org JSON-LD -->
+@php
+    $authorList = [];
+    if(isset($authors)) {
+        foreach ($authors as $a) {
+            if (!empty($a['name'])) {
+                $authorList[] = ['@type' => 'Person', 'name' => $a['name']];
+            }
+        }
+    }
+    $bookSchema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'Book',
+        'name' => $book->title,
+        'author' => $authorList,
+        'editor' => $editorName ? ['@type' => 'Person', 'name' => $editorName] : null,
+        'isbn' => $book->code_isbn ?: null,
+        'datePublished' => (string)($book->year_published ?: null),
+        'publisher' => $publisherName,
+        'inLanguage' => $isoLanguage,
+        'image' => $ogImage,
+        'url' => $currentUrl,
+        'description' => $cleanDescription ?: null,
+    ];
+    $bookSchema = array_filter($bookSchema, function ($v) { return $v !== null; });
+@endphp
+<script type="application/ld+json">{!! json_encode($bookSchema, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) !!}</script>
 @endpush
 @endif
 
